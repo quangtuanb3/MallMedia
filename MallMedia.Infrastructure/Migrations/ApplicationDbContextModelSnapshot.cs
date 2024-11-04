@@ -466,7 +466,7 @@ namespace MallMedia.Infrastructure.Migrations
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
                 {
                     b.HasOne("MallMedia.Domain.Entities.Category", "Category")
-                        .WithMany("Contents")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -483,7 +483,7 @@ namespace MallMedia.Infrastructure.Migrations
             modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
                 {
                     b.HasOne("MallMedia.Domain.Entities.Location", "Location")
-                        .WithMany("Devices")
+                        .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -619,19 +619,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MallMedia.Domain.Entities.Category", b =>
-                {
-                    b.Navigation("Contents");
-                });
-
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
                 {
                     b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("MallMedia.Domain.Entities.Location", b =>
-                {
-                    b.Navigation("Devices");
                 });
 #pragma warning restore 612, 618
         }
