@@ -1,5 +1,5 @@
 ﻿using MallMedia.Domain.Entities;
-using MallMedia.Domain.Repository;
+using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MallMedia.Infrastructure.Repository;
+namespace MallMedia.Infrastructure.Repositories;
 
 internal class MasterDataRepository(ApplicationDbContext dbContext) : IMasterDataRepository
 {

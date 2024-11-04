@@ -13,7 +13,7 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
     internal DbSet<Category> Categories { get; set; }
     internal DbSet<Location> Locations { get; set; }
 
-    internal DbSet<Media> Media { get; set; }
+    internal DbSet<Media> Medias { get; set; }
     internal DbSet<TimeFrame> TimeFrames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

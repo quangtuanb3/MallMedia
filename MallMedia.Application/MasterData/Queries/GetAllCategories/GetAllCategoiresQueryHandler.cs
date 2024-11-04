@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MallMedia.Application.Common;
 using MallMedia.Domain.Entities;
-using MallMedia.Domain.Repository;
+using MallMedia.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
