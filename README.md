@@ -29,7 +29,7 @@ MallMedia is a content management system designed to help admins manage the disp
 ## Technology Stack
 - **Backend**: ASP.NET Core
 - **Database**: SQL Server or SQLite (configured in `appsettings.json`)
-- **Frontend**: HTML, CSS, JavaScript
+- **Frontend**: Razor page
 - **Libraries**: Entity Framework Core, ASP.NET Identity, SignalR
 
 ## How to Run the Project
