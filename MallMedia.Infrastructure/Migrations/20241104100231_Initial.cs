@@ -209,7 +209,7 @@ namespace MallMedia.Infrastructure.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedByUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -263,7 +263,7 @@ namespace MallMedia.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Media",
+                name: "Medias",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -278,9 +278,9 @@ namespace MallMedia.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Media", x => x.Id);
+                    table.PrimaryKey("PK_Medias", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Media_Contents_ContentId",
+                        name: "FK_Medias_Contents_ContentId",
                         column: x => x.ContentId,
                         principalTable: "Contents",
                         principalColumn: "Id",
@@ -403,8 +403,8 @@ namespace MallMedia.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Media_ContentId",
-                table: "Media",
+                name: "IX_Medias_ContentId",
+                table: "Medias",
                 column: "ContentId");
 
             migrationBuilder.CreateIndex(
@@ -442,7 +442,7 @@ namespace MallMedia.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Media");
+                name: "Medias");
 
             migrationBuilder.DropTable(
                 name: "ScheduleTimeFrame");

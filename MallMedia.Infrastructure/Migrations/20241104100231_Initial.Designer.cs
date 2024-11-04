@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241104040417_Initial")]
+    [Migration("20241104100231_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -61,7 +61,6 @@ namespace MallMedia.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedByUserId")
@@ -188,7 +187,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasIndex("ContentId");
 
-                    b.ToTable("Media");
+                    b.ToTable("Medias");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>

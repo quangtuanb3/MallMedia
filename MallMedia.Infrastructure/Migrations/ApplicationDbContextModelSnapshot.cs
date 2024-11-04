@@ -58,7 +58,6 @@ namespace MallMedia.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedByUserId")
@@ -185,7 +184,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasIndex("ContentId");
 
-                    b.ToTable("Media");
+                    b.ToTable("Medias");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>

@@ -19,12 +19,12 @@ public class Content
 
     public ICollection<Media> Media { get; set; }
 
-    public string Status { get; set; }
+    public string Status { get; set; } = "UNUSED";
 
     public DateTime CreatedAt { get; set; }
 
-    public string CreatedBy { get; set; }
-    public User CreatedByUser { get; set; }
+    public string? CreatedBy { get; set; }
+    public User? CreatedByUser { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
 }

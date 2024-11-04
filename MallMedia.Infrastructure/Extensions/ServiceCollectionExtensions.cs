@@ -1,8 +1,10 @@
 ﻿using MallMedia.Domain.Entities;
-using MallMedia.Domain.Repository;
+using MallMedia.Domain.Interfaces;
+using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Persistence;
-using MallMedia.Infrastructure.Repository;
+using MallMedia.Infrastructure.Repositories;
 using MallMedia.Infrastructure.Seeders;
+using MallMedia.Infrastructure.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -35,6 +37,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<DeviceSeeder>();
         services.AddScoped<IInitialSeeder, InitialSeeder>();
         services.AddScoped<IMasterDataRepository, MasterDataRepository>();
-
+        services.AddScoped<IMediaRepository, MediaRepository>();
+        services.AddScoped<IContentRepository, ContentRepository>();
+        services.AddScoped<IFileStorageService, FileStorageService>();
     }
 }
