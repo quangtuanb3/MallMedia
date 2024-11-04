@@ -10,6 +10,5 @@ public class Category
 
     public string Name { get; set; } = default!;
 
-    public ICollection<Content> Contents { get; set; } = new List<Content>();
 
 }

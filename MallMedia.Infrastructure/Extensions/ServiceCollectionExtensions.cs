@@ -1,5 +1,7 @@
 ﻿using MallMedia.Domain.Entities;
+using MallMedia.Domain.Repository;
 using MallMedia.Infrastructure.Persistence;
+using MallMedia.Infrastructure.Repository;
 using MallMedia.Infrastructure.Seeders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<LocationSeeder>();
         services.AddScoped<DeviceSeeder>();
         services.AddScoped<IInitialSeeder, InitialSeeder>();
-        //services.AddScoped<I>
+        services.AddScoped<IMasterDataRepository, MasterDataRepository>();
 
     }
 }

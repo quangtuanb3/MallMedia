@@ -11,5 +11,4 @@ public class Location
 
     public string Name { get; set; }
 
-    public ICollection<Device> Devices { get; set; } = new List<Device>();
 }
