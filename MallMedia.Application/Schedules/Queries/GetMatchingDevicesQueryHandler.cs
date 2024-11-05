@@ -1,15 +1,10 @@
 ﻿using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MallMedia.Application.Schedule.Queries;
+
+namespace MallMedia.Application.Schedules.Queries;
 
 public class GetMatchingDevicesQueryHandler(ILogger<GetMatchingDevicesQueryHandler> logger, IScheduleRepository scheduleRepository) : IRequestHandler<GetMatchingDevicesQuery, List<Device>>
 {

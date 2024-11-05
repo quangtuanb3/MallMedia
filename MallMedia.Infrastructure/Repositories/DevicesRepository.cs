@@ -15,14 +15,11 @@ namespace MallMedia.Infrastructure.Repositories
             await dbContext.SaveChangesAsync();
             return entity.Id;
         }
-
-<<<<<<< HEAD
-=======
         public async Task<(List<Device>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
         {
             var search = searchPhrase?.ToLower();
             //query
-            var baseQuery = dbContext.Devices.Include(r=>r.Location)
+            var baseQuery = dbContext.Devices.Include(r => r.Location)
                 .Where(r => search == null || r.DeviceName.ToLower().Contains(search)
                         || r.DeviceType.ToLower().Contains(search));
             //total items
@@ -50,7 +47,7 @@ namespace MallMedia.Infrastructure.Repositories
 
         public Task<Device?> GetByIdAsync(int id)
         {
-            return dbContext.Devices.Include(d=>d.Location).Include(d=>d.Schedules).FirstOrDefaultAsync(d=>d.Id == id);
+            return dbContext.Devices.Include(d => d.Location).Include(d => d.Schedules).FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<int> UpdateDevicesAsync(Device entity)
@@ -60,5 +57,4 @@ namespace MallMedia.Infrastructure.Repositories
             return entity.Id;
         }
     }
->>>>>>> 601004681c5e2b77cb698c34b98b29639a597e71
 }
