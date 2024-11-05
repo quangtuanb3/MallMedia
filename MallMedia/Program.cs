@@ -1,7 +1,7 @@
 
 using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
-using MallMedia.Application.Devices.Commands;
+using MallMedia.Application.Devices.Commands.UpdateDevice;
 using MallMedia.Application.Extensions;
 using MallMedia.Application.MasterData.Queries.GetDeviceById;
 using MallMedia.Domain.Entities;

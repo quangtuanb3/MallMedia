@@ -9,6 +9,7 @@ namespace MallMedia.Domain.Repositories
 {
     public interface IScheduleRepository
     {
+        Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime);
         public Task<List<Device>> GetMatchingDevices(DateOnly StartDate, DateOnly EndDate, int ContentId, int TimeFrameId);
     }
 }

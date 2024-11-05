@@ -26,6 +26,11 @@ namespace MallMedia.Infrastructure.Repositories
                 .FirstOrDefaultAsync(d => d.Id == id);
         }
 
+        public Task<Device> GetDeviceByIdAsync(object deviceId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task UpdateAsync(Device device)
         {
             _context.Devices.Update(device);

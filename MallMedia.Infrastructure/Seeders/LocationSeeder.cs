@@ -6,19 +6,10 @@ internal class LocationSeeder(ApplicationDbContext dbContext)
 {
     public async Task Seed()
     {
-        if (dbContext.Database.GetPendingMigrations().Any())
+        if (!dbContext.Locations.Any())
         {
-            await dbContext.Database.MigrateAsync();
-        }
-
-        if (await dbContext.Database.CanConnectAsync())
-        {
-            if (!dbContext.Locations.Any())
-            {
-                dbContext.Locations.AddRange(LocationData.Locations);
-                dbContext.SaveChanges();
-            }
-
+            dbContext.Locations.AddRange(LocationData.Locations);
+            dbContext.SaveChanges();
         }
     }
 

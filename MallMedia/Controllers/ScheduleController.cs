@@ -1,5 +1,9 @@
-﻿using MallMedia.Domain.Entities;
+
+using MallMedia.Application.Schedules.Queries;
+using MallMedia.Domain.Entities;
 using MallMedia.Infrastructure.Persistence;
+using MediatR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,9 +14,18 @@ namespace MallMedia.API.Controllers
     public class ScheduleController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public ScheduleController(ApplicationDbContext context)
+        private readonly IMediator _mediator;
+
+        public ScheduleController(ApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetMatchingDevices([FromQuery] GetMatchingDevicesQuery getMatchingDevicesQuery, IMediator mediator)
+        {
+            var result = await mediator.Send(getMatchingDevicesQuery);
+            return Ok(result);
         }
         [HttpGet("/device/{deviceId}/current")]
         public async Task<IActionResult> GetCurrentSchedule(int deviceId)

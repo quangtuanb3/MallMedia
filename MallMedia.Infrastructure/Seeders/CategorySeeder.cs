@@ -6,19 +6,10 @@ internal class CategorySeeder(ApplicationDbContext dbContext)
 {
     public async Task Seed()
     {
-        if (dbContext.Database.GetPendingMigrations().Any())
+        if (!dbContext.Categories.Any())
         {
-            await dbContext.Database.MigrateAsync();
-        }
-
-        if (await dbContext.Database.CanConnectAsync())
-        {
-            if (!dbContext.Categories.Any())
-            {
-                dbContext.Categories.AddRange(CategoryData.Categories);
-                dbContext.SaveChanges();
-            }
-
+            dbContext.Categories.AddRange(CategoryData.Categories);
+            dbContext.SaveChanges();
         }
     }
 

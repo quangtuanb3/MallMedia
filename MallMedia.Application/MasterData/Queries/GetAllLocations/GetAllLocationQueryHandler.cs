@@ -18,7 +18,7 @@ IMasterDataRepository masterDataRepository) : IRequestHandler<GetAllLocationsQue
     public async Task<IEnumerable<Location>> Handle(GetAllLocationsQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting all locations");
-        return await masterDataRepository.getAllLocations();
+        return await masterDataRepository.GetAllLocations();
 
     }
 }

@@ -60,8 +60,6 @@ public static class DeviceData
 {
     new Device
     {
-
-        UserId = Guid.NewGuid().ToString(),
         DeviceName = "Samsung-UA8",
         DeviceType = "TV",
         LocationId = 1,
@@ -71,8 +69,6 @@ public static class DeviceData
     },
     new Device
     {
-
-         UserId = Guid.NewGuid().ToString(),
         DeviceName = "LG-50U",
         DeviceType = "TV",
         LocationId = 2,
@@ -82,8 +78,6 @@ public static class DeviceData
     },
     new Device
     {
-
-       UserId = Guid.NewGuid().ToString(),
         DeviceName = "Sony-X950H",
         DeviceType = "LED",
         LocationId = 3,
@@ -93,8 +87,6 @@ public static class DeviceData
     },
     new Device
     {
-
-        UserId = Guid.NewGuid().ToString(),
         DeviceName = "TCL-75C1",
         DeviceType = "LED",
         LocationId = 4,
@@ -104,7 +96,6 @@ public static class DeviceData
     },
     new Device
     {
-        UserId = Guid.NewGuid().ToString(),
         DeviceName = "Vizio-P-Series",
         DeviceType = "TV",
         LocationId = 5,
@@ -114,8 +105,6 @@ public static class DeviceData
     },
     new Device
     {
-
-        UserId = Guid.NewGuid().ToString(),
         DeviceName = "Philips-55PUS",
         DeviceType = "LED",
         LocationId = 6,
@@ -125,8 +114,6 @@ public static class DeviceData
     },
     new Device
     {
-
-        UserId = Guid.NewGuid().ToString(),
         DeviceName = "Hisense-H65",
         DeviceType = "TV",
         LocationId = 7,
@@ -137,7 +124,6 @@ public static class DeviceData
     new Device
     {
 
-  UserId = Guid.NewGuid().ToString(),
         DeviceName = "Sharp-LC-65",
         DeviceType = "LED",
         LocationId = 8,
@@ -147,8 +133,6 @@ public static class DeviceData
     },
     new Device
     {
-
-      UserId = Guid.NewGuid().ToString(),
         DeviceName = "Samsung-Q60T",
         DeviceType = "LED",
         LocationId = 9,
@@ -158,8 +142,6 @@ public static class DeviceData
     },
     new Device
     {
-
-       UserId = Guid.NewGuid().ToString(),
         DeviceName = "LG-BX",
         DeviceType = "TV",
         LocationId = 10,
@@ -168,5 +150,4 @@ public static class DeviceData
         CreatedAt = DateTime.UtcNow
     },
 };
-
 }

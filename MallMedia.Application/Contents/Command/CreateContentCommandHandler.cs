@@ -1,17 +1,14 @@
-﻿
-
-using AutoMapper;
+﻿using AutoMapper;
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Interfaces;
 using MallMedia.Domain.Repositories;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MallMedia.Application.Content.Command;
+namespace MallMedia.Application.Contents.Command;
 
 public class CreateContentCommandHandler(
     ILogger<CreateContentCommandHandler> logger,
@@ -24,7 +21,6 @@ public class CreateContentCommandHandler(
     public async Task<int> Handle([FromForm] CreateContentCommand request, CancellationToken cancellationToken)
 
     {
-        Console.WriteLine(request);
 
         var filePaths = new List<string>();
         var filesMetadata = JsonSerializer.Deserialize<List<UploadFileModel>>(request.FilesMetadataJson, new JsonSerializerOptions
@@ -39,10 +35,6 @@ public class CreateContentCommandHandler(
         {
             var fileMetadata = filesMetadata[i];
             var file = request.Files[i];
-
-            // Save each file with its metadata
-            //var filePath = await fileStorageService.SaveFileAsync(file.OpenReadStream(), fileMetadata.FileName);
-            //fileMetadata.Path = filePath;
 
             using (var fileStream = file.OpenReadStream())
             {
@@ -61,10 +53,7 @@ public class CreateContentCommandHandler(
                 };
                 await mediaRepository.Create(mediaEntity);
             }
-            // Additional processing, such as storing metadata in the database
         }
-
-
         return contentId;
     }
 }

@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.Commands
+namespace MallMedia.Application.Devices.Commands.UpdateDevice
 {
     public class UpdateDeviceCommandHandler : IRequestHandler<UpdateDeviceCommand, Device>
     {

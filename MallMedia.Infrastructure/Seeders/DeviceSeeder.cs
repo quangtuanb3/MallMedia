@@ -22,47 +22,38 @@ internal class DeviceSeeder
 
     public async Task Seed()
     {
-        if (dbContext.Database.GetPendingMigrations().Any())
+        if (!dbContext.Devices.Any())
         {
-            await dbContext.Database.MigrateAsync();
-        }
+            var devicesToAdd = new List<Device>();
 
-        if (await dbContext.Database.CanConnectAsync())
-        {
-            if (!dbContext.Devices.Any())
+            foreach (var device in DeviceData.Devices)
             {
-                var devicesToAdd = new List<Device>();
-
-                foreach (var device in DeviceData.Devices)
+                var user = new User
                 {
-                    var user = new User
-                    {
-                        UserName = device.DeviceName,
-                        NormalizedUserName = device.DeviceName.ToUpper(),
-                        Email = null
-                    };
+                    UserName = device.DeviceName,
+                    NormalizedUserName = device.DeviceName.ToUpper(),
+                    Email = null
+                };
 
-                    var result = await userManager.CreateAsync(user, DefaultPassword);
+                var result = await userManager.CreateAsync(user, DefaultPassword);
 
-
-                    if (result.Succeeded)
-                    {
-                        device.UserId = user.Id;
-                        devicesToAdd.Add(device);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error creating user for device {device.DeviceName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
-                        Console.WriteLine(result.Errors);
-                    }
-                }
-
-
-                if (devicesToAdd.Any())
+                if (result.Succeeded)
                 {
-                    dbContext.Devices.AddRange(devicesToAdd);
-                    await dbContext.SaveChangesAsync();
+                    device.UserId = user.Id;
+                    devicesToAdd.Add(device);
                 }
+                else
+                {
+                    Console.WriteLine($"Error creating user for device {device.DeviceName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    Console.WriteLine(result.Errors);
+                }
+            }
+
+
+            if (devicesToAdd.Any())
+            {
+                dbContext.Devices.AddRange(devicesToAdd);
+                await dbContext.SaveChangesAsync();
             }
         }
     }

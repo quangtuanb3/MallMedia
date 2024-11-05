@@ -1,4 +1,4 @@
-﻿using MallMedia.Application.Content.Dtos;
+using MallMedia.Application.Contents.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MallMedia.Application.Schedules.Dto
 {
-    public class SchedulesDto
+    public class SchedulesDto 
     {
         public int ContentId { get; set; }
         public ContentDto Contentdto { get; set; }
