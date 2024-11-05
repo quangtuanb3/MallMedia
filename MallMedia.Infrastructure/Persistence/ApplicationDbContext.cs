@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MallMedia.Infrastructure.Persistence;
-internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : IdentityDbContext<User>(options)
 {
-    internal DbSet<Device> Devices { get; set; }
-    internal DbSet<Content> Contents { get; set; }
-    internal DbSet<Schedule> Schedules { get; set; }
+    public DbSet<Device> Devices { get; set; }
+    public DbSet<Content> Contents { get; set; }
+    public DbSet<Schedule> Schedules { get; set; }
 
-    internal DbSet<Category> Categories { get; set; }
-    internal DbSet<Location> Locations { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Location> Locations { get; set; }
 
-    internal DbSet<Media> Medias { get; set; }
-    internal DbSet<TimeFrame> TimeFrames { get; set; }
+    public DbSet<Media> Medias { get; set; }
+    public DbSet<TimeFrame> TimeFrames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
