@@ -50,21 +50,10 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
             .OnDelete(DeleteBehavior.Restrict); // Changed to Restrict
 
         modelBuilder.Entity<Schedule>()
-            .HasMany(s => s.TimeFrames)
+            .HasOne(s => s.TimeFrame)
             .WithMany(t => t.Schedules)
-            .UsingEntity<Dictionary<string, object>>(
-                "ScheduleTimeFrame", // Name of the join table
-                j => j
-                    .HasOne<TimeFrame>()
-                    .WithMany()
-                    .HasForeignKey("TimeFrameId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j
-                    .HasOne<Schedule>()
-                    .WithMany()
-                    .HasForeignKey("ScheduleId")
-                    .OnDelete(DeleteBehavior.Cascade)
-            );
+            .HasForeignKey(s => s.TimeFrameId);
+
     }
 
 }

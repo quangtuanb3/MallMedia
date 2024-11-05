@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MallMedia.Application.Schedules.Commands;
 using MallMedia.Domain.Entities;
 namespace MallMedia.Application.Schedules.Dto
 {
@@ -7,6 +8,7 @@ namespace MallMedia.Application.Schedules.Dto
         public SchedulesProfile()
         {
             CreateMap<Schedule, SchedulesDto>();
+            CreateMap<CreateScheduleCommand, Schedule>();
         }
     }
 }
