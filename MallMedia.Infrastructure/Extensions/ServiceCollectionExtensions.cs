@@ -5,9 +5,7 @@ using MallMedia.Infrastructure.Persistence;
 using MallMedia.Infrastructure.Repositories;
 using MallMedia.Infrastructure.Seeders;
 using MallMedia.Infrastructure.Storage;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,5 +38,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMediaRepository, MediaRepository>();
         services.AddScoped<IContentRepository, ContentRepository>();
         services.AddScoped<IFileStorageService, FileStorageService>();
+        services.AddScoped<IDevicesRepository, DevicesRepository>();
     }
 }
