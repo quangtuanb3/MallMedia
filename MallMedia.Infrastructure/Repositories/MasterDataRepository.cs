@@ -12,12 +12,17 @@ namespace MallMedia.Infrastructure.Repositories;
 
 internal class MasterDataRepository(ApplicationDbContext dbContext) : IMasterDataRepository
 {
-    public async Task<IEnumerable<Category>> getAllCategories()
+    public async Task<IEnumerable<Category>> GetAllCategories()
     {
         return await dbContext.Categories.ToListAsync();
     }
 
-    public async Task<IEnumerable<Location>> getAllLocations()
+    public async Task<IEnumerable<Device>> GetAllDevices()
+    {
+        return await dbContext.Devices.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Location>> GetAllLocations()
     {
         return await dbContext.Locations.ToListAsync();
     }

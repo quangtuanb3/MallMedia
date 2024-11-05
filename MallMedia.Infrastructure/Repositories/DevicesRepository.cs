@@ -16,6 +16,8 @@ namespace MallMedia.Infrastructure.Repositories
             return entity.Id;
         }
 
+<<<<<<< HEAD
+=======
         public async Task<(List<Device>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
         {
             var search = searchPhrase?.ToLower();
@@ -58,4 +60,5 @@ namespace MallMedia.Infrastructure.Repositories
             return entity.Id;
         }
     }
+>>>>>>> 601004681c5e2b77cb698c34b98b29639a597e71
 }
