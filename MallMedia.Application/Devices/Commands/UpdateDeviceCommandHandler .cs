@@ -1,14 +1,13 @@
-﻿using MallMedia.Domain.Repositories;
+﻿using MallMedia.Domain.Entities;
+using MallMedia.Domain.Repositories;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MallMedia.Application.Devices.Commands
 {
-    public class UpdateDeviceCommandHandler : IRequestHandler<UpdateDeviceCommand, bool>
+    public class UpdateDeviceCommandHandler : IRequestHandler<UpdateDeviceCommand, Device>
     {
         private readonly IDeviceRepository _deviceRepository;
 
@@ -17,22 +16,26 @@ namespace MallMedia.Application.Devices.Commands
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<bool> Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
+        public async Task<Device> Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
         {
-            var device = await _deviceRepository.GetByIdAsync(request.DeviceId);
-
+            var device = await _deviceRepository.GetByIdAsync(request.DeviceUpdateDto.Id);
             if (device == null)
-                return false;
+            {
+                throw new Exception("Device not found.");
+            }
 
-            device.DeviceName = request.DeviceName;
-            device.DeviceType = request.DeviceType;
-            device.LocationId = request.LocationId;
-            device.Status = request.Status;
-            device.UpdatedAt = request.UpdatedAt;
+            // Update device properties
+            device.LocationId = request.DeviceUpdateDto.LocationId;
+            device.DeviceType = request.DeviceUpdateDto.DeviceType;
+            device.DeviceName = request.DeviceUpdateDto.DeviceName;
+            device.Configuration.Id = request.DeviceUpdateDto.configuration.Id;
+            device.Status = request.DeviceUpdateDto.Status;
+            device.UpdatedAt = DateTime.UtcNow;
 
-            await _deviceRepository.UpdateAsync(device);
+            // Save changes to the repository directly
+            await _deviceRepository.UpdateAsync(device); // Assuming this method exists and handles saving the changes
 
-            return true;
+            return device;
         }
     }
 }

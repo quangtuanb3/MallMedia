@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +10,12 @@ using System.Threading.Tasks;
 
 namespace MallMedia.Application.Devices.Commands
 {
-    public class UpdateDeviceCommand : IRequest<bool>
+    public class UpdateDeviceCommand : IRequest<Device>
     {
-        public int DeviceId { get; set; }
-        public string DeviceName { get; set; }
-        public string DeviceType { get; set; }
-        public int LocationId { get; set; }
-        public string Status { get; set; }
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DeviceUpdateDto DeviceUpdateDto { get; set; }
+        public UpdateDeviceCommand(DeviceUpdateDto updateDeviceDto)
+        {
+            DeviceUpdateDto = updateDeviceDto;
+        }
     }
 }
