@@ -3,13 +3,17 @@ using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
 using MallMedia.Application.Devices.Commands;
 using MallMedia.Application.Extensions;
+using MallMedia.Application.MasterData.Queries.GetDeviceById;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Extensions;
+using MallMedia.Infrastructure.Persistence;
 using MallMedia.Infrastructure.Repositories;
 using MallMedia.Infrastructure.Seeders;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System;
 
 try
 {
@@ -24,6 +28,9 @@ try
     {
         configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
     });
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureSqlDatabase")));
 
     var app = builder.Build();
 

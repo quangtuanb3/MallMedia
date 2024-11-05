@@ -1,4 +1,5 @@
 ﻿using MallMedia.Application.Devices.Commands;
+using MallMedia.Application.MasterData.Queries.GetDeviceById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,17 @@ namespace MallMedia.API.Controllers.Client
         public DevicesController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+        [HttpGet("{deviceId}")]
+        public async Task<IActionResult> GetDeviceById(int deviceId)
+        {
+            var query = new GetDeviceByIdQuery { DeviceId = deviceId };
+            var device = await _mediator.Send(query);
+
+            if (device == null)
+                return NotFound();
+
+            return Ok(device);
         }
 
         [HttpPatch("update/{deviceId}")]

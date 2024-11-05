@@ -29,7 +29,6 @@ namespace MallMedia.Application.Devices.Commands
             device.LocationId = request.LocationId;
             device.Status = request.Status;
             device.UpdatedAt = request.UpdatedAt;
-            device.UserId = request.UserId;
 
             await _deviceRepository.UpdateAsync(device);
 

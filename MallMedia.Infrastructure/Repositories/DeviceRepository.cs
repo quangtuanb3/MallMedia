@@ -21,7 +21,9 @@ namespace MallMedia.Infrastructure.Repositories
         
         public async Task<Device> GetByIdAsync(int id)
         {
-            return await _context.Devices.Include(d => d.Location).FirstOrDefaultAsync(d => d.Id == id);
+            return await _context.Devices.Include(d => d.Location)
+                .Include(d => d.Configuration)
+                .FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task UpdateAsync(Device device)

@@ -14,7 +14,6 @@ namespace MallMedia.Application.Devices.Commands
         public string DeviceType { get; set; }
         public int LocationId { get; set; }
         public string Status { get; set; }
-        public string UserId { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
