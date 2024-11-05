@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace MallMedia.Application.Content.Command;
+namespace MallMedia.Application.Contents.Command;
 
 public class CreateContentCommandHandler(
     ILogger<CreateContentCommandHandler> logger,

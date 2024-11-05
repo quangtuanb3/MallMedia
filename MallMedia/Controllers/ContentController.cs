@@ -1,12 +1,6 @@
-﻿using MallMedia.Application.Content.Command;
-using MallMedia.Application.MasterData.Queries.GetAllCategories;
-using MallMedia.Domain.Constants;
-using MallMedia.Domain.Entities;
+﻿using MallMedia.Application.Contents.Command;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 
 namespace MallMedia.API.Controllers;
 

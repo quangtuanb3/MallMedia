@@ -1,16 +1,8 @@
-﻿using MallMedia.Domain.Constants;
-using MallMedia.Domain.Entities;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace MallMedia.Application.Content.Command;
+namespace MallMedia.Application.Contents.Command;
 
 public class CreateContentCommand : IRequest<int>
 {
