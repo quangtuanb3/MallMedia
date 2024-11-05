@@ -19,6 +19,6 @@ public class GetAllCategoiresQueryHandler(ILogger<GetAllCategoiresQueryHandler> 
     public async Task<IEnumerable<Category>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting all categories");
-        return await masterDataRepository.getAllCategories();
+        return await masterDataRepository.GetAllCategories();
     }
 }

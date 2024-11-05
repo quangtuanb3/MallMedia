@@ -12,11 +12,9 @@ public class TimeFrame
 
     public int Id { get; set; }
 
-    public TimeSpan StartTime { get; set; }
+    public TimeOnly StartTime { get; set; }
 
-    public TimeSpan EndTime { get; set; }
-
-    public int CountContent { get; set; } = 0;
+    public TimeOnly EndTime { get; set; }
 
     public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
 }

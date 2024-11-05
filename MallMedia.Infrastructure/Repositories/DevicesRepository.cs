@@ -8,5 +8,4 @@ namespace MallMedia.Infrastructure.Repositories;
 internal class DevicesRepository(ApplicationDbContext dbContext)
 {
 
-
 }
