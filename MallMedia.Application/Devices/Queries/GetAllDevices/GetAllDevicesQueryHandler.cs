@@ -11,7 +11,7 @@ namespace MallMedia.Application.Devices.Queries.GetAllDevices
     {
         public async Task<PagedResult<DeviceDto>> Handle(GetAllDevicesQuery request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Getting all devices");
+            logger.LogInformation("Getting all contents");
             var (devices, totalCount) = await devicesRepository
                 .GetAllMatchingAsync(
                 request.SearchPhrase, 

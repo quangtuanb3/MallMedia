@@ -1,8 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
-
-
-namespace MallMedia.Domain.Entities;
+﻿namespace MallMedia.Domain.Entities;
 
 public class Content
 {
