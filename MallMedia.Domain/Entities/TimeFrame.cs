@@ -19,4 +19,9 @@ public class TimeFrame
     public int CountContent { get; set; } = 0;
 
     public ICollection<Schedule> Schedules { get; set; } = new List<Schedule>();
+
+    public static implicit operator TimeFrame(TimeFrame v)
+    {
+        throw new NotImplementedException();
+    }
 }
