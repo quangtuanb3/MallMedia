@@ -11,7 +11,6 @@ public class ContentController(IMediator mediator) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CreateContent([FromForm] CreateContentCommand command)
     {
-
         int id = await mediator.Send(command);
         return Ok(id);
     }
