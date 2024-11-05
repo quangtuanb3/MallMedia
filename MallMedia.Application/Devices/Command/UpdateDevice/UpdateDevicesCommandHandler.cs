@@ -12,7 +12,7 @@ namespace MallMedia.Application.Devices.Command.UpdateDevice
         {
             logger.LogInformation("Updatting device with id : {@DevicesId} with {Devices} ", request.Id,request);
             var devices = await devicesRepository.GetByIdAsync(request.Id)
-                    ?? throw new NotFoundException("Devices", request.Id.ToString()); ;
+                    ?? throw new NotFoundException("Devices", request.Id.ToString());
             mapper.Map(request, devices);
             var id = await devicesRepository.UpdateDevicesAsync(devices);
             return id;
