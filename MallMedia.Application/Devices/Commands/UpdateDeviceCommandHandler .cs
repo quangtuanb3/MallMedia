@@ -1,4 +1,5 @@
-﻿using MallMedia.Domain.Entities;
+﻿using AutoMapper;
+using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MediatR;
 using System;
@@ -10,10 +11,12 @@ namespace MallMedia.Application.Devices.Commands
     public class UpdateDeviceCommandHandler : IRequestHandler<UpdateDeviceCommand, Device>
     {
         private readonly IDeviceRepository _deviceRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateDeviceCommandHandler(IDeviceRepository deviceRepository)
+        public UpdateDeviceCommandHandler(IDeviceRepository deviceRepository, IMapper mapper)
         {
             _deviceRepository = deviceRepository;
+            _mapper = mapper;
         }
 
         public async Task<Device> Handle(UpdateDeviceCommand request, CancellationToken cancellationToken)
@@ -23,17 +26,9 @@ namespace MallMedia.Application.Devices.Commands
             {
                 throw new Exception("Device not found.");
             }
-
-            // Update device properties
-            device.LocationId = request.DeviceUpdateDto.LocationId;
-            device.DeviceType = request.DeviceUpdateDto.DeviceType;
-            device.DeviceName = request.DeviceUpdateDto.DeviceName;
-            device.Configuration.Id = request.DeviceUpdateDto.configuration.Id;
-            device.Status = request.DeviceUpdateDto.Status;
+            _mapper.Map(request.DeviceUpdateDto, device);
             device.UpdatedAt = DateTime.UtcNow;
-
-            // Save changes to the repository directly
-            await _deviceRepository.UpdateAsync(device); // Assuming this method exists and handles saving the changes
+            await _deviceRepository.UpdateAsync(device);
 
             return device;
         }

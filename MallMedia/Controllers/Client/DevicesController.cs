@@ -23,7 +23,7 @@ namespace MallMedia.API.Controllers.Client
             var device = await _mediator.Send(query);
 
             if (device == null)
-                return NotFound();
+                return NotFound("Device not found");
 
             return Ok(device);
         }
