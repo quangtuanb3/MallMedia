@@ -1,12 +1,19 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
+using Azure.Identity;
+using MallMedia.Domain.Constants;
+using MallMedia.Presentation.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using Newtonsoft.Json;
+using Microsoft.JSInterop;
 namespace MallMedia.Presentation.Pages.Auth
 {
-    public class LoginModel : PageModel
+    public class LoginModel(HttpClient httpClient, IJSRuntime jsRuntime) : PageModel
     {
 
         [BindProperty]
@@ -20,7 +27,6 @@ namespace MallMedia.Presentation.Pages.Auth
         public class InputModel
         {
             [Required]
-            [EmailAddress]
             [Display(Name = "Username")]
             public string Username { get; set; }
 
@@ -44,27 +50,63 @@ namespace MallMedia.Presentation.Pages.Auth
 
             if (!ModelState.IsValid)
             {
-                // If the model state is invalid, redisplay the form with validation messages
                 return Page();
             }
 
-            // Perform the login attempt
-            //var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+            // Create login request
+            var request = new CustomLoginRequest
+            {
+                Username = Input.Username,
+                Password = Input.Password
+            };
 
-            //if (result.Succeeded)
-            //{
-            //    return LocalRedirect(returnUrl);
-            //}
-            //else if (result.IsLockedOut)
-            //{
-            //    ErrorMessage = "This account has been locked out due to multiple failed login attempts. Please try again later.";
-            //    return RedirectToPage("./Lockout");
-            //}
-            //else
-            //{
-            //    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return Page();
-            //}
+            // Serialize request as JSON
+            var jsonRequest = JsonConvert.SerializeObject(request);
+            var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
+
+            // Perform the login attempt
+            var url = $"{Constants.ClientConstant.BaseURl}/api/identity/login";
+            var response = await httpClient.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Deserialize response data
+                var contentJson = await response.Content.ReadAsStringAsync();
+                var responseContent = JsonConvert.DeserializeObject<LoginResponse>(contentJson);
+
+                // Assuming the token is returned in the responseContent object
+                var token = responseContent?.Token;
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    // Set the Authorization header for future requests
+                    //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    HttpContext.Response.Cookies.Append("authToken", token, new CookieOptions
+                    {
+                        HttpOnly = true, // Ensures cookie is inaccessible to client-side scripts
+                        Secure = true,   // Requires HTTPS
+                        SameSite = SameSiteMode.Strict, // Prevents CSRF attacks
+                        Expires = DateTimeOffset.UtcNow.AddYears(1) // Set expiration as needed
+                    });
+
+                    //await jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", responseContent.Token);
+
+                }
+
+                // Assume successful login if response is successful
+                return LocalRedirect(returnUrl);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Locked)
+            {
+                ErrorMessage = "This account has been locked out due to multiple failed login attempts. Please try again later.";
+                return RedirectToPage("./Lockout");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
+            }
         }
+
     }
 }
