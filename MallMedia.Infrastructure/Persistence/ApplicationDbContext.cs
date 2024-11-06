@@ -20,6 +20,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Schedule>()
+        .Ignore(s => s.Title);
+
         modelBuilder.Entity<Device>()
             .HasOne(d => d.User)
             .WithOne()

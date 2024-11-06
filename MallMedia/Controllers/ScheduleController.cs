@@ -1,4 +1,5 @@
 
+using MallMedia.Application.Schedules.Dto;
 using MallMedia.Application.Schedules.Queries;
 using MallMedia.Domain.Entities;
 using MallMedia.Infrastructure.Persistence;
@@ -85,6 +86,27 @@ namespace MallMedia.API.Controllers
             }
             await _context.SaveChangesAsync();
             return Ok("Schedule cancelled successfully.");
+        }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateSchedule(int id, [FromBody] SchedulesDto schedulesDto)
+        {
+            var schedule = await _context.Schedules.FindAsync(id);
+            if(schedule == null)
+            {
+                return NotFound();
+            }
+            schedule.Title = schedulesDto.Title;
+            schedule.ContentId = schedulesDto.ContentId;
+            schedule.DeviceId = schedulesDto.DeviceId;
+            schedule.StartDate = schedulesDto.StartDate;
+            schedule.EndDate = schedulesDto.EndDate;
+            schedule.Status = schedulesDto.Status;
+            if (schedule.StartDate >= schedule.EndDate)
+            {
+                return BadRequest("EndDate must be greater than StartDate.");
+            }
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

@@ -14,5 +14,8 @@ namespace MallMedia.Application.Schedules.Dto
         public bool IsDefault { get; set; } = false;
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string Status { get; set; }
+        public int DeviceId { get; set; }
+        public object Title { get; set; }
     }
 }
