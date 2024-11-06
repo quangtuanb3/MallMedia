@@ -15,5 +15,5 @@ public class CreateScheduleCommand : IRequest<int>
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public int TimeFrameId { get; set; }
-    public string Status { get; set; } = "SCHEDULED";
+    public string? Status { get; set; } = "SCHEDULED";
 }
