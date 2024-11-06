@@ -1,5 +1,7 @@
 ﻿using MallMedia.Application.Devices.Command.CreateDevice;
+using MallMedia.Application.Devices.Command.GetDeviceById;
 using MallMedia.Application.Devices.Command.UpdateDevice;
+using MallMedia.Application.Devices.GetDeviceById;
 using MallMedia.Application.Devices.Queries.GetAllDevices;
 using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MediatR;
@@ -25,19 +27,34 @@ namespace MallMedia.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("/devices/{id}")]
         public async Task<IActionResult> GetDevicesById([FromRoute] int id)
         {
             var devices = await mediator.Send(new GetDevicesByIdQuery(id));
             return Ok(devices);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("/update/{id}")]
         public async Task<IActionResult> UpdateDevice([FromRoute] int id, [FromForm] UpdateDevicesCommand command)
         {
             command.Id = id;    
             var result = await mediator.Send(command);
             return Ok(result);
+        }
+        [HttpGet("/clients/{deviceId}")]
+        public async Task<ActionResult> GetDeviceDetails(int deviceId)
+        {
+            var device = await mediator.Send(new GetDeviceDetailsQuery(deviceId));
+            if (device == null)
+                return NotFound("Device not found.");
+
+            var currentSchedule = await mediator.Send(new GetDeviceScheduleQuery(deviceId, DateTime.Now));
+
+            return Ok(new
+            {
+                Device = device,
+                CurrentSchedule = currentSchedule
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MallMedia.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class Schedule
 {
@@ -11,5 +12,8 @@ public class Schedule
     public DateTime? EndDate { get; set; }
     public ICollection<TimeFrame> TimeFrames { get; set; } = new List<TimeFrame>();
     public string Status { get; set; }
+    [NotMapped]
+    public string Title { get; set; }
+    public int TimeFrameId { get; set; }
 }
 

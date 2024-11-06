@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241105071834_update-schedule-entity")]
-    partial class updatescheduleentity
+    [Migration("20241106074248_AddDevicesTable")]
+    partial class AddDevicesTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,6 +81,9 @@ namespace MallMedia.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("isDeFault")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -97,6 +100,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConfigurationId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -431,6 +437,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TimeFrameId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ContentId");
@@ -489,6 +498,9 @@ namespace MallMedia.Infrastructure.Migrations
                     b.OwnsOne("MallMedia.Domain.Constants.DeviceConfiguration", "Configuration", b1 =>
                         {
                             b1.Property<int>("DeviceId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
                                 .HasColumnType("int");
 
                             b1.Property<string>("Resolution")
@@ -586,7 +598,7 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("MallMedia.Domain.Entities.Device", "Device")
-                        .WithMany()
+                        .WithMany("Schedules")
                         .HasForeignKey("DeviceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -614,6 +626,11 @@ namespace MallMedia.Infrastructure.Migrations
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
                 {
                     b.Navigation("Media");
+                });
+
+            modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
+                {
+                    b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
         }

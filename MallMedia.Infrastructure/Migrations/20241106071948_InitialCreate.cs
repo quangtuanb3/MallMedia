@@ -5,36 +5,36 @@
 namespace MallMedia.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updatescheduleentity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Frequency",
+                name: "Title",
                 table: "Schedules");
 
-            migrationBuilder.DropColumn(
-                name: "IsDefault",
-                table: "Schedules");
+            migrationBuilder.AddColumn<int>(
+                name: "TimeFrameId",
+                table: "Schedules",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "TimeFrameId",
+                table: "Schedules");
+
             migrationBuilder.AddColumn<string>(
-                name: "Frequency",
+                name: "Title",
                 table: "Schedules",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
-
-            migrationBuilder.AddColumn<bool>(
-                name: "IsDefault",
-                table: "Schedules",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
         }
     }
 }

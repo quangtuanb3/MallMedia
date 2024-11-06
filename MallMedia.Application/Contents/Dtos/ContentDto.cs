@@ -11,10 +11,8 @@ public class ContentDto
     public string Description { get; set; } = default!;
 
     public string ContentType { get; set; } = default!;
-    public Category Category { get; set; } = new Category();
-
-    //public ICollection<Media> Media { get; set; }
-    public List<string> MediaUrl { get; set; } = new List<string>();
+    public Category Category { get; set; } = default!;
+    public List<Media> Media { get; set; } = new();
 
     public string Status { get; set; } = default!;
 

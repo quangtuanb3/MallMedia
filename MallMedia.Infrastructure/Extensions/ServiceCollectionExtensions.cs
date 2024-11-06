@@ -1,4 +1,6 @@
-﻿using MallMedia.Domain.Entities;
+﻿using MallMedia.Application.Devices.Command.GetDeviceById;
+using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Domain.Entities;
 using MallMedia.Domain.Interfaces;
 using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Persistence;
@@ -41,5 +43,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IScheduleRepository, ScheduleRepostiroy>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IDevicesRepository, DevicesRepository>();
+        services.AddMediatR(configuration =>
+        {
+            configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
+            configuration.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>();
+        });
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
     }
 }

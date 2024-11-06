@@ -294,10 +294,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DeviceId = table.Column<int>(type: "int", nullable: false),
                     ContentId = table.Column<int>(type: "int", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TimeFrameId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -315,26 +314,8 @@ namespace MallMedia.Infrastructure.Migrations
                         principalTable: "Devices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ScheduleTimeFrame",
-                columns: table => new
-                {
-                    ScheduleId = table.Column<int>(type: "int", nullable: false),
-                    TimeFrameId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ScheduleTimeFrame", x => new { x.ScheduleId, x.TimeFrameId });
                     table.ForeignKey(
-                        name: "FK_ScheduleTimeFrame_Schedules_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "Schedules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ScheduleTimeFrame_TimeFrames_TimeFrameId",
+                        name: "FK_Schedules_TimeFrames_TimeFrameId",
                         column: x => x.TimeFrameId,
                         principalTable: "TimeFrames",
                         principalColumn: "Id",
@@ -417,8 +398,8 @@ namespace MallMedia.Infrastructure.Migrations
                 column: "DeviceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ScheduleTimeFrame_TimeFrameId",
-                table: "ScheduleTimeFrame",
+                name: "IX_Schedules_TimeFrameId",
+                table: "Schedules",
                 column: "TimeFrameId");
         }
 
@@ -444,22 +425,19 @@ namespace MallMedia.Infrastructure.Migrations
                 name: "Medias");
 
             migrationBuilder.DropTable(
-                name: "ScheduleTimeFrame");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
                 name: "Schedules");
 
             migrationBuilder.DropTable(
-                name: "TimeFrames");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Contents");
 
             migrationBuilder.DropTable(
                 name: "Devices");
+
+            migrationBuilder.DropTable(
+                name: "TimeFrames");
 
             migrationBuilder.DropTable(
                 name: "Categories");

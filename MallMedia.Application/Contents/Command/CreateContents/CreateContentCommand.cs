@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MallMedia.Application.Contents.Command;
+namespace MallMedia.Application.Contents.Command.CreateContents;
 
 public class CreateContentCommand : IRequest<int>
 {
