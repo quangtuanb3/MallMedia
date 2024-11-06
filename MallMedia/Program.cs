@@ -34,9 +34,9 @@ try
 
     app.UseHttpsRedirection();
 
-    app.MapGroup("api/identity")
-        .WithTags("Identity")
-        .MapIdentityApi<User>();
+    //app.MapGroup("api/identity")
+    //    .WithTags("Identity")
+    //    .MapIdentityApi<User>();
 
     app.UseAuthorization();
 

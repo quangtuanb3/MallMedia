@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using MallMedia.Application.Contents.Command.CreateContents;
 namespace MallMedia.Application.Contents.Command;
 
 public class CreateContentCommandHandler(
