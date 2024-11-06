@@ -9,6 +9,5 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
         public int LocationId { get; set; } 
         public string Size { get; set; } = default!;
         public string Resolution { get; set; } = default!;
-        public string? Status { get; set; } 
     }
 }

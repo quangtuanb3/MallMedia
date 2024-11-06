@@ -1,13 +1,12 @@
 ﻿using MallMedia.Application.Common;
-using MallMedia.Application.Contents.Dtos;
+using MallMedia.Application.Schedules.Dto;
 using MallMedia.Domain.Constants;
 using MediatR;
 
-namespace MallMedia.Application.Contents.Queries.GetAllContents
+namespace MallMedia.Application.Schedules.Queries.GetAllSchedule
 {
-    public class GetAllContentQuery : IRequest<PagedResult<ContentDto>>
+    public class GetAllScheduleQuery : IRequest<PagedResult<SchedulesDto>>
     {
-        public string? SearchPhrase { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string? SortBy { get; set; }
