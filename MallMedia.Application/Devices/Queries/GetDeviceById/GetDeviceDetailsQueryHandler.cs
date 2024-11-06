@@ -11,9 +11,9 @@ namespace MallMedia.Application.Devices.Queries.GetDeviceById
 {
     public class GetDeviceDetailsQueryHandler : IRequestHandler<GetDeviceDetailsQuery, Device>
     {
-        private readonly IDeviceRepository _deviceRepository;
+        private readonly IDevicesRepository _deviceRepository;
 
-        public GetDeviceDetailsQueryHandler(IDeviceRepository deviceRepository)
+        public GetDeviceDetailsQueryHandler(IDevicesRepository deviceRepository)
         {
             _deviceRepository = deviceRepository;
         }

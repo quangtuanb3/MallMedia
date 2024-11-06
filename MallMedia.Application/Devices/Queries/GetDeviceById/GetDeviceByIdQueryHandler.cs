@@ -1,18 +1,15 @@
-﻿using MallMedia.Domain.Repositories;
+﻿using MallMedia.Application.Devices.Command.GetDeviceById;
+using MallMedia.Domain.Repositories;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MallMedia.Application.Devices.Queries.GetDeviceById;
 
 namespace MallMedia.Application.Devices.Queries.GetDeviceById
 {
     public class GetDeviceByIdQueryHandler : IRequestHandler<GetDeviceByIdQuery, DeviceDto>
     {
-        private readonly IDeviceRepository _deviceRepository;
+        private readonly IDevicesRepository _deviceRepository;
 
-        public GetDeviceByIdQueryHandler(IDeviceRepository deviceRepository)
+        public GetDeviceByIdQueryHandler(IDevicesRepository deviceRepository)
         {
             _deviceRepository = deviceRepository;
         }

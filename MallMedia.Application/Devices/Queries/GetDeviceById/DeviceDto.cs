@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.Command.GetDeviceById
+namespace MallMedia.Application.Devices.Queries.GetDeviceById
 {
     public class DeviceDto
     {

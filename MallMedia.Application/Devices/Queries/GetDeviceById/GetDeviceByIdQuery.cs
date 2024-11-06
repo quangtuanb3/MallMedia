@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using MallMedia.Application.Devices.Dto;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,8 @@ namespace MallMedia.Application.Devices.Command.GetDeviceById
     public class GetDeviceByIdQuery : IRequest<DeviceDto>
     {
         public int DeviceId { get; set; }
+        public GetDeviceByIdQuery(int deviceId) {
+            DeviceId = deviceId;
+        }
     }
 }

@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.Command.GetDeviceById
+namespace MallMedia.Application.Devices.Queries.GetDeviceById
 {
     public class GetDeviceScheduleQueryHandler : IRequestHandler<GetDeviceScheduleQuery, Schedule>
     {

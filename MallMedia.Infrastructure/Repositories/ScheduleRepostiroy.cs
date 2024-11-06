@@ -12,6 +12,10 @@ namespace MallMedia.Infrastructure.Repositories;
 
 internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRepository
 {
+    public Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<List<Device>> GetMatchingDevices(DateOnly startDate, DateOnly endDate, int contentId, int timeFrameId)
     {
