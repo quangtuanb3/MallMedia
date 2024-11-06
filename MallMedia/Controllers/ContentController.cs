@@ -31,9 +31,10 @@ public class ContentController(IMediator mediator) : ControllerBase
         return Ok(contents);
     }
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteContent([FromRoute]int id)
+    public async Task<IActionResult> DeleteContent([FromRoute] int id)
     {
         await mediator.Send(new DeleteContenCommand(id));
         return NoContent();
     }
+
 }

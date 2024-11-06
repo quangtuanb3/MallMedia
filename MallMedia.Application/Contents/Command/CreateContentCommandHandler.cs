@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MallMedia.Application.Contents.Command.CreateContents;
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Interfaces;
 using MallMedia.Domain.Repositories;
