@@ -13,6 +13,7 @@ public class Schedule
     public ICollection<TimeFrame> TimeFrames { get; set; } = new List<TimeFrame>();
     public string Status { get; set; }
     [NotMapped]
-    public object Title { get; set; }
+    public string Title { get; set; }
+    public int TimeFrameId { get; set; }
 }
 

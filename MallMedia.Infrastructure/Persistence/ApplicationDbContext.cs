@@ -52,6 +52,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasForeignKey(m => m.ContentId)
             .OnDelete(DeleteBehavior.Restrict); // Changed to Restrict
 
+        /*
+        modelBuilder.Entity<Schedule>()
+            .HasOne(s => s.TimeFrame)
+            .WithMany(t => t.Schedules)
+            .HasForeignKey(s => s.TimeFrameId);*/
+
         modelBuilder.Entity<Schedule>()
             .HasMany(s => s.TimeFrames)
             .WithMany(t => t.Schedules)
@@ -68,6 +74,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                     .HasForeignKey("ScheduleId")
                     .OnDelete(DeleteBehavior.Cascade)
             );
+
     }
 
 }

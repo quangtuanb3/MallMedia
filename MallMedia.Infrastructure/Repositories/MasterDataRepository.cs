@@ -17,11 +17,6 @@ internal class MasterDataRepository(ApplicationDbContext dbContext) : IMasterDat
         return await dbContext.Categories.ToListAsync();
     }
 
-    public async Task<IEnumerable<Device>> GetAllDevices()
-    {
-        return await dbContext.Devices.ToListAsync();
-    }
-
     public async Task<IEnumerable<Location>> GetAllLocations()
     {
         return await dbContext.Locations.ToListAsync();

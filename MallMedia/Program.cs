@@ -1,9 +1,8 @@
-
 using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
+using MallMedia.Application.Devices.Command.GetDeviceById;
 using MallMedia.Application.Devices.Commands.UpdateDevice;
 using MallMedia.Application.Extensions;
-using MallMedia.Application.MasterData.Queries.GetDeviceById;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Extensions;
@@ -31,7 +30,7 @@ try
     });
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AzureSqlDatabase")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MallMediaDb")));
 
     var app = builder.Build();
 
@@ -65,7 +64,6 @@ catch (Exception ex)
 {
     Log.Fatal(ex, "Application startup failed");
 }
-finally
 {
     Log.CloseAndFlush();
 }

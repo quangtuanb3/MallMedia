@@ -10,7 +10,7 @@ namespace MallMedia.Domain.Repositories
     public interface IDeviceRepository
     {
         Task<Device> GetByIdAsync(int id);
-        Task<Device> GetDeviceByIdAsync(object deviceId);
+        Task<Device> GetDeviceByIdAsync(int deviceId);
         Task UpdateAsync(Device device);
     }
 }

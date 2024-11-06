@@ -15,6 +15,11 @@ namespace MallMedia.Infrastructure.Repositories
         private int contentId;
         private int timeFrameId;
 
+        public Task<int> Create(Schedule schedule)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime)
         {
             throw new NotImplementedException();
@@ -86,6 +91,11 @@ namespace MallMedia.Infrastructure.Repositories
             }
 
             return validDevices;
+        }
+
+        public Task<List<Device>> GetMatchingDevices1(DateOnly StartDate, DateOnly EndDate, int ContentId, int TimeFrameId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -28,83 +28,29 @@ namespace MallMedia.API.Controllers
             var result = await mediator.Send(getMatchingDevicesQuery);
             return Ok(result);
         }
-        [HttpGet("device/{deviceId}/current")]
-        public async Task<IActionResult> GetCurrentSchedule(int deviceId)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateSchedule(int id, [FromBody] SchedulesDto scheduleDto)
         {
-            var currentSchedule = await _context.Schedules
-                .Include(s => s.Content)
-                .Where(s => s.DeviceId == deviceId && s.StartDate <= DateTime.Now && (s.EndDate == null || s.EndDate > DateTime.Now) && s.Status == "active")
-                .FirstOrDefaultAsync();
-
-            if (currentSchedule == null)
-            {
-                var defaultContent = await _context.Contents
-                    .Where(c => c.isDeFault)
-                    .FirstOrDefaultAsync();
-
-                return Ok(defaultContent);
-            }
-
-            return Ok(currentSchedule.Content);
-        }
-
-        [HttpPatch("devices/{deviceId}")]
-        public async Task<IActionResult> UpdateDevice(int deviceId, [FromBody] Device updatedDevice)
-        {
-            var device = await _context.Devices.FindAsync(deviceId);
-            if (device == null)
-            {
-                return NotFound();
-            }
-
-            // Update device properties
-            device.DeviceName = updatedDevice.DeviceName;
-            device.DeviceType = updatedDevice.DeviceType;
-            device.LocationId = updatedDevice.LocationId;
-            device.ConfigurationId = updatedDevice.ConfigurationId;
-            device.Status = updatedDevice.Status;
-            device.UpdatedAt = DateTime.Now; // Set the update timestamp
-
-            await _context.SaveChangesAsync();
-            return Ok("Device updated successfully.");
-        }
-
-        [HttpPost("cancel")]
-        public async Task<IActionResult> CancelSchedule(int scheduleId)
-        {
-            var schedule = await _context.Schedules.FindAsync(scheduleId);
+            var schedule = await _context.Schedules.FindAsync(id);
             if (schedule == null)
             {
                 return NotFound();
             }
-            schedule.Status = "cancelled";
-            await _context.SaveChangesAsync();
-            var devices = await _context.Devices.Where(d => d.Id == schedule.DeviceId).ToListAsync();
-            foreach (var device in devices)
-            {
-                device.Status = "UNUSED";
-            }
-            await _context.SaveChangesAsync();
-            return Ok("Schedule cancelled successfully.");
-        }
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateSchedule(int id, [FromBody] SchedulesDto schedulesDto)
-        {
-            var schedule = await _context.Schedules.FindAsync(id);
-            if(schedule == null)
-            {
-                return NotFound();
-            }
-            schedule.Title = schedulesDto.Title;
-            schedule.ContentId = schedulesDto.ContentId;
-            schedule.DeviceId = schedulesDto.DeviceId;
-            schedule.StartDate = schedulesDto.StartDate;
-            schedule.EndDate = schedulesDto.EndDate;
-            schedule.Status = schedulesDto.Status;
+
+            // Update schedule details
+            schedule.Title = (string)scheduleDto.Title;
+            schedule.ContentId = scheduleDto.ContentId;
+            schedule.DeviceId = scheduleDto.DeviceId;
+            schedule.StartDate = scheduleDto.StartDate;
+            schedule.EndDate = scheduleDto.EndDate;
+            schedule.Status = scheduleDto.Status;
+
+            // Validate date intervals and other business rules
             if (schedule.StartDate >= schedule.EndDate)
             {
                 return BadRequest("EndDate must be greater than StartDate.");
             }
+
             await _context.SaveChangesAsync();
             return NoContent();
         }

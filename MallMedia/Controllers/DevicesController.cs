@@ -1,7 +1,7 @@
 ﻿using MallMedia.Application.Devices.Command.CreateDevice;
+using MallMedia.Application.Devices.Command.GetDeviceById;
 using MallMedia.Application.Devices.Command.UpdateDevice;
-using MallMedia.Application.Devices.GetDeviceDetailsQueryFile;
-using MallMedia.Application.Devices.GetDeviceScheduleQueryFile;
+using MallMedia.Application.Devices.GetDeviceById;
 using MallMedia.Application.Devices.Queries.GetAllDevices;
 using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MediatR;

@@ -444,22 +444,9 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("Schedules");
-                });
-
-            modelBuilder.Entity("ScheduleTimeFrame", b =>
-                {
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TimeFrameId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ScheduleId", "TimeFrameId");
-
                     b.HasIndex("TimeFrameId");
 
-                    b.ToTable("ScheduleTimeFrame");
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
@@ -601,29 +588,32 @@ namespace MallMedia.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Content");
-
-                    b.Navigation("Device");
-                });
-
-            modelBuilder.Entity("ScheduleTimeFrame", b =>
-                {
-                    b.HasOne("Schedule", null)
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MallMedia.Domain.Entities.TimeFrame", null)
-                        .WithMany()
+                    b.HasOne("MallMedia.Domain.Entities.TimeFrame", "TimeFrame")
+                        .WithMany("Schedules")
                         .HasForeignKey("TimeFrameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Content");
+
+                    b.Navigation("Device");
+
+                    b.Navigation("TimeFrame");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
                 {
                     b.Navigation("Media");
+                });
+
+            modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
+                {
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>
+                {
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
