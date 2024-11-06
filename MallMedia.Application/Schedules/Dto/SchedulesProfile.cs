@@ -1,5 +1,11 @@
 ﻿using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using MallMedia.Domain.Entities;
+using MallMedia.Application.Schedules.Commands;
 namespace MallMedia.Application.Schedules.Dto
 {
     public class SchedulesProfile : Profile
@@ -7,6 +13,7 @@ namespace MallMedia.Application.Schedules.Dto
         public SchedulesProfile()
         {
             CreateMap<Schedule, SchedulesDto>();
+            CreateMap<CreateScheduleCommand, Schedule>();
         }
     }
 }

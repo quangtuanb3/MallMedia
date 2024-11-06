@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241105034503_Initial")]
-    partial class Initial
+    [Migration("20241105043552_ConfigurationId")]
+    partial class ConfigurationId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,6 +97,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConfigurationId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -198,10 +201,13 @@ namespace MallMedia.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<TimeOnly>("EndTime")
+                    b.Property<int>("CountContent")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<TimeOnly>("StartTime")
+                    b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
                     b.HasKey("Id");
@@ -496,6 +502,9 @@ namespace MallMedia.Infrastructure.Migrations
                     b.OwnsOne("MallMedia.Domain.Constants.DeviceConfiguration", "Configuration", b1 =>
                         {
                             b1.Property<int>("DeviceId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
                                 .HasColumnType("int");
 
                             b1.Property<string>("Resolution")

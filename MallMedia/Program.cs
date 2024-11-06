@@ -1,11 +1,18 @@
-
 using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
+using MallMedia.Application.Devices.Command.GetDeviceById;
+using MallMedia.Application.Devices.Commands.UpdateDevice;
 using MallMedia.Application.Extensions;
 using MallMedia.Domain.Entities;
+using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Extensions;
+using MallMedia.Infrastructure.Persistence;
+using MallMedia.Infrastructure.Repositories;
 using MallMedia.Infrastructure.Seeders;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System;
 
 try
 {
@@ -15,10 +22,19 @@ try
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
 
+    builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+    builder.Services.AddMediatR(configuration =>
+    {
+        configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
+        configuration.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>();
+    });
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MallMediaDb")));
 
     var app = builder.Build();
 
-    var scope = app.Services.CreateScope();
+    using var scope = app.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<IInitialSeeder>();
 
     await seeder.Seed();
@@ -48,7 +64,6 @@ catch (Exception ex)
 {
     Log.Fatal(ex, "Application startup failed");
 }
-finally
 {
     Log.CloseAndFlush();
 }

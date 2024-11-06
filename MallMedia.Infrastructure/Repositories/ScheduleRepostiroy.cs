@@ -12,6 +12,16 @@ namespace MallMedia.Infrastructure.Repositories;
 
 internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRepository
 {
+    public async Task<int> Create(Schedule schedule)
+    {
+        await dbContext.AddAsync(schedule);
+        await dbContext.SaveChangesAsync();
+        return schedule.Id;
+    }
+    public Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<List<Device>> GetMatchingDevices(DateOnly startDate, DateOnly endDate, int contentId, int timeFrameId)
     {
@@ -59,20 +69,17 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
             })
             .ToList();
 
-        // Step 5: Validate content count within timeframe
+        // Step 5: Filter devices by available content slots within the timeframe
         var validDevices = new List<Device>();
-        foreach (var device in resolutionMatchingDevices)
+        foreach (var device in matchingDevices)
         {
-            var existingContentCount = await dbContext.Set<Dictionary<string, object>>("ScheduleTimeFrame")
-                .Where(stf => EF.Property<int>(stf, "TimeFrameId") == timeFrameId &&
-                              EF.Property<int>(stf, "ScheduleId") == dbContext.Schedules
-                                  .Where(s => s.DeviceId == device.Id)
-                                  .Select(s => s.Id)
-                                  .FirstOrDefault())
+            // Count the number of schedules for this device within the specified timeframe
+            int contentCountInTimeFrame = await dbContext.Schedules
+                .Where(s => s.DeviceId == device.Id && s.TimeFrameId == timeFrameId)
                 .CountAsync();
 
-            // Only add devices that can still fit content within the timeframe limit
-            if (existingContentCount < 10)
+            // Only add devices that have available slots within the timeframe (e.g., less than 10)
+            if (contentCountInTimeFrame < 10)
             {
                 validDevices.Add(device);
             }
@@ -81,6 +88,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         return validDevices;
     }
 
-
-
+    public Task<List<Device>> GetMatchingDevices1(DateOnly StartDate, DateOnly EndDate, int ContentId, int TimeFrameId)
+    {
+        throw new NotImplementedException();
+    }
 }
