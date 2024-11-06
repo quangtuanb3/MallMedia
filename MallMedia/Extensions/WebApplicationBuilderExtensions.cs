@@ -39,5 +39,12 @@ public static class WebApplicationBuilderExtensions
         builder.Host.UseSerilog((context, configuration) =>
             configuration.ReadFrom.Configuration(context.Configuration)
         );
+
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
     }
+}
+
+public class JwtSettings
+{
+    public string SecretKey { get; set; }
 }
