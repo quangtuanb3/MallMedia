@@ -2,7 +2,7 @@
 using MediatR;
 
 
-namespace MallMedia.Application.Schedules.Queries;
+namespace MallMedia.Application.Schedules.Queries.GetMathchingDevices;
 
 public class GetMatchingDevicesQuery : IRequest<List<Device>>
 {
