@@ -22,7 +22,8 @@ try
     var seeder = scope.ServiceProvider.GetRequiredService<IInitialSeeder>();
 
     await seeder.Seed();
-
+    app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseMiddleware<RequestTimeLoggingMiddleware>();
     app.UseSerilogRequestLogging();
 
     if (app.Environment.IsDevelopment())
@@ -33,10 +34,6 @@ try
 
 
     app.UseHttpsRedirection();
-
-    //app.MapGroup("api/identity")
-    //    .WithTags("Identity")
-    //    .MapIdentityApi<User>();
 
     app.UseAuthorization();
 
