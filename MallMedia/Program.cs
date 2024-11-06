@@ -27,6 +27,7 @@ try
     builder.Services.AddMediatR(configuration =>
     {
         configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
+        configuration.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>();
     });
     builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -34,7 +35,7 @@ try
 
     var app = builder.Build();
 
-    var scope = app.Services.CreateScope();
+    using var scope = app.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<IInitialSeeder>();
 
     await seeder.Seed();

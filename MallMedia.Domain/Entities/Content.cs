@@ -6,7 +6,7 @@ namespace MallMedia.Domain.Entities;
 
 public class Content
 {
-    public bool isDeFault;
+    public bool isDeFault { get; set; }
 
     public int Id { get; set; }
 
@@ -29,5 +29,4 @@ public class Content
     public User? CreatedByUser { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-    public bool IsDefault { get; set; }
 }

@@ -27,7 +27,7 @@ namespace MallMedia.API.Controllers
             var result = await mediator.Send(getMatchingDevicesQuery);
             return Ok(result);
         }
-        [HttpGet("/device/{deviceId}/current")]
+        [HttpGet("device/{deviceId}/current")]
         public async Task<IActionResult> GetCurrentSchedule(int deviceId)
         {
             var currentSchedule = await _context.Schedules
@@ -47,7 +47,7 @@ namespace MallMedia.API.Controllers
             return Ok(currentSchedule.Content);
         }
 
-        [HttpPatch("/devices/{deviceId}")]
+        [HttpPatch("devices/{deviceId}")]
         public async Task<IActionResult> UpdateDevice(int deviceId, [FromBody] Device updatedDevice)
         {
             var device = await _context.Devices.FindAsync(deviceId);

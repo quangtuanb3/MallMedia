@@ -27,21 +27,21 @@ namespace MallMedia.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("/devices/{id}")]
         public async Task<IActionResult> GetDevicesById([FromRoute] int id)
         {
             var devices = await mediator.Send(new GetDevicesByIdQuery(id));
             return Ok(devices);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("/update/{id}")]
         public async Task<IActionResult> UpdateDevice([FromRoute] int id, [FromForm] UpdateDevicesCommand command)
         {
             command.Id = id;    
             var result = await mediator.Send(command);
             return Ok(result);
         }
-        [HttpGet("{deviceId}")]
+        [HttpGet("/clients/{deviceId}")]
         public async Task<ActionResult> GetDeviceDetails(int deviceId)
         {
             var device = await mediator.Send(new GetDeviceDetailsQuery(deviceId));
