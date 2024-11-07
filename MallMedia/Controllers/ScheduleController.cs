@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 
 namespace MallMedia.API.Controllers
 {
@@ -38,6 +39,13 @@ namespace MallMedia.API.Controllers
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
         {
             var schedules = await mediator.Send(query);
+            return Ok(schedules);
+        }
+
+        [HttpGet("device/{deviceId}/current")]
+        public async Task<IActionResult> GetCurrentContentForDevice([FromRoute] int deviceId)
+        {
+            var schedules = await mediator.Send(new GetCurrentContentForDeviceQuery(deviceId));
             return Ok(schedules);
         }
     }
