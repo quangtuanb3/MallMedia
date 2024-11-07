@@ -1,7 +1,9 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
+using MallMedia.Application.Devices.Queries.GetDeviceById; // Updated namespace
 using MallMedia.Domain.Repositories;
 using MediatR;
-using MallMedia.Application.Devices.Queries.GetDeviceById;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MallMedia.Application.Devices.Queries.GetDeviceById
 {
