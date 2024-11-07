@@ -40,10 +40,6 @@ public class CreateContentCommandHandler(
             var fileMetadata = filesMetadata[i];
             var file = request.Files[i];
 
-            // Save each file with its metadata
-            //var filePath = await fileStorageService.SaveFileAsync(file.OpenReadStream(), fileMetadata.FileName);
-            //fileMetadata.Path = filePath;
-
             using (var fileStream = file.OpenReadStream())
             {
                 string filePath = await fileStorageService.SaveFileAsync(fileStream, file.FileName);
@@ -61,7 +57,6 @@ public class CreateContentCommandHandler(
                 };
                 await mediaRepository.Create(mediaEntity);
             }
-            // Additional processing, such as storing metadata in the database
         }
 
 

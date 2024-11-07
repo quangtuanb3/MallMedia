@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using MallMedia.Domain.Entities;
 using MallMedia.Application.MasterData.Queries.GetAllCategories;
 using MallMedia.Application.MasterData.Queries.GetAllLocations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 namespace MallMedia.API.Controllers;
 
 
 [ApiController]
+//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 public class MasterDataController(IMediator mediator) : ControllerBase
 {
     [HttpGet("api/categories")]

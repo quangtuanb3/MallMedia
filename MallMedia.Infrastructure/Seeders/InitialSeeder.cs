@@ -12,6 +12,8 @@ internal class InitialSeeder(
     LocationSeeder locationSeeder,
     DeviceSeeder deviceSeeder,
     TimeFrameSeeder timeFrameSeeder,
+    UserSeeder userSeeder,
+    IServiceProvider serviceProvider,
     ApplicationDbContext dbContext) : IInitialSeeder
 {
     public async Task Seed()
@@ -27,6 +29,7 @@ internal class InitialSeeder(
             await locationSeeder.Seed();
             await deviceSeeder.Seed();
             await timeFrameSeeder.Seed();
+            await userSeeder.Seed(serviceProvider);
         }
 
     }

@@ -2,6 +2,7 @@
 using MallMedia.Presentation.Dtos;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using System.Net;
 namespace MallMedia.Presentation.Pages.Admin.Content;
 
 public class IndexModel(HttpClient httpClient) : PageModel
@@ -20,7 +21,7 @@ public class IndexModel(HttpClient httpClient) : PageModel
         PageNumber = Request.Query.ContainsKey("pageNumber")
          ? int.Parse(Request.Query["pageNumber"])
          : 1;
-        var url = $"https://localhost:7199/api/Content?PageNumber={PageNumber}&PageSize={PageSize}";
+        var url = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber={PageNumber}&PageSize={PageSize}";
         var response = await httpClient.GetAsync(url);
 
         if (response.IsSuccessStatusCode)
