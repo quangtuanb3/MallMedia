@@ -19,6 +19,10 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         await dbContext.SaveChangesAsync();
         return schedule.Id;
     }
+    public Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {

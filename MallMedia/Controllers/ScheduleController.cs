@@ -1,4 +1,4 @@
-﻿using MallMedia.Application.Contents.Command;
+using MallMedia.Application.Contents.Command;
 using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using MallMedia.Domain.Repositories;
+using MallMedia.Application.Schedules.Queries;
 
 namespace MallMedia.API.Controllers
 {
@@ -48,8 +49,7 @@ namespace MallMedia.API.Controllers
             {
                 var content = await contentRepository.GetCurrentContentForDeviceAsync(deviceId);
                 if (content == null)
-                    return NotFound($"No active content found for device ID {deviceId}. " +
-                            "Please ensure the device has an active schedule.");
+                    return NotFound("No content available for the current schedule.");
 
                 return Ok(content);
             }

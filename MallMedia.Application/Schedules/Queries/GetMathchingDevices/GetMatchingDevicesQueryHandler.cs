@@ -2,6 +2,11 @@
 using MallMedia.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 
 namespace MallMedia.Application.Schedules.Queries.GetMathchingDevices;
@@ -12,8 +17,8 @@ public class GetMatchingDevicesQueryHandler(ILogger<GetMatchingDevicesQueryHandl
     {
         logger.LogInformation($"GetMatchingDevicesQuery handler: {request}");
 
-        var result = await scheduleRepository.GetMatchingDevices(request.StartDate, request.EndDate, request.ContentId, request.TimeFramId);
-        return result;
+            var result = await scheduleRepository.GetMatchingDevices(request.StartDate, request.EndDate, request.ContentId, request.TimeFramId);
+            return result;
 
     }
 }

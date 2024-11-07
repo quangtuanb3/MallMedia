@@ -4,6 +4,7 @@ using MallMedia.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241106074248_AddDevicesTable")]
+    partial class AddDevicesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -434,9 +437,8 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TimeFrameId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -444,9 +446,22 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasIndex("DeviceId");
 
+                    b.ToTable("Schedules");
+                });
+
+            modelBuilder.Entity("ScheduleTimeFrame", b =>
+                {
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeFrameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ScheduleId", "TimeFrameId");
+
                     b.HasIndex("TimeFrameId");
 
-                    b.ToTable("Schedules");
+                    b.ToTable("ScheduleTimeFrame");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
@@ -588,32 +603,29 @@ namespace MallMedia.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MallMedia.Domain.Entities.TimeFrame", "TimeFrame")
-                        .WithMany("Schedules")
-                        .HasForeignKey("TimeFrameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Content");
 
                     b.Navigation("Device");
+                });
 
-                    b.Navigation("TimeFrame");
+            modelBuilder.Entity("ScheduleTimeFrame", b =>
+                {
+                    b.HasOne("Schedule", null)
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MallMedia.Domain.Entities.TimeFrame", null)
+                        .WithMany()
+                        .HasForeignKey("TimeFrameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
                 {
                     b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
-                {
-                    b.Navigation("Schedules");
-                });
-
-            modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>
-                {
-                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>

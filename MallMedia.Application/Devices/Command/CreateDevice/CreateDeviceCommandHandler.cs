@@ -7,7 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MallMedia.Application.Devices.Command.CreateDevice
 {
-    public class CreateDeviceCommandHandler(ILogger<CreateDeviceCommandHandler> logger,IDevicesRepository devicesRepository, UserManager<User> userManager,IMapper mapper) : IRequestHandler<CreateDeviceCommand, int>
+    public class CreateDeviceCommandHandler(ILogger<CreateDeviceCommandHandler> logger,
+        IDevicesRepository devicesRepository, 
+        UserManager<User> userManager,IMapper mapper) : IRequestHandler<CreateDeviceCommand, int>
     {
         private const string DefaultPassword = "Password123!";
         public async Task<int> Handle(CreateDeviceCommand request, CancellationToken cancellationToken)
