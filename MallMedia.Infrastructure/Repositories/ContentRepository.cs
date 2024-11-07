@@ -59,4 +59,16 @@ internal class ContentRepository(ApplicationDbContext dbContext) : IContentRepos
         await dbContext.SaveChangesAsync();
         return entity.Id;
     }
+    public async Task<Content?> GetContentForDeviceByScheduleAsync(int deviceId)
+    {
+        var content = await dbContext.Devices.DeviceSchedules
+            .Include(ds => ds.Content)
+            .Where(ds => ds.DeviceId == deviceId
+                         && ds.StartDate <= DateTime.UtcNow
+                         && ds.EndDate >= DateTime.UtcNow)
+            .Select(ds => ds.Content)
+            .FirstOrDefaultAsync();
+
+        return content;
+    }
 }

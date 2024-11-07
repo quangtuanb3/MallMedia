@@ -40,5 +40,21 @@ namespace MallMedia.API.Controllers
             var schedules = await mediator.Send(query);
             return Ok(schedules);
         }
+        [HttpGet("{deviceId}/current")]
+        public async Task<IActionResult> GetCurrentContent(int deviceId)
+        {
+            try
+            {
+                var content = await _contentService.GetCurrentContentForDeviceAsync(deviceId);
+                if (content == null)
+                    return NotFound("No content available for the current schedule.");
+
+                return Ok(content);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }
