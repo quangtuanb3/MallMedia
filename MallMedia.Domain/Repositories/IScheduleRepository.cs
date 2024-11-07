@@ -1,5 +1,6 @@
 ﻿using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
+﻿using MallMedia.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,4 +18,8 @@ public interface IScheduleRepository
      Task<Schedule> GetByIdAsync(int id);
      Task<Schedule> GetActiveScheduleForDeviceAsync(int deviceId, DateTime currentTime);
         Task<Content> GetCurrentContentForDeviceAsync(int deviceId);
-}
+    /*
+    public Task<List<Device>> GetMatchingDevices(DateOnly StartDate, DateOnly EndDate, int ContentId, int TimeFrameId);
+    public Task<int> Create(Schedule schedule);
+    Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime);*/
+}    

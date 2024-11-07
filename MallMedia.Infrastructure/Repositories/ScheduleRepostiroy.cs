@@ -19,16 +19,18 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         await dbContext.SaveChangesAsync();
         return schedule.Id;
     }
+    /*
     public Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime)
     {
         throw new NotImplementedException();
     }
+    */
 
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery =  dbContext.Schedules.Include(r => r.TimeFrame);
-            
+        var baseQuery = dbContext.Schedules.Include(r => r.TimeFrame);
+
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
@@ -52,7 +54,7 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 
     public async Task<Schedule?> GetByIdAsync(int id)
     {
-       var schedule = await dbContext.Schedules.Include(s=>s.TimeFrame).Include(s=>s.Content).ThenInclude(c=>c.Media).Include(s=>s.Device).FirstOrDefaultAsync(r => r.Id == id);
+        var schedule = await dbContext.Schedules.Include(s => s.TimeFrame).Include(s => s.Content).ThenInclude(c => c.Media).Include(s => s.Device).FirstOrDefaultAsync(r => r.Id == id);
         return schedule;
     }
 
@@ -125,10 +127,13 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         return await dbContext.Schedules
             .FirstOrDefaultAsync(s => s.DeviceId == deviceId && s.StartDate <= currentTime && s.EndDate >= currentTime);
     }
-
     public async Task<Content> GetCurrentContentForDeviceAsync(int deviceId)
     {
         var schedule = await GetActiveScheduleForDeviceAsync(deviceId, DateTime.UtcNow);
         return schedule?.Content;
+    }
+    public Task<List<Device>> GetMatchingDevices1(DateOnly StartDate, DateOnly EndDate, int ContentId, int TimeFrameId)
+    {
+        throw new NotImplementedException();
     }
 }
