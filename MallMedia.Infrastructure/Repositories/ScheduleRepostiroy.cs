@@ -19,8 +19,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery =  dbContext.Schedules.Include(r => r.TimeFrame);
-            
+        var baseQuery = dbContext.Schedules.Include(r => r.TimeFrame);
+
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
@@ -44,9 +44,58 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 
     public async Task<Schedule?> GetByIdAsync(int id)
     {
-       var schedule = await dbContext.Schedules.Include(s=>s.TimeFrame).Include(s=>s.Content).ThenInclude(c=>c.Media).Include(s=>s.Device).FirstOrDefaultAsync(r => r.Id == id);
+        var schedule = await dbContext.Schedules.Include(s => s.TimeFrame).Include(s => s.Content).ThenInclude(c => c.Media).Include(s => s.Device).FirstOrDefaultAsync(r => r.Id == id);
         return schedule;
     }
+
+
+    public async Task<List<Content>> GetCurrentContentForDevice(int deviceId)
+    {
+        var currentTime = DateTime.UtcNow;
+        var currentDate = currentTime.Date;
+        var currentTimeOnly = TimeOnly.FromDateTime(currentTime);
+
+        // Query to find all content for the given device ID that is currently scheduled or playing
+        var contentList = await dbContext.Schedules
+            .Where(s => s.DeviceId == deviceId
+                        && s.StartDate <= currentDate
+                        && s.EndDate >= currentDate
+                        && (s.Status == "PLAYING" || s.Status == "SCHEDULED")) // Ensure it's currently scheduled
+            .Join(dbContext.TimeFrames,
+                  schedule => schedule.TimeFrameId,
+                  timeframe => timeframe.Id,
+                  (schedule, timeframe) => new { schedule, timeframe })
+            .Where(st => st.timeframe.StartTime <= currentTimeOnly && st.timeframe.EndTime >= currentTimeOnly) // Check current time within TimeFrame
+            .Join(dbContext.Contents,
+                  st => st.schedule.ContentId,
+                  content => content.Id,
+                  (st, content) => new { content, st.schedule })
+            .Where(contentWithSchedule => contentWithSchedule.content.ContentType != "Text") // Exclude Text content types
+            .Select(contentWithSchedule => new
+            {
+                Content = contentWithSchedule.content,
+                Media = contentWithSchedule.content.Media // Include Media if ContentType is not "Text"
+            })
+            .ToListAsync();
+
+        // Now, build the list of Content and include their Media if needed
+        var contentListWithMedia = contentList
+            .Select(x =>
+            {
+                var content = x.Content;
+                if (content.ContentType != "Text")
+                {
+                    content.Media = x.Media.ToList(); // Assign the media if it's not Text
+                }
+                return content;
+            })
+            .ToList();
+
+        return contentListWithMedia;
+    }
+
+
+
 
     public async Task<List<Device>> GetMatchingDevices(DateOnly startDate, DateOnly endDate, int contentId, int timeFrameId)
     {
