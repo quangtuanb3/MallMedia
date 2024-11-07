@@ -16,5 +16,6 @@ public class Device
     public string UserId { get; set; }
     public User User { get; set; }
     public virtual ICollection<Schedule> Schedules { get; set; }
+    public ICollection<DeviceSchedule> DeviceSchedules { get; set; }
 }
 

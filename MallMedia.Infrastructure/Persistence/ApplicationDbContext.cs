@@ -15,6 +15,7 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
 
     internal DbSet<Media> Medias { get; set; }
     internal DbSet<TimeFrame> TimeFrames { get; set; }
+    public DbSet<DeviceSchedule> DeviceSchedules { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -10,5 +10,6 @@ public interface IScheduleRepository
 
      Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pagenumber, string? sortBy, SortDirection sortDirection);
      Task<Schedule> GetByIdAsync(int id);
-
+     Task<Schedule> GetActiveScheduleForDeviceAsync(int deviceId, DateTime currentTime);
+        Task<Content> GetCurrentContentForDeviceAsync(int deviceId);
 }

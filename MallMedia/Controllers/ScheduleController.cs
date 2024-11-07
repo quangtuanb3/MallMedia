@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using MallMedia.Domain.Repositories;
 
 namespace MallMedia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ScheduleController(IMediator mediator) : ControllerBase
+    public class ScheduleController(IMediator mediator, IScheduleRepository contentRepository) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult> GetMatchingDevices([FromQuery] GetMatchingDevicesQuery getMatchingDevicesQuery)
@@ -45,9 +46,10 @@ namespace MallMedia.API.Controllers
         {
             try
             {
-                var content = await _contentService.GetCurrentContentForDeviceAsync(deviceId);
+                var content = await contentRepository.GetCurrentContentForDeviceAsync(deviceId);
                 if (content == null)
-                    return NotFound("No content available for the current schedule.");
+                    return NotFound($"No active content found for device ID {deviceId}. " +
+                            "Please ensure the device has an active schedule.");
 
                 return Ok(content);
             }

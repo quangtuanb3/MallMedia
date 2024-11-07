@@ -13,6 +13,44 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     {
         throw new NotImplementedException();
     }
+    public async Task<int> Create(Schedule schedule)
+    {
+        await dbContext.AddAsync(schedule);
+        await dbContext.SaveChangesAsync();
+        return schedule.Id;
+    }
+
+    public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
+    {
+        //query
+        var baseQuery =  dbContext.Schedules.Include(r => r.TimeFrame);
+            
+        //total items
+        var totalCount = await baseQuery.CountAsync();
+        // sort
+        if (sortBy != null)
+        {
+            var columsSelector = new Dictionary<string, Expression<Func<Schedule, object>>>
+                {
+                    {nameof(Schedule.StartDate),r=>r.StartDate},
+                    {nameof(Schedule.Status),r=>r.Status},
+                };
+            var selectedColum = columsSelector[sortBy];
+            baseQuery = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Schedule, TimeFrame>)(sortDirection == SortDirection.Ascending
+                ? baseQuery.OrderBy(selectedColum)
+                : baseQuery.OrderByDescending(selectedColum));
+        }
+        //pagination
+        var schedule = await baseQuery.Skip(pageSize * (pageNumber - 1))
+             .Take(pageSize).ToListAsync();
+        return (schedule, totalCount);
+    }
+
+    public async Task<Schedule?> GetByIdAsync(int id)
+    {
+       var schedule = await dbContext.Schedules.Include(s=>s.TimeFrame).Include(s=>s.Content).ThenInclude(c=>c.Media).Include(s=>s.Device).FirstOrDefaultAsync(r => r.Id == id);
+        return schedule;
+    }
 
     public async Task<List<Device>> GetMatchingDevices(DateOnly startDate, DateOnly endDate, int contentId, int timeFrameId)
     {
@@ -78,7 +116,15 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 
         return validDevices;
     }
+    public async Task<Schedule> GetActiveScheduleForDeviceAsync(int deviceId, DateTime currentTime)
+    {
+        return await dbContext.Schedules
+            .FirstOrDefaultAsync(s => s.DeviceId == deviceId && s.StartDate <= currentTime && s.EndDate >= currentTime);
+    }
 
-
-
+    public async Task<Content> GetCurrentContentForDeviceAsync(int deviceId)
+    {
+        var schedule = await GetActiveScheduleForDeviceAsync(deviceId, DateTime.UtcNow);
+        return schedule?.Content;
+    }
 }

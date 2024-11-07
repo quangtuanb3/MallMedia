@@ -23,4 +23,8 @@ public class Content
     public User? CreatedByUser { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+    public ICollection<DeviceSchedule> DeviceSchedules { get; set; }
+    public int DeviceId { get; set; }
+    public bool IsUpdated { get; set; }
+    public object UpdateDate { get; set; }
 }
