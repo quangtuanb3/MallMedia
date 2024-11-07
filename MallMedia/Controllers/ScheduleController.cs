@@ -1,13 +1,9 @@
-﻿using MallMedia.Application.Contents.Command;
-using MallMedia.Application.Schedules.Commands.CreateSchedules;
+﻿using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
 using MallMedia.Application.Schedules.Queries.GetScheduleById;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace MallMedia.API.Controllers
 {
@@ -15,7 +11,7 @@ namespace MallMedia.API.Controllers
     [ApiController]
     public class ScheduleController(IMediator mediator) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("matchingdevices")]
         public async Task<ActionResult> GetMatchingDevices([FromQuery] GetMatchingDevicesQuery getMatchingDevicesQuery)
         {
             var result = await mediator.Send(getMatchingDevicesQuery);
@@ -34,7 +30,7 @@ namespace MallMedia.API.Controllers
             var result = await mediator.Send(command);
             return Ok(result);
         }
-        [HttpGet("getallschedule")]
+        [HttpGet]
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
         {
             var schedules = await mediator.Send(query);

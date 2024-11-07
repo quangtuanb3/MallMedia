@@ -42,5 +42,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IScheduleRepository, ScheduleRepostiroy>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IDevicesRepository, DevicesRepository>();
+        services.AddScoped<ITimeFramesRepository, TimeFramesRepository>();
     }
 }

@@ -1,10 +1,8 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using MallMedia.Domain.Entities;
-using MallMedia.Application.MasterData.Queries.GetAllCategories;
+﻿using MallMedia.Application.MasterData.Queries.GetAllCategories;
 using MallMedia.Application.MasterData.Queries.GetAllLocations;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using MallMedia.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 namespace MallMedia.API.Controllers;
 
 
