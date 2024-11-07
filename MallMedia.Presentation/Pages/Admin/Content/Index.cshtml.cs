@@ -1,6 +1,6 @@
 
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using MallMedia.Presentation.Dtos;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using MallMedia.Presentation.Helper;

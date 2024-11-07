@@ -45,7 +45,6 @@
             }
         </tbody>
     </table>
-
     <!-- Pagination -->
     <div class="pagination">
         @if (Model.TotalPages > 1)
@@ -54,10 +53,10 @@
                 <!-- Previous Page Button -->
                 @if (Model.PageNumber > 1)
                 {
-                    <li class="page-item">
-                        <a class="page-link" href="?PageNumber=1">First</a>
-                    </li>
-                    <li class="page-item">
+                     <li class="page-item">
+                         <a class="page-link" href="?PageNumber=1">First</a>
+                     </li>
+                    <li class="page-item" >
                         <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)">Previous</a>
                     </li>
                 }

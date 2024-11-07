@@ -7,7 +7,6 @@ namespace MallMedia.Application.Schedules.Dto
     public class SchedulesDto 
     {
         public int Id { get; set; }
-        public int ContentId { get; set; }
         public ContentDto Contentdto { get; set; }
         public bool IsDefault { get; set; } = false;
         public TimeFrameDto TimeFrame { get; set; }

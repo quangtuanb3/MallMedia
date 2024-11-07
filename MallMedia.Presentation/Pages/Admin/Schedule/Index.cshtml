@@ -1,4 +1,78 @@
 ﻿@page
 @model MallMedia.Presentation.Pages.Admin.Schedule.IndexModel
-@{
-}
+
+<div class="container mt-5">
+    <h2>Content List</h2>
+    <a class="btn btn-info" asp-page="/Admin/Schedule/Create">Create</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>TimeFrame</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int index = Model.ItemsFrom;
+            }
+            @foreach (var content in Model.Schedules)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@content.StartDate</td>
+                    <td>@content.EndDate</td>
+                    <td>[ @content.TimeFrame.StartTime - @content.TimeFrame.EndTime ]</td>
+                    <td>
+                        <!-- Action Buttons (Edit/Delete) -->
+                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                        <a href="/Admin/Schedule/View/{@content.Id}" class="btn btn-success btn-sm">View Detail</a>
+                    </td>
+                </tr>
+
+                ++index;
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        @if (Model.TotalPages > 1)
+        {
+            <ul class="pagination">
+                <!-- Previous Page Button -->
+                @if (Model.PageNumber > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)">Previous</a>
+                    </li>
+                }
+
+                <!-- Page Number Buttons -->
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="?PageNumber=@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next Page Button -->
+                @if (Model.PageNumber < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=@Model.TotalPages">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

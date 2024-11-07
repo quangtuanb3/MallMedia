@@ -19,8 +19,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery = dbContext.Schedules.Include(r => r.TimeFrame);
-
+        var baseQuery =  dbContext.Schedules.Include(r => r.TimeFrame).Include(s=>s.Device).Include(s=>s.Content);
+            
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
@@ -32,7 +32,7 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
                     {nameof(Schedule.Status),r=>r.Status},
                 };
             var selectedColum = columsSelector[sortBy];
-            baseQuery = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Schedule, TimeFrame>)(sortDirection == SortDirection.Ascending
+            baseQuery = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Schedule, Content>)(sortDirection == SortDirection.Ascending
                 ? baseQuery.OrderBy(selectedColum)
                 : baseQuery.OrderByDescending(selectedColum));
         }
