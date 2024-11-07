@@ -1,12 +1,9 @@
-﻿using MallMedia.Domain.Entities;
+﻿using MallMedia.Domain.Constants;
+using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace MallMedia.Infrastructure.Repositories;
 
@@ -63,20 +60,17 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
             })
             .ToList();
 
-        // Step 5: Validate content count within timeframe
+        // Step 5: Filter devices by available content slots within the timeframe
         var validDevices = new List<Device>();
-        foreach (var device in resolutionMatchingDevices)
+        foreach (var device in matchingDevices)
         {
-            var existingContentCount = await dbContext.Set<Dictionary<string, object>>("ScheduleTimeFrame")
-                .Where(stf => EF.Property<int>(stf, "TimeFrameId") == timeFrameId &&
-                              EF.Property<int>(stf, "ScheduleId") == dbContext.Schedules
-                                  .Where(s => s.DeviceId == device.Id)
-                                  .Select(s => s.Id)
-                                  .FirstOrDefault())
+            // Count the number of schedules for this device within the specified timeframe
+            int contentCountInTimeFrame = await dbContext.Schedules
+                .Where(s => s.DeviceId == device.Id && s.TimeFrameId == timeFrameId)
                 .CountAsync();
 
-            // Only add devices that can still fit content within the timeframe limit
-            if (existingContentCount < 10)
+            // Only add devices that have available slots within the timeframe (e.g., less than 10)
+            if (contentCountInTimeFrame < 10)
             {
                 validDevices.Add(device);
             }

@@ -9,7 +9,8 @@ public class Schedule
     public Content Content { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public ICollection<TimeFrame> TimeFrames { get; set; } = new List<TimeFrame>();
-    public string Status { get; set; }
+    public int TimeFrameId { get; set; }
+    public TimeFrame TimeFrame { get; set; }
+    public string Status { get; set; } = "SCHEDULED";
 }
 

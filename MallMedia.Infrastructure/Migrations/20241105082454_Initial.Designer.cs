@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241105071834_update-schedule-entity")]
-    partial class updatescheduleentity
+    [Migration("20241105082454_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -431,28 +431,18 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TimeFrameId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ContentId");
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("Schedules");
-                });
-
-            modelBuilder.Entity("ScheduleTimeFrame", b =>
-                {
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TimeFrameId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ScheduleId", "TimeFrameId");
-
                     b.HasIndex("TimeFrameId");
 
-                    b.ToTable("ScheduleTimeFrame");
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
@@ -586,34 +576,37 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("MallMedia.Domain.Entities.Device", "Device")
-                        .WithMany()
+                        .WithMany("Schedules")
                         .HasForeignKey("DeviceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MallMedia.Domain.Entities.TimeFrame", "TimeFrame")
+                        .WithMany("Schedules")
+                        .HasForeignKey("TimeFrameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Content");
 
                     b.Navigation("Device");
-                });
 
-            modelBuilder.Entity("ScheduleTimeFrame", b =>
-                {
-                    b.HasOne("Schedule", null)
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MallMedia.Domain.Entities.TimeFrame", null)
-                        .WithMany()
-                        .HasForeignKey("TimeFrameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("TimeFrame");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
                 {
                     b.Navigation("Media");
+                });
+
+            modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
+                {
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>
+                {
+                    b.Navigation("Schedules");
                 });
 #pragma warning restore 612, 618
         }

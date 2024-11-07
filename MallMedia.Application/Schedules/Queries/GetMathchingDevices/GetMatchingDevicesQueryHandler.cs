@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 
-namespace MallMedia.Application.Schedules.Queries;
+namespace MallMedia.Application.Schedules.Queries.GetMathchingDevices;
 
 public class GetMatchingDevicesQueryHandler(ILogger<GetMatchingDevicesQueryHandler> logger, IScheduleRepository scheduleRepository) : IRequestHandler<GetMatchingDevicesQuery, List<Device>>
 {

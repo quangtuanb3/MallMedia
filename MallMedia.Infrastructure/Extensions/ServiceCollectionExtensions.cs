@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<LocationSeeder>();
         services.AddScoped<DeviceSeeder>();
         services.AddScoped<TimeFrameSeeder>();
+        services.AddScoped<UserSeeder>();
         services.AddScoped<IInitialSeeder, InitialSeeder>();
         services.AddScoped<IMasterDataRepository, MasterDataRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
