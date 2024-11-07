@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace MallMedia.Application.Devices.Command.GetDeviceById
 {
-    public class GetDeviceByIdQuery : IRequest<DeviceDto>
+    public class GetDeviceByIdQuery(int devicesId) : IRequest<DeviceDto>
     {
-        public int DeviceId { get; set; }
-        public GetDeviceByIdQuery(int deviceId) {
-            DeviceId = deviceId;
-        }
+        public int DeviceId { get; set; } = devicesId;
     }
 }

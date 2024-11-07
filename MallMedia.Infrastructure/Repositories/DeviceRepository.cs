@@ -31,6 +31,11 @@ namespace MallMedia.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<Device> GetDeviceByIdAsync(int deviceId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task UpdateAsync(Device device)
         {
             _context.Devices.Update(device);

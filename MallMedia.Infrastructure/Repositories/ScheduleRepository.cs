@@ -1,4 +1,5 @@
-﻿using MallMedia.Domain.Entities;
+﻿using MallMedia.Domain.Constants;
+using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,26 @@ namespace MallMedia.Infrastructure.Repositories
         private int timeFrameId;
 
         public Task<int> Create(Schedule schedule)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Schedule> GetActiveScheduleForDeviceAsync(int deviceId, DateTime currentTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pagenumber, string? sortBy, SortDirection sortDirection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Schedule> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Content> GetCurrentContentForDeviceAsync(int deviceId)
         {
             throw new NotImplementedException();
         }
