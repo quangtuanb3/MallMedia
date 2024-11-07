@@ -1,5 +1,4 @@
-using MallMedia.Application.Contents.Command;
-﻿using MallMedia.Application.Contents.Command.CreateContents;
+using MallMedia.Application.Contents.Command.CreateContents;
 using MallMedia.Application.Contents.Command.DeleteContents;
 using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Contents.Queries.GetAllContents;

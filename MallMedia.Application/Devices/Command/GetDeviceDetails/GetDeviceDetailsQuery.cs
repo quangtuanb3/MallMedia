@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.GetDeviceById
+namespace MallMedia.Application.Devices.Command.GetDeviceDetails
 {
     public record GetDeviceDetailsQuery(int DeviceId) : IRequest<Device>;
 }

@@ -1,4 +1,5 @@
-﻿using MallMedia.Domain.Repositories;
+﻿using MallMedia.Application.Devices.Dto;
+using MallMedia.Domain.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MallMedia.Application.Devices.Command.GetDeviceById
 {
-    public class GetDeviceByIdQueryHandler : IRequestHandler<GetDeviceByIdQuery, DeviceDto>
+    public class GetDeviceByIdQueryHandler : IRequestHandler<GetDeviceByIdQuery, DevicesDto>
     {
         private readonly IDeviceRepository _deviceRepository;
 
@@ -17,13 +18,13 @@ namespace MallMedia.Application.Devices.Command.GetDeviceById
             _deviceRepository = deviceRepository;
         }
 
-        public async Task<DeviceDto> Handle(GetDeviceByIdQuery query, CancellationToken cancellationToken)
+        public async Task<DevicesDto> Handle(GetDeviceByIdQuery query, CancellationToken cancellationToken)
         {
             var device = await _deviceRepository.GetByIdAsync(query.DeviceId);
 
             if (device == null) return null;
 
-            return new DeviceDto
+            return new DevicesDto
             {
                 Id = device.Id,
                 DeviceName = device.DeviceName,

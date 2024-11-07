@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MallMedia.Application.Devices.GetDeviceById;
 
-namespace MallMedia.Application.Devices.Command.GetDeviceById
+namespace MallMedia.Application.Devices.Command.GetDeviceDetails
 {
     public class GetDeviceDetailsQueryHandler : IRequestHandler<GetDeviceDetailsQuery, Device>
     {

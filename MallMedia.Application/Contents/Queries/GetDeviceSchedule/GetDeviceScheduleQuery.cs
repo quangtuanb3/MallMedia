@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.Command.GetDeviceById
+namespace MallMedia.Application.Contents.Queries.GetDeviceSchedule
 {
     public record GetDeviceScheduleQuery(int DeviceId, DateTime CurrentTime) : IRequest<Schedule>;
 }

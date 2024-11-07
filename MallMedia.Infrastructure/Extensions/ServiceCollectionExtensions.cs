@@ -1,5 +1,5 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
-using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Application.Devices.Command.UpdateDevice;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Interfaces;
 using MallMedia.Domain.Repositories;

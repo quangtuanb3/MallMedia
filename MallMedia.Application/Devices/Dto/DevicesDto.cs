@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.Command.GetDeviceById
+namespace MallMedia.Application.Devices.Dto
 {
-    public class DeviceDto
+    public class DevicesDto
     {
         public int Id { get; set; }
         public string DeviceName { get; set; }

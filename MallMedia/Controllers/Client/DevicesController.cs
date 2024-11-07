@@ -1,6 +1,5 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
-using MallMedia.Application.Devices.Commands;
-using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Application.Devices.Command.UpdateDevice;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
