@@ -1,8 +1,7 @@
 
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using MallMedia.Presentation.Dtos;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using System.Net;
 namespace MallMedia.Presentation.Pages.Admin.Content;
 
 public class IndexModel(HttpClient httpClient) : PageModel
@@ -14,9 +13,10 @@ public class IndexModel(HttpClient httpClient) : PageModel
     public int ItemsTo { get; set; }
     public int PageNumber { get; set; } = 1;
 
-    public int PageSize { get; set; } = 2;
+    public int PageSize { get; set; } = 1;
     public async Task OnGetAsync()
     {
+        
         PageNumber = Request.Query.ContainsKey("pageNumber")
          ? int.Parse(Request.Query["pageNumber"])
          : 1;

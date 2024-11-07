@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MallMedia.Application\MallMedia.Application.csproj" />
     <ProjectReference Include="..\MallMedia\MallMedia.API.csproj" />
   </ItemGroup>
 
