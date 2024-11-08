@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MallMedia.Application.Devices.Commands.UpdateDevice
 {
-    public class DeviceUpdateDto
+    public class DevicesUpdateDto
     {
         public int Id { get; set; }
         public int LocationId { get; set; }

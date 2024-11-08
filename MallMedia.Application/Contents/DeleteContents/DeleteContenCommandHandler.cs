@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MallMedia.Application.Contents.Command.DeleteContents
 {
-    public class DeleteContenCommandHandler(ILogger<DeleteContenCommandHandler>logger,IContentRepository contentRepository) : IRequest<DeleteContenCommand>
+    public class DeleteContentCommandHandler(ILogger<DeleteContentCommandHandler>logger,IContentRepository contentRepository) : IRequest<DeleteContenCommand>
     {
         public async Task Handle(DeleteContenCommand request, CancellationToken cancellationToken)
         {

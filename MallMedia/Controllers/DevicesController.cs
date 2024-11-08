@@ -1,7 +1,8 @@
-﻿using MallMedia.Application.Devices.Command.CreateDevice;
+﻿using MallMedia.Application.Contents.Queries.GetDeviceSchedule;
+using MallMedia.Application.Devices.Command.CreateDevice;
 using MallMedia.Application.Devices.Command.GetDeviceById;
+using MallMedia.Application.Devices.Command.GetDeviceDetails;
 using MallMedia.Application.Devices.Command.UpdateDevice;
-using MallMedia.Application.Devices.GetDeviceById;
 using MallMedia.Application.Devices.Queries.GetAllDevices;
 using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MediatR;
@@ -30,7 +31,7 @@ namespace MallMedia.API.Controllers
         [HttpGet("/devices/{id}")]
         public async Task<IActionResult> GetDevicesById([FromRoute] int id)
         {
-            var devices = await mediator.Send(new GetDevicesByIdQuery(id));
+            var devices = await mediator.Send(new Application.Devices.Command.GetDeviceById.GetDevicesByIdQuery(id));
             return Ok(devices);
         }
 

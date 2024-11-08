@@ -19,7 +19,7 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         await dbContext.SaveChangesAsync();
         return schedule.Id;
     }
-    public Task<Schedule> GetCurrentScheduleForDevice(object deviceId, object currentTime)
+    public Task<Schedule> GetCurrentScheduleForDevice1(object deviceId, object currentTime)
     {
         throw new NotImplementedException();
     }
@@ -179,5 +179,11 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     {
         var schedule = await GetActiveScheduleForDeviceAsync(deviceId, DateTime.UtcNow);
         return schedule?.Content;
+    }
+
+    public async Task<Schedule> GetByIdAsync1(int id)
+    {
+        var schedule = await dbContext.Schedules.Include(s => s.TimeFrame).Include(s => s.Content).ThenInclude(c => c.Media).Include(s => s.Device).FirstOrDefaultAsync(r => r.Id == id);
+        return schedule;
     }
 }

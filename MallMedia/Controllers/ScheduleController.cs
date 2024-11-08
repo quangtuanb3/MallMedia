@@ -11,7 +11,6 @@ using System.Text.Json;
 using MallMedia.Domain.Repositories;
 using MallMedia.Application.Schedules.Queries;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
-using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 
 namespace MallMedia.API.Controllers
 {

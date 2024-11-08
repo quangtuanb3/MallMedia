@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace MallMedia.Application.Devices.Commands.UpdateDevice
 {
-    public class UpdateDeviceCommand : IRequest<Device>
+    public class UpdateDevicesCommand : IRequest<Device>
     {
         public DeviceUpdateDto DeviceUpdateDto { get; set; }
-        public UpdateDeviceCommand(DeviceUpdateDto updateDeviceDto)
+        public UpdateDevicesCommand(DeviceUpdateDto updateDeviceDto)
         {
             DeviceUpdateDto = updateDeviceDto;
         }

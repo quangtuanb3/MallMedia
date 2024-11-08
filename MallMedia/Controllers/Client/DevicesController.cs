@@ -15,7 +15,7 @@ namespace MallMedia.API.Controllers.Client
         [HttpGet("{deviceId}")]
         public async Task<IActionResult> GetDeviceById(int deviceId)
         {
-            var query = new GetDevicesByIdQuery { DeviceId = deviceId };
+            var query = new GetDeviceByIdQuery { DeviceId = deviceId };
             var device = await _mediator.Send(query);
 
             if (device == null)
@@ -32,7 +32,7 @@ namespace MallMedia.API.Controllers.Client
                 return BadRequest("Device ID mismatch.");
             }
 
-            var command = new UpdateDevicesCommand(deviceUpdateDto);
+            var command = new UpdateDeviceCommand(deviceUpdateDto);
             var result = await _mediator.Send(command);
 
             if (result == null)
