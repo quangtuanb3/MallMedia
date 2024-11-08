@@ -1,3 +1,4 @@
+using MallMedia.Application.Devices.Dto;
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MallMedia.Presentation.Helper;
@@ -11,7 +12,7 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
 {
     public CurrentUser CurrentUser { get; set; } = new CurrentUser();
     public List<Content> Contents { get; set; } = new List<Content>();
-    public int DeviceId { get; set; }
+    public DeviceDto DeviceDto { get; set; }
     public async Task<IActionResult> OnGet()
     {
         Contents = new List<Content>();
@@ -21,7 +22,7 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
             return Redirect("/Auth/Login");
         }
 
-        var url_currentContent = $"{Constants.ClientConstant.BaseURl}/api/schedule/device/{DeviceId}/current";
+        var url_currentContent = $"{Constants.ClientConstant.BaseURl}/api/schedule/device/{DeviceDto.Id}/current";
         var responseContents = await httpClient.GetAsync(url_currentContent);
         if (responseContents.IsSuccessStatusCode)
         {
@@ -76,10 +77,10 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
         if (responseCurrentDevice.IsSuccessStatusCode)
         {
             var contentJson = await responseCurrentDevice.Content.ReadAsStringAsync();
-            DeviceId = JsonConvert.DeserializeObject<int>(contentJson);
+            DeviceDto = JsonConvert.DeserializeObject<DeviceDto>(contentJson);
 
             // Redirect if the current user is not an admin
-            if (DeviceId <= 0)
+            if (DeviceDto?.Id is null)
             {
                 return false;
             }
