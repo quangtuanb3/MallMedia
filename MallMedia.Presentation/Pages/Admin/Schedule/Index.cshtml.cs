@@ -7,7 +7,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 {
     public class IndexModel(HttpClient httpClient) : PageModel
     {
-        public List<SchedulesDto> Schedules { get; set; } 
+        public List<SchedulesDto> Schedules { get; set; }
         public int TotalPages { get; set; }
         public int TotalItemsCount { get; set; }
         public int ItemsFrom { get; set; }
@@ -20,7 +20,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             PageNumber = Request.Query.ContainsKey("pageNumber")
              ? int.Parse(Request.Query["pageNumber"])
              : 1;
-            var url = $"https://localhost:7199/api/Schedule?PageNumber={PageNumber}&PageSize={PageSize}";
+            var url = $"{Constants.ClientConstant.BaseURl}/api/Schedule?PageNumber={PageNumber}&PageSize={PageSize}";
             var response = await httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)

@@ -19,8 +19,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery =  dbContext.Schedules.Include(r => r.TimeFrame).Include(s=>s.Device).Include(s=>s.Content);
-            
+        var baseQuery = dbContext.Schedules.Include(r => r.TimeFrame).Include(s => s.Device).Include(s => s.Content);
+
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
@@ -55,6 +55,11 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         var currentDate = currentTime.Date;
         var currentTimeOnly = TimeOnly.FromDateTime(currentTime);
 
+        //TODO: remove this soon
+        if (currentTimeOnly.Hour >= 22 || currentTimeOnly.Hour < 7)
+        {
+            currentTimeOnly = new TimeOnly(7, 0); // 7:00 AM
+        }
         // Query to find all content for the given device ID that is currently scheduled or playing
         var contentList = await dbContext.Schedules
             .Where(s => s.DeviceId == deviceId

@@ -18,23 +18,24 @@
 @section Scripts {
     <script>
         const contents = @Html.Raw(JsonConvert.SerializeObject(Model.Contents));
-        const baseUrl = "https://localhost:7199/";
+        const device = @Html.Raw(JsonConvert.SerializeObject(Model.DeviceDto));
+        const baseUrl = "http://10.20.54.244:5056/";
         let currentIndex = 0;
 
         function showContent(content) {
-            // Hide all content divs
+            // Hide all content divs initially
             document.getElementById("text-content").style.display = "none";
             document.getElementById("image-content").style.display = "none";
             document.getElementById("video-content").style.display = "none";
 
             if (content.ContentType === "Text") {
-                // Display text content
+                // Display text content in full-screen
                 document.getElementById("text-content").style.display = "block";
                 document.getElementById("text-content").innerText = content.Description;
 
-                setTimeout(showNextContent, 3000); // Show text for 3 seconds
+                setTimeout(showNextContent, 3000); // Show text for 3 seconds before moving to next content
             } else if (content.ContentType === "Image") {
-                // Display image content in a slideshow if multiple images
+                // Display image content in full-screen as a slideshow
                 const images = content.Media.filter(media => media.Type === "Image");
                 let imageIndex = 0;
 
@@ -43,22 +44,24 @@
                         document.getElementById("image-content").style.display = "block";
                         document.getElementById("image-slide").src = baseUrl + images[imageIndex].Path;
                         imageIndex++;
-                        setTimeout(showNextImage, 2000); // Show each image for 2 seconds
+                        setTimeout(showNextImage, 2000); // Show each image for 2 seconds before showing next image
                     } else {
-                        showNextContent(); // Move to the next content after images
+                        setTimeout(showNextContent, 3000); // Show next content after images are done
                     }
                 }
 
                 showNextImage();
             } else if (content.ContentType === "Video") {
-                // Display video content
-                 const video = content.Media.find(media => media.Type === "video/mp4");
+                // Display video content in full-screen
+                const video = content.Media.find(media => media.Type === "video/mp4");
                 if (video) {
                     const videoPlayer = document.getElementById("video-player");
                     videoPlayer.src = baseUrl + video.Path;
                     document.getElementById("video-content").style.display = "block";
 
-                    videoPlayer.onended = showNextContent; // Move to next content after video ends
+                    videoPlayer.onended = function () {
+                        setTimeout(showNextContent, 3000); // Wait 3 seconds before showing next content
+                    };
                 }
             }
         }
@@ -72,22 +75,54 @@
         if (contents.length > 0) {
             showContent(contents[currentIndex]);
         }
+
+        const resolution = device.Resolution.split("x");
+        const width = resolution[0];  // 1920
+        const height = resolution[1]; // 1080
+
+        // Apply the width and height to the monitor container
+        document.getElementById("monitor").style.width = width + "px";
+        document.getElementById("monitor").style.height = height + "px";
     </script>
 }
 
 <style>
-    /* Basic styling for the monitor area */
+    /* Full-screen styling for content */
+    body, html {
+        height: 100%;
+        margin: 0;
+    }
+
     #monitor {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: black; /* Set background color */
     }
 
     #text-content, #image-content, #video-content {
         text-align: center;
         max-width: 100%;
         max-height: 100%;
+        display: none;
     }
 
     #image-slide, #video-player {
-        max-width: 100%;
-        max-height: 100%;
+        width: 100%; /* Full-screen width */
+        height: 100%; /* Full-screen height */
+        object-fit: contain; /* Ensure content scales proportionally */
+    }
+
+    /* Ensure text is displayed in full screen */
+    #text-content {
+        color: white; /* Text color for visibility */
+        font-size: 3em;
+        font-weight: bold;
+        padding: 20px;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
     }
 </style>

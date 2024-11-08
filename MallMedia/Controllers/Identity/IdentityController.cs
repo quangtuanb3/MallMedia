@@ -125,7 +125,7 @@ public class IdentityController(
             DeviceName = device.DeviceName,
             Size = device.Configuration.Size,
             Resolution = device.Configuration.Resolution,
-            NameLocation = device.Location.Name,
+            NameLocation = device.Location?.Name,
         };
 
         return Ok(deviceDto);

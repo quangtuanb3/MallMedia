@@ -25,7 +25,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             Content = new List<ContentDto>();
             TimeFrames = new List<TimeFrameDto>();
             var url_timeframe = $"{Constants.ClientConstant.BaseURl}/api/timeframes";
-            var url_content = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber=1&PageSize=100";
+            var url_content = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber=1&PageSize=1000";
             var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
 
             var responseCurrentUser = await httpClient.GetAsync(url_current_user);
@@ -42,7 +42,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             }
 
             var responseTimeFrames = await httpClient.GetAsync(url_timeframe);
-            var responseContents =await httpClient.GetAsync(url_content);
+            var responseContents = await httpClient.GetAsync(url_content);
             if (responseTimeFrames.IsSuccessStatusCode)
             {
                 var contentJson = await responseTimeFrames.Content.ReadAsStringAsync();
