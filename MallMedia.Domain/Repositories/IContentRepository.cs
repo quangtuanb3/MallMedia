@@ -11,4 +11,6 @@ public interface IContentRepository
     Task<(List<Content>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pagenumber, string? sortBy, SortDirection sortDirection);
     Task<Content> GetCurrentContentForDeviceAsync(int deviceId);
     Task<Content> GetUpdatedContentForDeviceAsync(int deviceId);
+    Task<Content> ActiveScheduledContentAsync();
+    Task<List<Content>> GetScheduledContentAsync1();
 }

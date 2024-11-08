@@ -1,7 +1,5 @@
 using MallMedia.Application.Contents.Command;
 using MallMedia.Application.Schedules.Commands.CreateSchedules;
-
-﻿using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
@@ -12,7 +10,6 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using MallMedia.Domain.Repositories;
 using MallMedia.Application.Schedules.Queries;
-using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 
 namespace MallMedia.API.Controllers
 {

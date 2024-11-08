@@ -26,6 +26,8 @@ namespace MallMedia.Domain.Entities
         // Additional fields if needed, e.g., CreatedAt, UpdatedAt
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
     }
 }
 

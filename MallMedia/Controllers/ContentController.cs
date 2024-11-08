@@ -4,6 +4,8 @@ using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Contents.Queries.GetAllContents;
 using MallMedia.Application.Contents.Queries.GetContentById;
 using MallMedia.Domain.Constants;
+using MallMedia.Domain.Entities;
+using MallMedia.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +16,7 @@ namespace MallMedia.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-public class ContentController(IMediator mediator) : ControllerBase
+public class ContentController(IMediator mediator, IContentRepository contentRepository) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult> CreateContent([FromForm] CreateContentCommand command)
@@ -40,5 +42,14 @@ public class ContentController(IMediator mediator) : ControllerBase
         await mediator.Send(new DeleteContenCommand(id));
         return NoContent();
     }
-
+    [HttpPost("activate-scheduled-content")]
+    public async Task<ActionResult<List<Content>>> ActivateScheduledContent()
+    {
+        var activatedContents = await contentRepository.ActiveScheduledContentAsync();
+        if (activatedContents == null)
+        {
+            return NoContent();
+        }
+        return Ok(activatedContents);
+    }
 }

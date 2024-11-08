@@ -79,4 +79,69 @@ internal class ContentRepository(ApplicationDbContext dbContext) : IContentRepos
             .OrderByDescending(c => c.UpdateDate)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<Content?> ActiveScheduledContentAsync()
+    {
+        var currentTime = DateTime.UtcNow;
+        var contentsToActivate = await dbContext.Contents
+            .Include(c => c.DeviceSchedules)
+            .Where(c => c.DeviceSchedules.Any(ds => ds.StartTime <= currentTime && ds.EndTime >= currentTime)
+                        && c.Status == "UNUSED")
+            .ToListAsync();
+
+        Content? lastActivatedContent = null;
+
+        foreach (var content in contentsToActivate)
+        {
+            content.Status = "ACTIVE";
+            content.UpdatedAt = currentTime;
+            content.IsUpdated = true;
+            lastActivatedContent = content; // Update with the last activated content
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return lastActivatedContent; // Return the last activated content
+    }
+    public async Task<List<Content>> ActiveScheduledContentAsync2()
+    {
+        var currentTime = DateTime.UtcNow;
+        var contentsToActivate = await dbContext.Contents
+            .Include(c => c.DeviceSchedules)
+            .Where(c => c.DeviceSchedules.Any(ds => ds.StartTime <= currentTime && ds.EndTime >= currentTime)
+                        && c.Status == "UNUSED")
+            .ToListAsync();
+
+        foreach (var content in contentsToActivate)
+        {
+            content.Status = "ACTIVE";
+            content.UpdatedAt = currentTime;
+            content.IsUpdated = true;
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return contentsToActivate; // Return the list of activated contents
+    }
+
+    public async Task<List<Content>> GetScheduledContentAsync1()
+    {
+        var currentTime = DateTime.UtcNow;
+        var contentsToActivate = await dbContext.Contents
+            .Include(c => c.DeviceSchedules)
+            .Where(c => c.DeviceSchedules.Any(ds => ds.StartTime <= currentTime && ds.EndTime >= currentTime)
+                        && c.Status == "UNUSED")
+            .ToListAsync();
+
+        foreach (var content in contentsToActivate)
+        {
+            content.Status = "ACTIVE";
+            content.UpdatedAt = currentTime;
+            content.IsUpdated = true;
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return contentsToActivate;
+    }
 }
