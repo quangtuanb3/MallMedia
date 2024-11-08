@@ -19,7 +19,7 @@ try
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowLocalhost", policy =>
-            policy.WithOrigins("http://localhost:5179")  // Allow frontend origin
+            policy.WithOrigins("http://10.20.54.244:5179")  // Allow frontend origin
                   .AllowAnyHeader()  // Allow any headers
                   .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
     });
