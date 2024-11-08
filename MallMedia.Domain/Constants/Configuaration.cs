@@ -8,3 +8,15 @@ public class DeviceConfiguration
     public string Resolution { get; set; }
 }
 
+
+public class DeviceType
+{
+    public static string TV = "TV";
+    public static string LED = "LED";
+}
+public class ContentType
+{
+    public static string Text = "Text";
+    public static string Images = "Images";
+    public static string Video = "Video";
+}

@@ -11,12 +11,26 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 {
     public async Task<int> Create(Schedule schedule)
     {
-        var s = await dbContext.Schedules.Where(s=>s.StartDate == schedule.StartDate 
-        &&  s.EndDate == schedule.EndDate
-        && s.DeviceId == schedule.DeviceId
-        && s.ContentId == schedule.ContentId 
-        && s.TimeFrameId == schedule.TimeFrameId).FirstAsync();
-        if (s != null) throw new Exception("Bad request!");
+        try
+        {
+            bool exists = await dbContext.Schedules.AnyAsync(s =>
+         s.StartDate == schedule.StartDate &&
+         s.EndDate == schedule.EndDate &&
+         s.DeviceId == schedule.DeviceId &&
+         s.ContentId == schedule.ContentId &&
+         s.TimeFrameId == schedule.TimeFrameId
+     );
+
+            // Throw a specific exception if a match is found
+            if (exists)
+            {
+                throw new ArgumentException("A schedule with the same start date, end date, device ID, content ID, and timeframe already exists.");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
         await dbContext.AddAsync(schedule);
         await dbContext.SaveChangesAsync();
         return schedule.Id;
@@ -25,8 +39,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery =  dbContext.Schedules.Include(r => r.TimeFrame).Include(s=>s.Device).Include(s=>s.Content);
-            
+        var baseQuery = dbContext.Schedules.Include(r => r.TimeFrame).Include(s => s.Device).Include(s => s.Content);
+
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
@@ -57,10 +71,15 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 
     public async Task<List<Content>> GetCurrentContentForDevice(int deviceId)
     {
-        var currentTime = DateTime.UtcNow;
+        var currentTime = DateTime.Now;
         var currentDate = currentTime.Date;
         var currentTimeOnly = TimeOnly.FromDateTime(currentTime);
 
+        //TODO: remove this soon
+        if (currentTimeOnly.Hour >= 22 || currentTimeOnly.Hour < 7)
+        {
+            //currentTimeOnly = new TimeOnly(7, 0); 
+        }
         // Query to find all content for the given device ID that is currently scheduled or playing
         var contentList = await dbContext.Schedules
             .Where(s => s.DeviceId == deviceId
@@ -89,7 +108,7 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
             .Select(x =>
             {
                 var content = x.Content;
-                if (content.ContentType != "Text")
+                if (content.ContentType != ContentType.Text)
                 {
                     content.Media = x.Media.ToList(); // Assign the media if it's not Text
                 }
@@ -101,64 +120,62 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     }
 
 
-
-
     public async Task<List<Device>> GetMatchingDevices(DateTime startDate, DateTime endDate, int contentId, int timeFrameId)
     {
-        // Step 1: Get the content and all associated media
+        // Step 1: Get content and media details
         var content = await dbContext.Contents
-            .Include(c => c.Media) // Assuming Content has a collection of Media
-            .FirstOrDefaultAsync(c => c.Id == contentId);
+            .Where(c => c.Id == contentId)
+            .Select(c => new
+            {
+                c.ContentType,
+                MediaResolutions = c.Media
+                    .Where(m => m.Resolution != null)
+                    .Select(m => m.Resolution)
+                    .ToList()
+            })
+            .FirstOrDefaultAsync();
 
-        if (content == null || content.Media == null || !content.Media.Any())
-            return new List<Device>(); // Return empty list if no media is found
+        if (content == null)
+            return new List<Device>();
 
-        // Step 2: Calculate the minimum required resolution from the content's media
+        if (!content.MediaResolutions.Any())
+            return await dbContext.Devices.Where(d => d.Status == "Active").ToListAsync();
+
+        // Step 2: Calculate the minimum required resolution from media
         int minWidth = int.MaxValue;
         int minHeight = int.MaxValue;
-        foreach (var media in content.Media)
+
+        foreach (var res in content.MediaResolutions)
         {
-            if (media.Resolution != null)
-            {
-                var mediaResolution = media.Resolution.Split('x').Select(int.Parse).ToArray();
-                minWidth = Math.Min(minWidth, mediaResolution[0]);
-                minHeight = Math.Min(minHeight, mediaResolution[1]);
-            }
+            var resolutionParts = res.Split('x').Select(int.Parse).ToArray();
+            minWidth = Math.Min(minWidth, resolutionParts[0]);
+            minHeight = Math.Min(minHeight, resolutionParts[1]);
         }
 
-        // Step 3: Fetch devices based on content type only
-        var matchingDevices = await dbContext.Devices
-            .Where(d =>
-                (content.ContentType == "Text" && (d.DeviceType == "TV" || d.DeviceType == "LED")) ||
-                ((content.ContentType == "Image" || content.ContentType == "Video") && d.DeviceType == "TV"))
+        // Step 3: Determine valid device types based on content type
+        var validDeviceTypes = content.ContentType == ContentType.Text
+            ? new[] { DeviceType.TV, DeviceType.LED }
+            : new[] { DeviceType.TV };
+
+        // Step 4: Fetch devices based on device type and status (only conditions that EF Core can translate)
+        var devices = await dbContext.Devices
+            .Where(d => validDeviceTypes.Contains(d.DeviceType) && d.Status == "Active")
             .ToListAsync();
 
-        // Step 4: Filter devices by resolution in memory
-        var resolutionMatchingDevices = matchingDevices
-            .Where(d =>
-            {
-                var deviceResolutionParts = d.Configuration.Resolution.Split('x');
-                if (deviceResolutionParts.Length == 2 &&
-                    int.TryParse(deviceResolutionParts[0], out int deviceWidth) &&
-                    int.TryParse(deviceResolutionParts[1], out int deviceHeight))
-                {
-                    // Ensure device resolution meets or exceeds minimum required resolution
-                    return deviceWidth >= minWidth && deviceHeight >= minHeight;
-                }
-                return false;
-            })
+        // Step 5: Filter devices by resolution compatibility in memory
+        var compatibleDevices = devices
+            .Where(d => IsResolutionCompatible(d.Configuration.Resolution, minWidth, minHeight) &&
+                        content.MediaResolutions.All(mediaRes => IsAspectRatioCompatible(d.Configuration.Resolution, mediaRes)))
             .ToList();
 
-        // Step 5: Filter devices by available content slots within the timeframe
+        // Step 6: Filter devices by content slots available within the timeframe
         var validDevices = new List<Device>();
-        foreach (var device in matchingDevices)
+        foreach (var device in compatibleDevices)
         {
-            // Count the number of schedules for this device within the specified timeframe
             int contentCountInTimeFrame = await dbContext.Schedules
                 .Where(s => s.DeviceId == device.Id && s.TimeFrameId == timeFrameId)
                 .CountAsync();
 
-            // Only add devices that have available slots within the timeframe (e.g., less than 10)
             if (contentCountInTimeFrame < 10)
             {
                 validDevices.Add(device);
@@ -167,5 +184,30 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 
         return validDevices;
     }
+
+    // Helper method to check if the device resolution meets the minimum required resolution.
+    private bool IsResolutionCompatible(string deviceResolution, int minWidth, int minHeight)
+    {
+        var resolutionParts = deviceResolution?.Split('x').Select(int.Parse).ToArray();
+        if (resolutionParts == null || resolutionParts.Length != 2) return false;
+
+        return resolutionParts[0] >= minWidth && resolutionParts[1] >= minHeight;
+    }
+
+    // Helper method to check if the aspect ratio of the device matches the aspect ratio of the media.
+    private bool IsAspectRatioCompatible(string deviceResolution, string mediaResolution)
+    {
+        var deviceParts = deviceResolution?.Split('x').Select(int.Parse).ToArray();
+        var mediaParts = mediaResolution?.Split('x').Select(int.Parse).ToArray();
+
+        if (deviceParts == null || mediaParts == null || deviceParts.Length != 2 || mediaParts.Length != 2)
+            return false;
+
+        float deviceAspectRatio = (float)deviceParts[0] / deviceParts[1];
+        float mediaAspectRatio = (float)mediaParts[0] / mediaParts[1];
+
+        return Math.Abs(deviceAspectRatio - mediaAspectRatio) < 0.01; // Allow slight rounding differences
+    }
+
 
 }

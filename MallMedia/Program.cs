@@ -5,6 +5,7 @@ using MallMedia.Application.Extensions;
 using MallMedia.Infrastructure.Extensions;
 using MallMedia.Infrastructure.Seeders;
 using Serilog;
+using System.Net;
 
 try
 {
@@ -18,9 +19,22 @@ try
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowLocalhost", policy =>
-            policy.WithOrigins("http://localhost:5179/")  // Allow frontend origin
+            policy.WithOrigins("http://localhost:5179")  // Allow frontend origin
                   .AllowAnyHeader()  // Allow any headers
                   .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
+    });
+    //builder.WebHost.ConfigureKestrel(options =>
+    //{
+    //    // This will use the default development certificate if available
+    //    options.Listen(IPAddress.Any, 5001, listenOptions =>
+    //    {
+    //        listenOptions.UseHttps(); // No certificate path is needed here
+    //    });
+    //});
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.Listen(IPAddress.Parse("127.0.0.1"), 5001);   // Listen on localhost
+        options.Listen(IPAddress.Parse("10.20.54.244"), 5057);  // Listen on LAN IP
     });
     var app = builder.Build();
     // Enable CORS globally (apply to all controllers)
