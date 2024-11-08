@@ -22,6 +22,7 @@
         const baseUrl = "http://10.20.54.244:5056/";
         let currentIndex = 0;
 
+        // Function to display content
         function showContent(content) {
             // Hide all content divs initially
             document.getElementById("text-content").style.display = "none";
@@ -52,35 +53,52 @@
 
                 showNextImage();
             } else if (content.ContentType === "Video") {
-                // Display video content in full-screen
-                const video = content.Media.find(media => media.Type === "video/mp4");
-                if (video) {
-                    const videoPlayer = document.getElementById("video-player");
-                    videoPlayer.src = baseUrl + video.Path;
-                    document.getElementById("video-content").style.display = "block";
+                // Display video content in full-screen and handle multiple videos
+                const videos = content.Media.filter(media => media.Type === "video/mp4");
+                let videoIndex = 0;
+                const videoPlayer = document.getElementById("video-player");
 
-                    videoPlayer.onended = function () {
-                        setTimeout(showNextContent, 3000); // Wait 3 seconds before showing next content
-                    };
+                // Function to play the next video, if available
+                function playNextVideo() {
+                    if (videoIndex < videos.length) {
+                        videoPlayer.src = baseUrl + videos[videoIndex].Path;
+                        videoPlayer.play().then(() => {
+                            document.getElementById("video-content").style.display = "block";
+                            videoIndex++;
+                        }).catch(error => {
+                            videoIndex--;
+                            console.log("Autoplay was prevented", error);
+                            // Optionally show a message or a play button
+                        });
+                    } else {
+                        setTimeout(showNextContent, 1); // Show next content after all videos are done
+                    }
                 }
+
+                // Event listener to play the next video when the current one ends
+                videoPlayer.addEventListener("ended", playNextVideo);
+
+                // Start playing the first video
+                playNextVideo();
             }
         }
 
+
+        // Move to the next content
         function showNextContent() {
             currentIndex = (currentIndex + 1) % contents.length; // Loop through contents
             showContent(contents[currentIndex]);
         }
 
-        // Start the content display
+        // Start the content display if contents exist
         if (contents.length > 0) {
             showContent(contents[currentIndex]);
         }
 
+        // Set the resolution of the monitor container
         const resolution = device.Resolution.split("x");
-        const width = resolution[0];  // 1920
-        const height = resolution[1]; // 1080
-
-        // Apply the width and height to the monitor container
+        const width = resolution[0];
+        const height = resolution[1];
         document.getElementById("monitor").style.width = width + "px";
         document.getElementById("monitor").style.height = height + "px";
     </script>

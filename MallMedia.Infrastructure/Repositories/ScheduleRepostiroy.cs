@@ -11,12 +11,26 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 {
     public async Task<int> Create(Schedule schedule)
     {
-        var s = await dbContext.Schedules.Where(s=>s.StartDate == schedule.StartDate 
-        &&  s.EndDate == schedule.EndDate
-        && s.DeviceId == schedule.DeviceId
-        && s.ContentId == schedule.ContentId 
-        && s.TimeFrameId == schedule.TimeFrameId).FirstAsync();
-        if (s != null) throw new Exception("Bad request!");
+        try
+        {
+            bool exists = await dbContext.Schedules.AnyAsync(s =>
+         s.StartDate == schedule.StartDate &&
+         s.EndDate == schedule.EndDate &&
+         s.DeviceId == schedule.DeviceId &&
+         s.ContentId == schedule.ContentId &&
+         s.TimeFrameId == schedule.TimeFrameId
+     );
+
+            // Throw a specific exception if a match is found
+            if (exists)
+            {
+                throw new ArgumentException("A schedule with the same start date, end date, device ID, content ID, and timeframe already exists.");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
         await dbContext.AddAsync(schedule);
         await dbContext.SaveChangesAsync();
         return schedule.Id;

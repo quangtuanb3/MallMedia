@@ -2,10 +2,10 @@ using MallMedia.Application.Schedules.Dto;
 using MallMedia.Presentation.Dtos;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-
+using MallMedia.Presentation.Helper;
 namespace MallMedia.Presentation.Pages.Admin.Schedule
 {
-    public class IndexModel(HttpClient httpClient) : PageModel
+    public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticationHelper) : PageModel
     {
         public List<SchedulesDto> Schedules { get; set; }
         public int TotalPages { get; set; }
@@ -14,9 +14,10 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
         public int ItemsTo { get; set; }
         public int PageNumber { get; set; } = 1;
 
-        public int PageSize { get; set; } = 2;
+        public int PageSize { get; set; } = 5;
         public async Task OnGetAsync()
         {
+            authenticationHelper.AddBearerToken(httpClient);
             Schedules = new List<SchedulesDto>();
             PageNumber = Request.Query.ContainsKey("pageNumber")
              ? int.Parse(Request.Query["pageNumber"])
