@@ -186,4 +186,9 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         var schedule = await dbContext.Schedules.Include(s => s.TimeFrame).Include(s => s.Content).ThenInclude(c => c.Media).Include(s => s.Device).FirstOrDefaultAsync(r => r.Id == id);
         return schedule;
     }
+
+    public Task<Schedule> GetCurrentScheduleForDevice(int deviceId, DateTime currentTime)
+    {
+        throw new NotImplementedException();
+    }
 }

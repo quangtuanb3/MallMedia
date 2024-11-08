@@ -56,6 +56,11 @@ namespace MallMedia.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<Schedule> GetCurrentScheduleForDevice(int deviceId, DateTime currentTime)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Device>> GetMatchingDevices(DateOnly StartDate, DateOnly EndDate, int ContentId, int TimeFrameId)
         {
             // Step 1: Get the content and all associated media

@@ -1,6 +1,6 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
 using MallMedia.Application.Devices.Command.UpdateDevice;
-using MallMedia.Application.Devices.Commands.UpdateDevice;
+//using MallMedia.Application.Devices.Commands.UpdateDevice;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Interfaces;
 using MallMedia.Domain.Repositories;
@@ -47,7 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDevicesRepository, DevicesRepository>();
         services.AddMediatR(configuration =>
         {
-            configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
+            configuration.RegisterServicesFromAssembly(typeof(UpdateDevicesCommandHandler).Assembly);
             configuration.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>();
         });
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());

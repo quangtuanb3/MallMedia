@@ -1,11 +1,11 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
-using MallMedia.Application.Devices.Queries.GetDeviceById; // Updated namespace
+using MallMedia.Application.Devices.Queries.GetByIdDevice; // Updated namespace
 using MallMedia.Domain.Repositories;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.Queries.GetDeviceById
+namespace MallMedia.Application.Devices.Queries.GetByIdDevice
 {
     public class GetDeviceByIdQueryHandler : IRequestHandler<GetDeviceByIdQuery, DeviceDto>
     {

@@ -25,7 +25,7 @@ namespace MallMedia.API.Controllers.Client
         }
 
         [HttpPatch("/update/{deviceId}")]
-        public async Task<IActionResult> UpdateDevice(int deviceId, [FromBody] DeviceUpdateDto deviceUpdateDto)
+        public async Task<IActionResult> UpdateDevice(int deviceId, [FromBody] DevicesUpdateDto deviceUpdateDto)
         {
             if (deviceId != deviceUpdateDto.Id)
             {
