@@ -2,7 +2,6 @@ using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Dto;
 using MallMedia.Domain.Constants;
-using MallMedia.Domain.Entities;
 using MallMedia.Presentation.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -40,6 +39,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
         public async Task<IActionResult> OnPostAsync()
         {
+            await InitialPage();
             if (!ModelState.IsValid)
             {
                 return Page(); // If model is invalid, just reload the page
@@ -61,8 +61,10 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             Schedule.Add(new StringContent(command.TimeFrameId.ToString()), "TimeFrameId");
             Schedule.Add(new StringContent(command.DeviceId.ToString()), "DeviceId");
 
+            var httpClient = new HttpClient();
+            authenticationHelper.AddBearerToken(httpClient);
             // Use HttpClient to send the POST request with content
-            var response = await httpClient.PostAsync("https://localhost:7199/api/schedule", Schedule);
+            var response = await httpClient.PostAsync($"{Constants.ClientConstant.BaseURl}/api/schedule", Schedule);
 
             if (response.IsSuccessStatusCode)
             {

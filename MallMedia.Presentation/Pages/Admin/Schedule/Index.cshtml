@@ -76,3 +76,14 @@
         }
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        // Check if there is a success message in TempData
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+            toastr.success("@TempData["SuccessMessage"]");
+        </text>
+    }
+    });
+</script>
