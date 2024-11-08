@@ -1,4 +1,97 @@
 ﻿@page
 @model MallMedia.Presentation.Pages.Admin.Device.IndexModel
 @{
+    ViewData["Title"] = "List content";
 }
+<div class="container mt-5">
+    <h2>Devices List</h2>
+    <a class="btn btn-info" asp-page="/Admin/Device/Create">Create</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>DeviceName</th>
+                <th>DeviceType</th>
+                <th>NameLocation</th>
+                <th>Size</th>
+                <th>Resolution</th>
+                <th>CreatedAt</th>
+                <th>Status</th>
+                <th>Action</th>   
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int index = Model.ItemsFrom;
+            }
+            @foreach (var content in Model.Devices)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@content.DeviceName</td>
+                    <td>@content.DeviceType</td>
+                    <td>@content.NameLocation</td>
+                    <td>@content.Size</td>
+                    <td>@content.Resolution</td>
+                    <td>@content.CreatedAt.ToString("yyyy-MM-dd")</td>
+                    <td>@content.Status</td>
+                    <td>
+                        <!-- Action Buttons (Edit/Delete) -->
+                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+
+                ++index;
+            }
+        </tbody>
+    </table>
+    <!-- Pagination -->
+    <div class="pagination">
+        @if (Model.TotalPages > 1)
+        {
+            <ul class="pagination">
+                <!-- Previous Page Button -->
+                @if (Model.PageNumber > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)">Previous</a>
+                    </li>
+                }
+
+                <!-- Page Number Buttons -->
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" href="?PageNumber=@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next Page Button -->
+                @if (Model.PageNumber < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?PageNumber=@Model.TotalPages">Last</a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Check if there is a success message in TempData
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+                        toastr.success("@TempData["SuccessMessage"]");
+        </text>
+    }
+                                                                                                                                                });
+</script>

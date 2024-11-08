@@ -53,7 +53,6 @@ try
         app.UseSwaggerUI();
     }
 
-    //app.UseCors(option=> option.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod().AllowCredentials());
 
     app.UseHttpsRedirection();
 
