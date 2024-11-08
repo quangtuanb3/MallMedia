@@ -10,14 +10,25 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using MallMedia.Domain.Entities;
+using MallMedia.Domain.Constants;
+using MallMedia.API.Extensions;
+using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MallMedia.Domain.Repositories;
 
 namespace MallMedia.API.Controllers.Identity;
 
 [Route("api/identity")]
 [ApiController]
-public class IdentityController(UserManager<User> userManager,
+public class IdentityController(
+    UserManager<User> userManager,
     SignInManager<User> signInManager,
-    IOptions<JwtSettings> jwtSettings) : ControllerBase
+    IOptions<JwtSettings> jwtSettings,
+    IDevicesRepository devicesRepository
+    ) : ControllerBase
 {
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] CustomLoginRequest login)
@@ -69,7 +80,7 @@ public class IdentityController(UserManager<User> userManager,
         return Ok(new { Token = jwtToken, Message = "Login successful." });
     }
 
-    [HttpPost("currentUser")]
+    [HttpGet("currentUser")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult<CurrentUser>> GetCurrentUser()
     {
@@ -93,6 +104,23 @@ public class IdentityController(UserManager<User> userManager,
         };
 
         return Ok(currentUser);
+    }
+
+    [HttpGet("currentDevice")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<int>> GetCurrentDevice()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized("Device is not authenticated.");
+        }
+
+        Device device = await devicesRepository.GetByUserIdAsync(userId);
+
+
+        return Ok(device.Id);
     }
 
 }

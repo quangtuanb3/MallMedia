@@ -1,5 +1,6 @@
 ﻿using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
+using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
 using MallMedia.Application.Schedules.Queries.GetScheduleById;
 using MediatR;
@@ -34,6 +35,13 @@ namespace MallMedia.API.Controllers
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
         {
             var schedules = await mediator.Send(query);
+            return Ok(schedules);
+        }
+
+        [HttpGet("device/{deviceId}/current")]
+        public async Task<IActionResult> GetCurrentContentForDevice([FromRoute] int deviceId)
+        {
+            var schedules = await mediator.Send(new GetCurrentContentForDeviceQuery(deviceId));
             return Ok(schedules);
         }
     }

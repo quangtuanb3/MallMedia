@@ -1,15 +1,11 @@
-using MallMedia.Application.Contents.Command.CreateContents;
 using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Dto;
 using MallMedia.Domain.Constants;
-using MallMedia.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Text;
 
 namespace MallMedia.Presentation.Pages.Admin.Schedule
 {
@@ -79,12 +75,15 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
                 TimeFrameId = schedule.TimeFrameId,
                 DeviceId = schedule.DeviceId,
             };
-
-            var jsonContent = JsonConvert.SerializeObject(command); // Serialize to JSON
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            using var Schedule = new MultipartFormDataContent();
+            Schedule.Add(new StringContent(command.StartDate.ToString()), "StartDate");
+            Schedule.Add(new StringContent(command.EndDate.ToString()), "EndDate");
+            Schedule.Add(new StringContent(command.ContentId.ToString()), "ContentId");
+            Schedule.Add(new StringContent(command.TimeFrameId.ToString()), "TimeFrameId");
+            Schedule.Add(new StringContent(command.DeviceId.ToString()), "DeviceId");
 
             // Use HttpClient to send the POST request with content
-            var response = await httpClient.PostAsync("https://localhost:7199/api/schedule", content);
+            var response = await httpClient.PostAsync("https://localhost:7199/api/schedule", Schedule);
 
             if (response.IsSuccessStatusCode)
             {
