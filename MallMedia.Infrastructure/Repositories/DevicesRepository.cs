@@ -50,6 +50,11 @@ namespace MallMedia.Infrastructure.Repositories
             return dbContext.Devices.Include(d => d.Location).Include(d => d.Schedules).FirstOrDefaultAsync(d => d.Id == id);
         }
 
+        public async Task<Device> GetByUserIdAsync(string userId)
+        {
+            return await dbContext.Devices.FirstOrDefaultAsync(d => d.UserId == userId);
+        }
+
         public Task<Device> GetDeviceByIdAsync(int deviceId)
         {
             throw new NotImplementedException();

@@ -53,6 +53,7 @@ try
         .WithTags("Identity")
         .MapIdentityApi<User>();
     app.UseAuthorization();
+    app.UseStaticFiles();
 
     app.MapControllers();
 

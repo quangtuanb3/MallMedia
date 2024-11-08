@@ -1,5 +1,7 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
 using MallMedia.Application.Devices.Command.UpdateDevice;
+using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +15,7 @@ namespace MallMedia.API.Controllers.Client
         [HttpGet("{deviceId}")]
         public async Task<IActionResult> GetDeviceById(int deviceId)
         {
-            var query = new GetDeviceByIdQuery { DeviceId = deviceId };
+            var query = new GetDevicesByIdQuery { DeviceId = deviceId };
             var device = await _mediator.Send(query);
 
             if (device == null)
@@ -30,7 +32,7 @@ namespace MallMedia.API.Controllers.Client
                 return BadRequest("Device ID mismatch.");
             }
 
-            var command = new UpdateDeviceCommand(deviceUpdateDto);
+            var command = new UpdateDevicesCommand(deviceUpdateDto);
             var result = await _mediator.Send(command);
 
             if (result == null)

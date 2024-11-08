@@ -1,11 +1,13 @@
 
+using MallMedia.Presentation.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Xabe.FFmpeg;
 
 var builder = WebApplication.CreateBuilder(args);
+FFmpeg.SetExecutablesPath("C:\\Users\\TUANBQ\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-7.1-full_build\\bin");
 builder.Services.AddHttpClient();
 // Add services to the container.
 builder.Services.AddRazorPages();
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -21,7 +23,9 @@ builder.Services.AddAuthentication("Cookies")
         });
 
 
-
+builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
+builder.Services.AddSingleton<AuthenticationHelper>(); // Register your helper
+builder.Services.AddHttpClient();
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
