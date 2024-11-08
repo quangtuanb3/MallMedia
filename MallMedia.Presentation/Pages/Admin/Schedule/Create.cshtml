@@ -8,7 +8,7 @@
     <form id="filterForm" method="post" enctype="multipart/form-data">
         <div class="row ">
             <!-- Start Date -->
-             <div class="form-group pt-3 col-md-6">
+            <div class="form-group pt-3 col-md-6">
                 <label for="startDate">Start Date</label>
                 <input type="date" id="startDate" asp-for="schedule.StartDate" class="form-control" />
                 <span asp-validation-for="schedule.StartDate" class="text-danger"></span>
@@ -18,7 +18,7 @@
             <!-- End Date -->
             <div class="form-group pt-3 col-md-6">
                 <label for="endDate">End Date</label>
-                <input type="date" id="endDate" class="form-control" asp-for="schedule.EndDate"/>
+                <input type="date" id="endDate" class="form-control" asp-for="schedule.EndDate" />
                 <span asp-validation-for="schedule.EndDate" class="text-danger"></span>
             </div>
         </div>
@@ -27,14 +27,14 @@
             <!-- Content Dropdown -->
             <div class="form-group pt-3  col-md-6">
                 <label for="contentId">Content</label>
-                <select id="contentId" class="form-control"  asp-for="schedule.ContentId">
+                <select id="contentId" class="form-control" asp-for="schedule.ContentId">
                     <option value="">Select Content</option>
                     @foreach (var content in Model.Content)
                     {
-                        <option value="@content.Id">@content.Title - @content.ContentType - @content.Category.Name</option>
+                        <option value="@content.Id">[@content.ContentType] - [@content.Category.Name] - @content.Title</option>
                     }
                 </select>
-                 <span asp-validation-for="schedule.ContentId" class="text-danger"></span>
+                <span asp-validation-for="schedule.ContentId" class="text-danger"></span>
             </div>
 
             <!-- Time Frames Type Dropdown -->
@@ -54,7 +54,7 @@
         <!-- Devices Dropdown (Auto-populated) -->
         <div class="form-group pt-3">
             <label for="deviceSelect">Devices:</label>
-            <select id="deviceSelect" class="form-control"  asp-for="schedule.DeviceId">
+            <select id="deviceSelect" class="form-control" asp-for="schedule.DeviceId">
                 <option value="">Select a device</option> <!-- Default placeholder option -->
             </select>
             <span asp-validation-for="schedule.DeviceId" class="text-danger"></span>
@@ -71,6 +71,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        fetchDevices();
         // Function to call the API and fetch devices
         function fetchDevices() {
             // Get the values from the form fields
@@ -91,7 +92,7 @@
 
                 // Make an AJAX GET request to fetch devices
                 $.ajax({
-                    url: 'https://localhost:7199/api/Schedule/matchingdevices', // API endpoint to fetch matching devices
+                    url: 'http://10.20.54.244:5056/api/Schedule/matchingdevices', // API endpoint to fetch matching devices
                     type: 'GET',
                     data: queryParams,
                     success: function (response) {

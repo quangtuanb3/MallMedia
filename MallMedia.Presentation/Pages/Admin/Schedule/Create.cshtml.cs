@@ -35,11 +35,13 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
             await InitialPage();
             return Page();
-            
+
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+
+            await InitialPage();
             if (!ModelState.IsValid)
             {
                 return Page(); // If model is invalid, just reload the page
@@ -62,7 +64,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             Schedule.Add(new StringContent(command.DeviceId.ToString()), "DeviceId");
 
             // Use HttpClient to send the POST request with content
-            var response = await httpClient.PostAsync("https://localhost:7199/api/schedule", Schedule);
+            var response = await httpClient.PostAsync($"{Constants.ClientConstant.BaseURl}/api/schedule", Schedule);
 
             if (response.IsSuccessStatusCode)
             {
@@ -80,6 +82,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             // Fetch Current User
             Content = new List<ContentDto>();
             TimeFrames = new List<TimeFrameDto>();
+            schedule = new CreateScheduleCommand();
             var url_timeframe = $"{Constants.ClientConstant.BaseURl}/api/timeframes";
             var url_content = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber=1&PageSize=100";
             var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
@@ -92,7 +95,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
                 if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
                 {
-                     Redirect("Auth/Login");
+                    Redirect("Auth/Login");
                 }
 
             }

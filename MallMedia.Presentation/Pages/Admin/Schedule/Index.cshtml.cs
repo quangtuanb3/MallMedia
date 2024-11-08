@@ -17,6 +17,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
         public int PageSize { get; set; } = 2;
         public async Task OnGetAsync()
         {
+            Schedules = new List<SchedulesDto>();
             PageNumber = Request.Query.ContainsKey("pageNumber")
              ? int.Parse(Request.Query["pageNumber"])
              : 1;
