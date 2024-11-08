@@ -129,6 +129,11 @@ namespace MallMedia.Infrastructure.Repositories
             return validDevices;
         }
 
+        public Task<List<Device>> GetMatchingDevices(DateTime StartDate, DateTime EndDate, int ContentId, int TimeFrameId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Device>> GetMatchingDevices1(DateOnly StartDate, DateOnly EndDate, int ContentId, int TimeFrameId)
         {
             // Step 1: Get the content and all associated media

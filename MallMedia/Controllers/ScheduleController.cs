@@ -1,23 +1,18 @@
-<<<<<<< HEAD
 using MallMedia.Application.Contents.Command;
 using MallMedia.Application.Schedules.Commands.CreateSchedules;
-=======
+
 ﻿using MallMedia.Application.Schedules.Commands.CreateSchedules;
->>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
 using MallMedia.Application.Schedules.Queries.GetScheduleById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using MallMedia.Domain.Repositories;
 using MallMedia.Application.Schedules.Queries;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
-=======
->>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
 
 namespace MallMedia.API.Controllers
 {
@@ -50,7 +45,6 @@ namespace MallMedia.API.Controllers
             var schedules = await mediator.Send(query);
             return Ok(schedules);
         }
-<<<<<<< HEAD
         [HttpGet("{deviceId}/current")]
         public async Task<IActionResult> GetCurrentContent(int deviceId)
         {
@@ -68,9 +62,6 @@ namespace MallMedia.API.Controllers
             }
 
         }
-=======
-
->>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
         [HttpGet("device/{deviceId}/current")]
         public async Task<IActionResult> GetCurrentContentForDevice([FromRoute] int deviceId)
         {

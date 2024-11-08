@@ -11,7 +11,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MallMedia.Presentation.Pages.Admin.Schedule
 {
-    public class CreateModel : PageModel
+    public class CreateModel(HttpClient httpClient, AuthenticationHelper authenticationHelper) : PageModel
     {
 
         [BindProperty]
@@ -35,7 +35,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
             await InitialPage();
             return Page();
-            
+
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -92,7 +92,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
                 if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
                 {
-                     Redirect("Auth/Login");
+                    Redirect("Auth/Login");
                 }
 
             }

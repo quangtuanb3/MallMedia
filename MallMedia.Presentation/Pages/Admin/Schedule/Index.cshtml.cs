@@ -14,21 +14,18 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
         public int ItemsTo { get; set; }
         public int PageNumber { get; set; } = 1;
 
-<<<<<<< HEAD
         public int PageSize { get; set; } = 1;
-=======
-        public int PageSize { get; set; } = 2;
->>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
+
+        public int PageSize1 { get; set; } = 2;
+
         public async Task OnGetAsync()
         {
             PageNumber = Request.Query.ContainsKey("pageNumber")
              ? int.Parse(Request.Query["pageNumber"])
              : 1;
-<<<<<<< HEAD
+
             var url = $"https://localhost:7199/api/Schedule/getallschedule?PageNumber={PageNumber}&PageSize={PageSize}";
-=======
-            var url = $"https://localhost:7199/api/Schedule?PageNumber={PageNumber}&PageSize={PageSize}";
->>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
+            var url1 = $"https://localhost:7199/api/Schedule?PageNumber={PageNumber}&PageSize={PageSize}";
             var response = await httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
