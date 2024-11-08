@@ -5,21 +5,20 @@ using MallMedia.Domain.Constants;
 using MallMedia.Presentation.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using MallMedia.Application.Devices.Command.CreateDevice;
+using MallMedia.Domain.Entities;
 
-namespace MallMedia.Presentation.Pages.Admin.Schedule
+namespace MallMedia.Presentation.Pages.Admin.Device
 {
     public class CreateModel(HttpClient httpClient, AuthenticationHelper authenticationHelper) : PageModel
     {
 
         [BindProperty]
-        public CreateScheduleCommand schedule { get; set; }
+        public CreateDeviceCommand Device { get; set; }
 
-        public List<TimeFrameDto> TimeFrames { get; set; }
-
-        public List<ContentDto> Content { get; set; }
-
+        public List<Location> Locations { get; set; }
         public CurrentUser CurrentUser { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
@@ -34,7 +33,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
             await InitialPage();
             return Page();
-            
+
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -46,25 +45,26 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             }
 
             // Convert the command to HttpContent (JSON)
-            var command = new CreateScheduleCommand
+            var command = new CreateDeviceCommand
             {
-                StartDate = schedule.StartDate,
-                EndDate = schedule.EndDate,
-                ContentId = schedule.ContentId,
-                TimeFrameId = schedule.TimeFrameId,
-                DeviceId = schedule.DeviceId,
+                DeviceName = Device.DeviceName,
+                DeviceType = Device.DeviceType,
+                LocationId = Device.LocationId,
+                Resolution = Device.Resolution,
+                Size= Device.Size,
+                
             };
-            using var Schedule = new MultipartFormDataContent();
-            Schedule.Add(new StringContent(command.StartDate.ToString()), "StartDate");
-            Schedule.Add(new StringContent(command.EndDate.ToString()), "EndDate");
-            Schedule.Add(new StringContent(command.ContentId.ToString()), "ContentId");
-            Schedule.Add(new StringContent(command.TimeFrameId.ToString()), "TimeFrameId");
-            Schedule.Add(new StringContent(command.DeviceId.ToString()), "DeviceId");
+            using var CreateDevice = new MultipartFormDataContent();
+            CreateDevice.Add(new StringContent(command.DeviceName.ToString()), "DeviceName");
+            CreateDevice.Add(new StringContent(command.DeviceType.ToString()), "DeviceType");
+            CreateDevice.Add(new StringContent(command.LocationId.ToString()), "LocationId");
+            CreateDevice.Add(new StringContent(command.Resolution.ToString()), "Resolution");
+            CreateDevice.Add(new StringContent(command.Size.ToString()), "Size");
 
             var httpClient = new HttpClient();
             authenticationHelper.AddBearerToken(httpClient);
             // Use HttpClient to send the POST request with content
-            var response = await httpClient.PostAsync($"{Constants.ClientConstant.BaseURl}/api/schedule", Schedule);
+            var response = await httpClient.PostAsync($"{Constants.ClientConstant.BaseURl}/api/devices", CreateDevice);
 
             if (response.IsSuccessStatusCode)
             {
@@ -80,10 +80,8 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
         {
             authenticationHelper.AddBearerToken(httpClient);
             // Fetch Current User
-            Content = new List<ContentDto>();
-            TimeFrames = new List<TimeFrameDto>();
-            var url_timeframe = $"{Constants.ClientConstant.BaseURl}/api/timeframes";
-            var url_content = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber=1&PageSize=100";
+            Locations = new List<Location>();
+            var url_locations = $"{Constants.ClientConstant.BaseURl}/api/locations";
             var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
 
             var responseCurrentUser = await httpClient.GetAsync(url_current_user);
@@ -94,24 +92,15 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
                 if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
                 {
-                     Redirect("Auth/Login");
+                    Redirect("Auth/Login");
                 }
 
             }
-            var responseTimeFrames = await httpClient.GetAsync(url_timeframe);
-            var responseContents = await httpClient.GetAsync(url_content);
-            if (responseTimeFrames.IsSuccessStatusCode)
+            var responseLocations = await httpClient.GetAsync(url_locations);
+            if (responseLocations.IsSuccessStatusCode)
             {
-                var contentJson = await responseTimeFrames.Content.ReadAsStringAsync();
-                TimeFrames = JsonConvert.DeserializeObject<List<TimeFrameDto>>(contentJson);
-
-            }
-            if (responseContents.IsSuccessStatusCode)
-            {
-                var contentJson = await responseContents.Content.ReadAsStringAsync();
-                var jobject = JObject.Parse(contentJson);
-                Content = jobject["items"].ToObject<List<ContentDto>>();
-
+                var contentJson = await responseLocations.Content.ReadAsStringAsync();
+                Locations = JsonConvert.DeserializeObject<List<Location>>(contentJson);
             }
         }
     }

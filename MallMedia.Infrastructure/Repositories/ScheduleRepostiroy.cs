@@ -11,6 +11,12 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 {
     public async Task<int> Create(Schedule schedule)
     {
+        var s = await dbContext.Schedules.Where(s=>s.StartDate == schedule.StartDate 
+        &&  s.EndDate == schedule.EndDate
+        && s.DeviceId == schedule.DeviceId
+        && s.ContentId == schedule.ContentId 
+        && s.TimeFrameId == schedule.TimeFrameId).FirstAsync();
+        if (s != null) throw new Exception("Bad request!");
         await dbContext.AddAsync(schedule);
         await dbContext.SaveChangesAsync();
         return schedule.Id;

@@ -91,7 +91,7 @@
 
                 // Make an AJAX GET request to fetch devices
                 $.ajax({
-                    url: 'https://localhost:7199/api/Schedule/matchingdevices', // API endpoint to fetch matching devices
+                    url: 'http://10.20.54.244:5056/api/Schedule/matchingdevices', // API endpoint to fetch matching devices
                     type: 'GET',
                     data: queryParams,
                     success: function (response) {

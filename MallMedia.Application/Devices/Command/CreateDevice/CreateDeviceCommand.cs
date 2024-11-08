@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System.Text.RegularExpressions;
 
 namespace MallMedia.Application.Devices.Command.CreateDevice
 {
