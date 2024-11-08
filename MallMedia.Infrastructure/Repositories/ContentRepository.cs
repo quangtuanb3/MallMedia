@@ -79,4 +79,19 @@ internal class ContentRepository(ApplicationDbContext dbContext) : IContentRepos
             .OrderByDescending(c => c.UpdateDate)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<Content> GetContentByIdAsync(int id)
+    {
+        return await dbContext.Contents
+                .Include(c => c.Category)
+                .Include(c => c.Media)
+                .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<Content> UpdateContentAsync(Content content)
+    {
+        dbContext.Contents.Update(content);
+        await dbContext.SaveChangesAsync();
+        return content;
+    }
 }
