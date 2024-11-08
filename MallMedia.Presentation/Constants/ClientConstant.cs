@@ -2,5 +2,5 @@
 
 public class ClientConstant
 {
-    public static readonly string BaseURl = "https://localhost:7199";
+    public static readonly string BaseURl = "https://10.20.54.244:5056";
 }

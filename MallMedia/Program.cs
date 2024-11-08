@@ -22,6 +22,7 @@ try
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
 
+
     builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
     builder.Services.AddMediatR(configuration =>
     {
@@ -34,7 +35,19 @@ try
 
     var app = builder.Build();
 
-    using var scope = app.Services.CreateScope();
+    //using var scope = app.Services.CreateScope();
+
+    // Add CORS policy to allow requests from localhost:7220
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowLocalhost", policy =>
+            policy.WithOrigins("https://localhost:7220")  // Allow frontend origin
+                  .AllowAnyHeader()  // Allow any headers
+                  .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
+    });
+    // Enable CORS globally (apply to all controllers)
+    app.UseCors("AllowLocalhost");
+    var scope = app.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<IInitialSeeder>();
 
     await seeder.Seed();
@@ -47,6 +60,9 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
+
+    //app.UseCors(option=> option.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod().AllowCredentials());
     app.UseHttpsRedirection();
 
     app.MapGroup("api/identity")

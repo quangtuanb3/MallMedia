@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using MallMedia.API.Extensions;
+using MallMedia.Domain.Constants;
+using MallMedia.Domain.Entities;
+using MallMedia.Domain.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,6 +19,10 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MallMedia.Domain.Repositories;
+<<<<<<< HEAD
+=======
+using MallMedia.Application.Devices.Dto;
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
 
 namespace MallMedia.API.Controllers.Identity;
 
@@ -104,7 +113,11 @@ public class IdentityController(
 
     [HttpGet("currentDevice")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+<<<<<<< HEAD
     public async Task<ActionResult<int>> GetCurrentDevice()
+=======
+    public async Task<ActionResult<DeviceDto>> GetCurrentDevice()
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -114,9 +127,22 @@ public class IdentityController(
         }
 
         Device device = await devicesRepository.GetByUserIdAsync(userId);
+<<<<<<< HEAD
 
 
         return Ok(device.Id);
+=======
+        var deviceDto = new DeviceDto()
+        {
+            Id = device.Id,
+            DeviceName = device.DeviceName,
+            Size = device.Configuration.Size,
+            Resolution = device.Configuration.Resolution,
+            NameLocation = device.Location.Name,
+        };
+
+        return Ok(deviceDto);
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
     }
 
 }

@@ -101,11 +101,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 
         return contentListWithMedia;
     }
+    public async Task<List<Device>> GetMatchingDevices(DateTime startDate, DateTime endDate, int contentId, int timeFrameId)
 
-
-
-
-    public async Task<List<Device>> GetMatchingDevices(DateOnly startDate, DateOnly endDate, int contentId, int timeFrameId)
     {
         // Step 1: Get the content and all associated media
         var content = await dbContext.Contents
@@ -174,7 +171,6 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         return await dbContext.Schedules
             .FirstOrDefaultAsync(s => s.DeviceId == deviceId && s.StartDate <= currentTime && s.EndDate >= currentTime);
     }
-
     public async Task<Content> GetCurrentContentForDeviceAsync(int deviceId)
     {
         var schedule = await GetActiveScheduleForDeviceAsync(deviceId, DateTime.UtcNow);

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+using MallMedia.Application.Devices.Dto;
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MallMedia.Presentation.Helper;
@@ -11,7 +15,11 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
 {
     public CurrentUser CurrentUser { get; set; } = new CurrentUser();
     public List<Content> Contents { get; set; } = new List<Content>();
+<<<<<<< HEAD
     public int DeviceId { get; set; }
+=======
+    public DeviceDto DeviceDto { get; set; }
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
     public async Task<IActionResult> OnGet()
     {
         Contents = new List<Content>();
@@ -21,7 +29,11 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
             return Redirect("/Auth/Login");
         }
 
+<<<<<<< HEAD
         var url_currentContent = $"{Constants.ClientConstant.BaseURl}/api/schedule/device/{DeviceId}/current";
+=======
+        var url_currentContent = $"{Constants.ClientConstant.BaseURl}/api/schedule/device/{DeviceDto.Id}/current";
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
         var responseContents = await httpClient.GetAsync(url_currentContent);
         if (responseContents.IsSuccessStatusCode)
         {
@@ -76,10 +88,17 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
         if (responseCurrentDevice.IsSuccessStatusCode)
         {
             var contentJson = await responseCurrentDevice.Content.ReadAsStringAsync();
+<<<<<<< HEAD
             DeviceId = JsonConvert.DeserializeObject<int>(contentJson);
 
             // Redirect if the current user is not an admin
             if (DeviceId <= 0)
+=======
+            DeviceDto = JsonConvert.DeserializeObject<DeviceDto>(contentJson);
+
+            // Redirect if the current user is not an admin
+            if (DeviceDto?.Id is null)
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
             {
                 return false;
             }

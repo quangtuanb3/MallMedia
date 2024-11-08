@@ -10,13 +10,19 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.JSInterop" Version="8.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+<<<<<<< HEAD
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+=======
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
+>>>>>>> 8c76f2b8194fa4a86df94b65e6a535871cc75f8a
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MallMedia.Application\MallMedia.Application.csproj" />
     <ProjectReference Include="..\MallMedia\MallMedia.API.csproj" />
   </ItemGroup>
 
