@@ -1,6 +1,7 @@
 ﻿using MallMedia.API.Extensions;
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
+using MallMedia.Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
