@@ -1,6 +1,4 @@
-﻿using MallMedia.Application.Contents.Dtos;
-using MallMedia.Application.Schedules.Dto;
-using MallMedia.Domain.Entities;
+﻿using MallMedia.Domain.Entities;
 using MediatR;
 
 

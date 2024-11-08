@@ -1,5 +1,124 @@
 ﻿@page
 @model MallMedia.Presentation.Pages.Admin.Schedule.CreateModel
 @{
+    ViewData["Title"] = "Create Schedule";
 }
-<h1>Create</h1>
+<div class="container mt-5">
+    <h2>Create Schedule</h2>
+    <form id="filterForm" method="post" enctype="multipart/form-data">
+        <div class="row ">
+            <!-- Start Date -->
+             <div class="form-group pt-3 col-md-6">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" asp-for="schedule.StartDate" class="form-control" />
+                <span asp-validation-for="schedule.StartDate" class="text-danger"></span>
+            </div>
+
+
+            <!-- End Date -->
+            <div class="form-group pt-3 col-md-6">
+                <label for="endDate">End Date</label>
+                <input type="date" id="endDate" class="form-control" asp-for="schedule.EndDate"/>
+                <span asp-validation-for="schedule.EndDate" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row ">
+            <!-- Content Dropdown -->
+            <div class="form-group pt-3  col-md-6">
+                <label for="contentId">Content</label>
+                <select id="contentId" class="form-control"  asp-for="schedule.ContentId">
+                    <option value="">Select Content</option>
+                    @foreach (var content in Model.Content)
+                    {
+                        <option value="@content.Id">@content.Title - @content.ContentType - @content.Category.Name</option>
+                    }
+                </select>
+                 <span asp-validation-for="schedule.ContentId" class="text-danger"></span>
+            </div>
+
+            <!-- Time Frames Type Dropdown -->
+            <div class="form-group pt-3  col-md-6">
+                <label for="timeFramId">Time-frames</label>
+                <select id="timeFramId" class="form-control" asp-for="schedule.TimeFrameId">
+                    <option value="">Select Time-frame</option>
+                    @foreach (var time in Model.TimeFrames)
+                    {
+                        <option value="@time.Id">@time.StartTime - @time.EndTime</option>
+                    }
+                </select>
+                <span asp-validation-for="schedule.TimeFrameId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Devices Dropdown (Auto-populated) -->
+        <div class="form-group pt-3">
+            <label for="deviceSelect">Devices:</label>
+            <select id="deviceSelect" class="form-control"  asp-for="schedule.DeviceId">
+                <option value="">Select a device</option> <!-- Default placeholder option -->
+            </select>
+            <span asp-validation-for="schedule.DeviceId" class="text-danger"></span>
+        </div>
+
+        <!-- Submit Button -->
+        <a asp-page="/Admin/Schedule/Index" class="btn btn-danger mt-3">Back</a>
+        <button type="submit" class="btn btn-primary mt-3">Create</button>
+    </form>
+</div>
+
+
+<!-- Add this line in the <head> section or before the closing </body> tag -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Function to call the API and fetch devices
+        function fetchDevices() {
+            // Get the values from the form fields
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var contentId = $('#contentId').val();
+            var timeFramId = $('#timeFramId').val();
+
+            // Check if all fields are filled before making the request
+            if (startDate && endDate && contentId && timeFramId) {
+                // Prepare the query parameters
+                var queryParams = {
+                    StartDate: startDate,
+                    EndDate: endDate,
+                    ContentId: contentId,
+                    TimeFramId: timeFramId
+                };
+
+                // Make an AJAX GET request to fetch devices
+                $.ajax({
+                    url: 'https://localhost:7199/api/Schedule/matchingdevices', // API endpoint to fetch matching devices
+                    type: 'GET',
+                    data: queryParams,
+                    success: function (response) {
+                        // Clear the device dropdown
+                        $('#deviceSelect').empty().append('<option value="">Select a device</option>');
+
+                        // Loop through the response and populate the device dropdown
+                        if (response.length > 0) {
+                            $.each(response, function (index, device) {
+                                $('#deviceSelect').append('<option value="' + device.id + '">' + device.deviceName + '</option>');
+                            });
+                        } else {
+                            $('#deviceSelect').append('<option value="">No devices found</option>');
+                        }
+                    },
+                    error: function (error) {
+                        console.log('Error fetching devices:', error);
+                    }
+                });
+            }
+        }
+
+        // Attach change event listeners to the input fields
+        $('#startDate, #endDate, #contentId, #timeFramId').on('change', function () {
+            fetchDevices();  // Call fetchDevices on any change
+        });
+    });
+</script>
+
+
