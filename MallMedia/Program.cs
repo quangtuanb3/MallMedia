@@ -2,7 +2,6 @@
 using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
 using MallMedia.Application.Extensions;
-using MallMedia.Domain.Entities;
 using MallMedia.Infrastructure.Extensions;
 using MallMedia.Infrastructure.Seeders;
 using Serilog;
@@ -15,9 +14,17 @@ try
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
 
-
+    // Add CORS policy to allow requests from localhost:7220
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowLocalhost", policy =>
+            policy.WithOrigins("https://localhost:7220")  // Allow frontend origin
+                  .AllowAnyHeader()  // Allow any headers
+                  .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
+    });
     var app = builder.Build();
-
+    // Enable CORS globally (apply to all controllers)
+    app.UseCors("AllowLocalhost");
     var scope = app.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<IInitialSeeder>();
 
@@ -32,6 +39,7 @@ try
         app.UseSwaggerUI();
     }
 
+    //app.UseCors(option=> option.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod().AllowCredentials());
 
     app.UseHttpsRedirection();
 

@@ -58,7 +58,7 @@ public static class WebApplicationBuilderExtensions
 
             });
         });
-
+      
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddScoped<ErrorHandlingMiddleware>();
