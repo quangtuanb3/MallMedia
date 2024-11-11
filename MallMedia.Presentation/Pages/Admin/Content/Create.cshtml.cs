@@ -130,27 +130,28 @@ public class CreateModel(HttpClient httpClient, AuthenticationHelper authenticat
 
     private async Task InitialPage()
     {
-        authenticationHelper.AddBearerToken(httpClient);
+        //authenticationHelper.AddBearerToken(httpClient);
         // Fetch Current User
-        var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
-        var responseCurrentUser = await httpClient.GetAsync(url_current_user);
-        if (responseCurrentUser.IsSuccessStatusCode)
-        {
-            var contentJson = await responseCurrentUser.Content.ReadAsStringAsync();
-            CurrentUser = JsonConvert.DeserializeObject<CurrentUser>(contentJson);
+        //var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
+        //var responseCurrentUser = await httpClient.GetAsync(url_current_user);
+        //if (responseCurrentUser.IsSuccessStatusCode)
+        //{
+        //    var contentJson = await responseCurrentUser.Content.ReadAsStringAsync();
+        //    CurrentUser = JsonConvert.DeserializeObject<CurrentUser>(contentJson);
 
-            // Redirect to login if current user is not an admin
-            if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
-            {
-                Redirect("Auth/Login");
-            }
-        }
-        else
-        {
-            // Handle failure in fetching current user data
-            TempData["ErrorMessage"] = "Failed to fetch current user data.";
-            Redirect("Auth/Login");
-        }
+        //    // Redirect to login if current user is not an admin
+        //    if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
+        //    {
+        //        Redirect("Auth/Login");
+
+        //    }
+        //}
+        //else
+        //{
+        //    // Handle failure in fetching current user data
+        //    TempData["ErrorMessage"] = "Failed to fetch current user data.";
+        //    Redirect("Auth/Login");
+        //}
 
         // Fetch Categories
         var url_category = $"{Constants.ClientConstant.BaseURl}/api/categories";
