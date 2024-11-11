@@ -14,8 +14,9 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
 
             // Validate DeviceType: not empty and minimum length 3
             RuleFor(x => x.DeviceType)
-                .NotEmpty().WithMessage("Device Type is required.");
-                
+                .NotEmpty().WithMessage("Device Type is required.")
+                .Must(contentType => allowDeviceType.Contains(contentType))
+                .WithMessage("DeviceType must be one of the following: TV or LED.");
 
             // Validate LocationId: it must be greater than 0
             RuleFor(x => x.LocationId)

@@ -71,8 +71,21 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-       
+         $('form').on('submit', function (e) {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
 
+            if (startDate && endDate) {
+                var start = new Date(startDate);
+                var end = new Date(endDate);
+                if (start >= end) {
+                    // Show error message if start date is greater than or equal to end date
+                    alert("Start date must be earlier than end date.");
+                    e.preventDefault(); // Prevent form submission
+                    return false;
+                }
+            }
+        });
         fetchDevices();
         // Function to call the API and fetch devices
         function fetchDevices() {
@@ -120,21 +133,6 @@
         // Attach change event listeners to the input fields
         $('#startDate, #endDate, #contentId, #timeFramId').on('change', function () {
             fetchDevices();  // Call fetchDevices on any change
-        });
-        $('form').on('submit', function (e) {
-            var startDate = $('#startDate').val();
-            var endDate = $('#endDate').val();
-
-            if (startDate && endDate) {
-                var start = new Date(startDate);
-                var end = new Date(endDate);
-                if (start >= end) {
-                    // Show error message if start date is greater than or equal to end date
-                    alert("Start date must be earlier than end date.");
-                    e.preventDefault(); // Prevent form submission
-                    return false;
-                }
-            }
         });
     });
 </script>
