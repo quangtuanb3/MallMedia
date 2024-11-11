@@ -1,4 +1,5 @@
-﻿using MallMedia.Domain.Repositories;
+﻿using MallMedia.Application.Devices.Command.GetDeviceById;
+using MallMedia.Domain.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
