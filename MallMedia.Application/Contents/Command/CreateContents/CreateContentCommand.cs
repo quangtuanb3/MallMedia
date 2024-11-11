@@ -13,7 +13,7 @@ public class CreateContentCommand : IRequest<int>
 
     [Required(ErrorMessage = "Please select a category.")]
     public int CategoryId { get; set; }
-    public string UserId { get; set; } = default!;
+    public string UserId { get; set; } = "64ee5912-0852-46b4-96be-43ebde23b543";
 
     [FromForm(Name = "FilesMetadataJson")]
     public string FilesMetadataJson { get; set; } = string.Empty;

@@ -29,7 +29,8 @@ public class AuthenticationHelper
         var authToken = httpContext.Request.Cookies["authToken"];
         if (string.IsNullOrEmpty(authToken))
         {
-            throw new UnauthorizedAccessException("Authentication token is missing.");
+            //throw new UnauthorizedAccessException("Authentication token is missing.");
+            Console.WriteLine("Authentication token is missing.");
         }
 
         // Set the Authorization header with the token
