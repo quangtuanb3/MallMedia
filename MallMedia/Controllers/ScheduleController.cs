@@ -5,7 +5,10 @@ using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 //using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
 using MallMedia.Application.Schedules.Queries.GetScheduleById;
+using MallMedia.Domain.Constants;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -33,12 +36,14 @@ namespace MallMedia.API.Controllers
             return Ok(schedule);
         }
         [HttpPost]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<ActionResult> CreateSchedule([FromForm] CreateScheduleCommand command)
         {
             var result = await mediator.Send(command);
             return Ok(result);
         }
         [HttpGet]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
         {
             var schedules = await mediator.Send(query);

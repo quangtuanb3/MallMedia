@@ -1,16 +1,11 @@
-using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Azure.Identity;
 using MallMedia.Domain.Constants;
 using MallMedia.Presentation.Dtos;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
 namespace MallMedia.Presentation.Pages.Auth
 {
     public class LoginModel(HttpClient httpClient, IJSRuntime jsRuntime) : PageModel
@@ -44,7 +39,7 @@ namespace MallMedia.Presentation.Pages.Auth
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> aOnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 

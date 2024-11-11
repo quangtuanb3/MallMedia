@@ -32,29 +32,29 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
             Contents = JsonConvert.DeserializeObject<List<Content>>(contentJson);
         }
 
-        return Page();
-    }
+    //    return Page();
+    //}
 
-    private async Task<bool> InitialPage()
-    {
-        try
-        {
-            authenticationHelper.AddBearerToken(httpClient);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return false; // Redirect to login due to missing/invalid token
-        }
+    //private async Task<bool> InitialPage()
+    //{
+    //    try
+    //    {
+    //        authenticationHelper.AddBearerToken(httpClient);
+    //    }
+    //    catch (UnauthorizedAccessException)
+    //    {
+    //        return false; // Redirect to login due to missing/invalid token
+    //    }
 
-        var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
-        var url_current_device = $"{Constants.ClientConstant.BaseURl}/api/identity/currentDevice";
-        try
-        {
-            var responseCurrentUser = await httpClient.GetAsync(url_current_user);
-            if (responseCurrentUser.IsSuccessStatusCode)
-            {
-                var contentJson = await responseCurrentUser.Content.ReadAsStringAsync();
-                CurrentUser = JsonConvert.DeserializeObject<CurrentUser>(contentJson);
+    //    var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
+    //    var url_current_device = $"{Constants.ClientConstant.BaseURl}/api/identity/currentDevice";
+    //    try
+    //    {
+    //        var responseCurrentUser = await httpClient.GetAsync(url_current_user);
+    //        if (responseCurrentUser.IsSuccessStatusCode)
+    //        {
+    //            var contentJson = await responseCurrentUser.Content.ReadAsStringAsync();
+    //            CurrentUser = JsonConvert.DeserializeObject<CurrentUser>(contentJson);
 
                 // Redirect if the current user is not an admin
                 if (CurrentUser == null || CurrentUser.Roles.Contains(UserRoles.Admin))
@@ -85,12 +85,12 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticati
             if (DeviceId <= 0)
             DeviceDto = JsonConvert.DeserializeObject<DeviceDto>(contentJson);
 
-            // Redirect if the current user is not an admin
-            if (DeviceDto?.Id is null)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    //        // Redirect if the current user is not an admin
+    //        if (DeviceDto?.Id is null)
+    //        {
+    //            return false;
+    //        }
+    //    }
+    //    return true;
+    //}
 }
