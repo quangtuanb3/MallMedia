@@ -23,6 +23,8 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
         public CurrentUser CurrentUser { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
+            TimeFrames = new List<TimeFrameDto>();
+            Content = new List<ContentDto>();
             try
             {
                 authenticationHelper.AddBearerToken(httpClient);
@@ -48,7 +50,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             // Convert the command to HttpContent (JSON)
             var command = new CreateScheduleCommand
             {
-                StartDate = schedule.StartDate,
+                StartDate = schedule.StartDate,  
                 EndDate = schedule.EndDate,
                 ContentId = schedule.ContentId,
                 TimeFrameId = schedule.TimeFrameId,
@@ -61,7 +63,6 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             Schedule.Add(new StringContent(command.TimeFrameId.ToString()), "TimeFrameId");
             Schedule.Add(new StringContent(command.DeviceId.ToString()), "DeviceId");
 
-            var httpClient = new HttpClient();
             authenticationHelper.AddBearerToken(httpClient);
             // Use HttpClient to send the POST request with content
             var response = await httpClient.PostAsync($"{Constants.ClientConstant.BaseURl}/api/schedule", Schedule);

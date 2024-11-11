@@ -11,10 +11,10 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 {
     public async Task<int> Create(Schedule schedule)
     {
-        var s = await dbContext.Schedules.Where(s=>s.StartDate == schedule.StartDate 
-        &&  s.EndDate == schedule.EndDate
+        var s = await dbContext.Schedules.Where(s => s.StartDate == schedule.StartDate
+        && s.EndDate == schedule.EndDate
         && s.DeviceId == schedule.DeviceId
-        && s.ContentId == schedule.ContentId 
+        && s.ContentId == schedule.ContentId
         && s.TimeFrameId == schedule.TimeFrameId).FirstAsync();
         if (s != null) throw new Exception("Bad request!");
         await dbContext.AddAsync(schedule);
@@ -25,8 +25,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery =  dbContext.Schedules.Include(r => r.TimeFrame).Include(s=>s.Device).Include(s=>s.Content);
-            
+        var baseQuery = dbContext.Schedules.Include(r => r.TimeFrame).Include(s => s.Device).Include(s => s.Content);
+
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
@@ -54,13 +54,11 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         return schedule;
     }
 
-
     public async Task<List<Content>> GetCurrentContentForDevice(int deviceId)
     {
         var currentTime = DateTime.UtcNow;
         var currentDate = currentTime.Date;
         var currentTimeOnly = TimeOnly.FromDateTime(currentTime);
-
         // Query to find all content for the given device ID that is currently scheduled or playing
         var contentList = await dbContext.Schedules
             .Where(s => s.DeviceId == deviceId

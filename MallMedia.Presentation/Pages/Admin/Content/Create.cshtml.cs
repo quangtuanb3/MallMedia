@@ -7,9 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Metadata;
 using SixLabors.ImageSharp.PixelFormats;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using Xabe.FFmpeg;
 

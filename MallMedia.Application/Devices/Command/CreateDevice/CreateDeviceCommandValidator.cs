@@ -10,12 +10,12 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
             // Validate DeviceName: not empty and minimum length 3
             RuleFor(x => x.DeviceName)
                 .NotEmpty().WithMessage("Device Name is required.")
-                .MinimumLength(3).WithMessage("Device Name must be at least 3 characters long.");
+                .MinimumLength(2).WithMessage("Device Name must be at least 3 characters long.");
 
             // Validate DeviceType: not empty and minimum length 3
             RuleFor(x => x.DeviceType)
-                .NotEmpty().WithMessage("Device Type is required.")
-                .MinimumLength(3).WithMessage("Device Type must be at least 3 characters long.");
+                .NotEmpty().WithMessage("Device Type is required.");
+                
 
             // Validate LocationId: it must be greater than 0
             RuleFor(x => x.LocationId)
