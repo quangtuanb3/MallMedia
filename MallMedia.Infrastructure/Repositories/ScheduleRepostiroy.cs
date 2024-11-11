@@ -333,19 +333,22 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
                 return false; // Return false if parsing fails
             }
 
-            if (mediaWidth < deviceWidth || mediaHeight < deviceHeight)
-            {
-                // Content resolution is larger than the device screen
-                return false;
-            }
+            //if (mediaWidth > deviceWidth || mediaHeight > deviceHeight)
+            //{
+            //    if (!content.ContentType == ContentType.Images)
+            //    {
+            //        return false;
+            //    }
+
+            //}
 
             // Check if scaling of content resolution can fit the screen (e.g., no scaling down)
             float scalingFactor = Math.Min((float)deviceWidth / mediaWidth, (float)deviceHeight / mediaHeight);
 
-            if (scalingFactor > 1) //scalingFactor < 1 for scaling
+            if (scalingFactor < 1) //scalingFactor < 1 for scaling
             {
                 // If scaling is necessary, ensure that the content can be scaled to fit without distortion
-                return false;
+                //return false;
             }
         }
 

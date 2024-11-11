@@ -55,7 +55,11 @@
                     });
 
                     if (!response.ok) {
-                        throw new Error(`API call failed with status ${response.status}`);
+                        if (response.status === 401) { // Check if the status is 401 Unauthorized
+        window.location.href = '/Auth/Login'; // Redirect to the login page
+    } else {
+        throw new Error(`API call failed with status ${response.status}`);
+    }
                     }
 
                     const data = await response.json();
@@ -107,28 +111,29 @@
 
                 if (content.contentType === "Text") {
                     // Display text content in full-screen
-                      const textContent = document.getElementById("text-content");
-                         textContent.style.display = "flex"; // Show the text content div
-                         textContent.style.color = "Black"; // Set text color
-                         textContent.style.backgroundColor = "white"; 
+                    const textContent = document.getElementById("text-content");
+                    textContent.style.display = "flex"; // Show the text content div
+                    textContent.style.color = "Black"; // Set text color
+                    textContent.style.backgroundColor = "white";
                     document.getElementById("text-content").innerText = content.description;
 
-                    setTimeout(showNextContent, 10000); // Show text for 3 seconds before moving to next content
-                } else if (content.contentType === "Image") {
+                    setTimeout(showNextContent, 5000); // Show text for 3 seconds before moving to next content
+                } else if (content.contentType === "Images") {
                     // Display image content in full-screen as a slideshow
-                    const images = content.media.filter(media => media.type === "Image");
+                    const images = content.media.filter(media => media.type.toLowerCase().includes("image"));
+
                     let imageIndex = 0;
 
                     function showNextImage() {
                         if (imageIndex < images.length) {
                             const imageElement = document.getElementById("image-slide");
                             document.getElementById("image-content").style.display = "block";
-                            const imagePath = baseUrl + images[imageIndex].path; // Ensure baseUrl is correctly defined
+                            const imagePath = baseUrl + "\\" + images[imageIndex].path; // Ensure baseUrl is correctly defined
                             imageElement.src = imagePath;
 
                             // Load the image and apply scaling once the image is fully loaded
                             imageElement.onload = function () {
-                                scaleContent(imageElement, deviceWidth, deviceHeight, imageElement.naturalWidth, imageElement.naturalHeight);
+                                //    scaleContent(imageElement, deviceWidth, deviceHeight, imageElement.naturalWidth, imageElement.naturalHeight);
                             };
 
                             imageIndex++;
@@ -157,11 +162,12 @@
                             }
 
                             videoPlayer.src = baseUrl + "\\" + videoPath;
+                            videoPlayer.onloadedmetadata = function () {
+                                scaleContent(videoPlayer, deviceWidth, deviceHeight, videoPlayer.videoWidth, videoPlayer.videoHeight);
+                            };
                             videoPlayer.play().then(() => {
                                 document.getElementById("video-content").style.display = "block";
-                                videoPlayer.onloadedmetadata = function () {
-                                    scaleContent(videoPlayer, deviceWidth, deviceHeight, videoPlayer.videoWidth, videoPlayer.videoHeight);
-                                };
+
                                 videoIndex++;
                             }).catch(error => {
                                 console.log("Autoplay was prevented or interrupted:", error);

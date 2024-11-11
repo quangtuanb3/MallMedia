@@ -70,6 +70,15 @@
 <!-- Add this line in the <head> section or before the closing </body> tag -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const contentSelect = document.getElementById('contentId');
+        const choices = new Choices(contentSelect, {
+            searchEnabled: true, // Enable search
+            itemSelectText: '',  // Text displayed when an item is selected (optional)
+            placeholder: true,
+            placeholderValue: 'Select Content'
+        });
+    });
     $(document).ready(function () {
         fetchDevices();
         // Function to call the API and fetch devices
