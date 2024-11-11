@@ -13,7 +13,7 @@ namespace MallMedia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+
     public class ScheduleController(IMediator mediator) : ControllerBase
     {
         [HttpGet("matchingdevices")]
@@ -30,12 +30,14 @@ namespace MallMedia.API.Controllers
             return Ok(schedule);
         }
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<ActionResult> CreateSchedule([FromForm] CreateScheduleCommand command)
         {
             var result = await mediator.Send(command);
             return Ok(result);
         }
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
         {
             var schedules = await mediator.Send(query);

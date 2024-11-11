@@ -78,7 +78,13 @@ public class IdentityController(
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
-
+        HttpContext.Response.Cookies.Append("authToken", jwtToken, new CookieOptions
+        {
+            HttpOnly = true, // Ensures cookie is inaccessible to client-side scripts
+            Secure = true,   // Requires HTTPS
+            SameSite = SameSiteMode.Strict, // Prevents CSRF attacks
+            Expires = DateTimeOffset.UtcNow.AddYears(1) // Set expiration as needed
+        });
         return Ok(new { Token = jwtToken, Message = "Login successful." });
     }
 
@@ -126,7 +132,7 @@ public class IdentityController(
             DeviceName = device.DeviceName,
             Size = device.Configuration.Size,
             Resolution = device.Configuration.Resolution,
-            NameLocation = device.Location.Name,
+            NameLocation = device.Location?.Name,
         };
 
         return Ok(deviceDto);

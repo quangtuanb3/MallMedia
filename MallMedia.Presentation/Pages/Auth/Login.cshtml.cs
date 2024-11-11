@@ -39,7 +39,7 @@ namespace MallMedia.Presentation.Pages.Auth
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> aOnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 

@@ -14,8 +14,8 @@ namespace MallMedia.Presentation.Pages.Admin.Device
         public int TotalItemsCount { get; set; }
         public int ItemsFrom { get; set; }
         public int ItemsTo { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 5;
+        public int PageNumber { get; set; } 
+        public int PageSize { get; set; } 
 
 
         public async Task<IActionResult> OnGetAsync()

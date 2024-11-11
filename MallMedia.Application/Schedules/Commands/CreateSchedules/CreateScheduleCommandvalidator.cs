@@ -2,9 +2,9 @@
 
 namespace MallMedia.Application.Schedules.Commands.CreateSchedules
 {
-    public class CreateScheduleCommandvalidator :AbstractValidator<CreateScheduleCommand>
+    public class CreateScheduleCommandvalidator : AbstractValidator<CreateScheduleCommand>
     {
-        public CreateScheduleCommandvalidator() 
+        public CreateScheduleCommandvalidator()
         {
             RuleFor(x => x.ContentId)
            .GreaterThan(0).WithMessage("ContentId must be greater than 0.");

@@ -36,7 +36,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
             await InitialPage();
             return Page();
-            
+
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -81,8 +81,16 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
         {
             authenticationHelper.AddBearerToken(httpClient);
             // Fetch Current User
-            Content = new List<ContentDto>();
+            if (Content == null)
+            {
+                Content = new List<ContentDto>();
+            }
+            if (schedule == null)
+            {
+                schedule = new CreateScheduleCommand();
+            }
             TimeFrames = new List<TimeFrameDto>();
+
             var url_timeframe = $"{Constants.ClientConstant.BaseURl}/api/timeframes";
             var url_content = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber=1&PageSize=100";
             var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
@@ -95,7 +103,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
                 if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
                 {
-                     Redirect("Auth/Login");
+                    Redirect("Auth/Login");
                 }
 
             }
