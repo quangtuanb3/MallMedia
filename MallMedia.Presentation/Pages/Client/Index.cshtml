@@ -1,7 +1,93 @@
 ﻿@page
 @model MallMedia.Presentation.Pages.Client.IndexModel
+@using Newtonsoft.Json
 @{
+    ViewData["Title"] = "Client Display";
 }
-<div>
-    <p>Client Page</p>
+
+<div id="monitor">
+    <div id="text-content" style="display:none;"></div>
+    <div id="image-content" style="display:none;">
+        <img id="image-slide" src="" alt="Image Content" />
+    </div>
+    <div id="video-content" style="display:none;">
+        <video id="video-player" controls autoplay muted></video>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        const contents = @Html.Raw(JsonConvert.SerializeObject(Model.Contents));
+        const baseUrl = "https://localhost:7199/";
+        let currentIndex = 0;
+
+        function showContent(content) {
+            // Hide all content divs
+            document.getElementById("text-content").style.display = "none";
+            document.getElementById("image-content").style.display = "none";
+            document.getElementById("video-content").style.display = "none";
+
+            if (content.ContentType === "Text") {
+                // Display text content
+                document.getElementById("text-content").style.display = "block";
+                document.getElementById("text-content").innerText = content.Description;
+
+                setTimeout(showNextContent, 3000); // Show text for 3 seconds
+            } else if (content.ContentType === "Image") {
+                // Display image content in a slideshow if multiple images
+                const images = content.Media.filter(media => media.Type === "Image");
+                let imageIndex = 0;
+
+                function showNextImage() {
+                    if (imageIndex < images.length) {
+                        document.getElementById("image-content").style.display = "block";
+                        document.getElementById("image-slide").src = baseUrl + images[imageIndex].Path;
+                        imageIndex++;
+                        setTimeout(showNextImage, 2000); // Show each image for 2 seconds
+                    } else {
+                        showNextContent(); // Move to the next content after images
+                    }
+                }
+
+                showNextImage();
+            } else if (content.ContentType === "Video") {
+                // Display video content
+                 const video = content.Media.find(media => media.Type === "video/mp4");
+                if (video) {
+                    const videoPlayer = document.getElementById("video-player");
+                    videoPlayer.src = baseUrl + video.Path;
+                    document.getElementById("video-content").style.display = "block";
+
+                    videoPlayer.onended = showNextContent; // Move to next content after video ends
+                }
+            }
+        }
+
+        function showNextContent() {
+            currentIndex = (currentIndex + 1) % contents.length; // Loop through contents
+            showContent(contents[currentIndex]);
+        }
+
+        // Start the content display
+        if (contents.length > 0) {
+            showContent(contents[currentIndex]);
+        }
+    </script>
+}
+
+<style>
+    /* Basic styling for the monitor area */
+    #monitor {
+    }
+
+    #text-content, #image-content, #video-content {
+        text-align: center;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    #image-slide, #video-player {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>

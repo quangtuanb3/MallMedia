@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MallMedia.Application.Devices.Queries.GetDeviceById
+namespace MallMedia.Application.Devices.Queries.GetByIdDevice
 {
     public class GetDeviceDetailsQueryHandler : IRequestHandler<GetDeviceDetailsQuery, Device>
     {
-        private readonly IDeviceRepository _deviceRepository;
+        private readonly IDevicesRepository _deviceRepository;
 
-        public GetDeviceDetailsQueryHandler(IDeviceRepository deviceRepository)
+        public GetDeviceDetailsQueryHandler(IDevicesRepository deviceRepository)
         {
             _deviceRepository = deviceRepository;
         }

@@ -23,13 +23,13 @@
                         <form method="post">
                             <div class="form-group mb-3">
                                 <label asp-for="Input.Username" class="form-label">Username</label>
-                                <input asp-for="Input.Username" class="form-control" required />
+                                <input asp-for="Input.Username" class="form-control" required value="admin" />
                                 <span asp-validation-for="Input.Username" class="text-danger"></span>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label asp-for="Input.Password" class="form-label">Password</label>
-                                <input asp-for="Input.Password" class="form-control" type="password" required />
+                                <input asp-for="Input.Password" class="form-control" type="password" value="Admin@123" required />
                                 <span asp-validation-for="Input.Password" class="text-danger"></span>
                             </div>
 

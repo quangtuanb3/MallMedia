@@ -27,7 +27,7 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
             {
                 var device = mapper.Map<Device>(request);
                 device.UserId = user.Id;
-
+                device.Status = "Active";
                 return await devicesRepository.CreateAsync(device);
             }
             else

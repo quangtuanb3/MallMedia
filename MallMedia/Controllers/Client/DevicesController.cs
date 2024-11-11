@@ -1,6 +1,7 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
-using MallMedia.Application.Devices.Commands;
+using MallMedia.Application.Devices.Command.UpdateDevice;
 using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +25,7 @@ namespace MallMedia.API.Controllers.Client
         }
 
         [HttpPatch("/update/{deviceId}")]
-        public async Task<IActionResult> UpdateDevice(int deviceId, [FromBody] DeviceUpdateDto deviceUpdateDto)
+        public async Task<IActionResult> UpdateDevice(int deviceId, [FromBody] DevicesUpdateDto deviceUpdateDto)
         {
             if (deviceId != deviceUpdateDto.Id)
             {

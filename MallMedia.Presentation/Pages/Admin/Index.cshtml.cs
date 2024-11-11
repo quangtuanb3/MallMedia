@@ -1,12 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MallMedia.Presentation.Pages.Admin
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.JSInterop;
+using System.Net.Http.Headers;
+namespace MallMedia.Presentation.Pages.Admin;
+
+public class IndexModel(HttpClient httpClient) : PageModel
 {
-    public class IndexModel : PageModel
+    public async void OnGet()
     {
-        public void OnGet()
-        {
-        }
+        //ConfigureHttpClientAuthorization();
     }
+
 }

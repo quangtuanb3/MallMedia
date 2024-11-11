@@ -5,7 +5,7 @@ namespace MallMedia.Application.Devices.Queries.GetAllDevices
 {
     public class GetAllDevicesQueryValidator :AbstractValidator<GetAllDevicesQuery>
     {
-        private string[] allowSortByColumnNames = [nameof(DeviceDto.DeviceName), nameof(DeviceDto.DeviceType), nameof(DeviceDto.Resolution), nameof(DeviceDto.Size)];
+        private string[] allowSortByColumnNames = [nameof(Schedule.StartDate), nameof(Schedule.Status)];
         public GetAllDevicesQueryValidator() 
         {
             RuleFor(r => r.PageNumber).GreaterThanOrEqualTo(1).WithMessage("Page number >= 1");

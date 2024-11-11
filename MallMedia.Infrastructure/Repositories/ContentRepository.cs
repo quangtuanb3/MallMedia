@@ -59,4 +59,24 @@ internal class ContentRepository(ApplicationDbContext dbContext) : IContentRepos
         await dbContext.SaveChangesAsync();
         return entity.Id;
     }
+    public async Task<Content> GetCurrentContentForDeviceAsync(int deviceId)
+    {
+        var content = await dbContext.DeviceSchedules
+            .Include(ds => ds.Content)
+            .Where(ds => ds.DeviceId == deviceId
+                         && ds.StartDate <= DateTime.UtcNow
+                         && ds.EndDate >= DateTime.UtcNow)
+            .Select(ds => ds.Content)
+            .FirstOrDefaultAsync();
+
+        return content;
+    }
+
+    public async Task<Content> GetUpdatedContentForDeviceAsync(int deviceId)
+    {
+        return await dbContext.Contents
+            .Where(c => c.DeviceId == deviceId && c.IsUpdated)
+            .OrderByDescending(c => c.UpdateDate)
+            .FirstOrDefaultAsync();
+    }
 }

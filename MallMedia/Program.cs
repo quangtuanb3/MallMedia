@@ -2,6 +2,8 @@ using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
 using MallMedia.Application.Devices.Command.GetDeviceById;
 using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Application.Devices.Queries.GetByIdDevice;
+using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MallMedia.Application.Extensions;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
@@ -26,9 +28,19 @@ try
     builder.Services.AddMediatR(configuration =>
     {
         configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
-        configuration.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>();
+        configuration.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>();
     });
-    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>());
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MallMediaDb")));
+
+    builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+    builder.Services.AddMediatR(configuration =>
+    {
+        configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
+        configuration.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>();
+    });
+    builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>());
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MallMediaDb")));
 
@@ -38,7 +50,8 @@ try
     var seeder = scope.ServiceProvider.GetRequiredService<IInitialSeeder>();
 
     await seeder.Seed();
-
+    app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseMiddleware<RequestTimeLoggingMiddleware>();
     app.UseSerilogRequestLogging();
 
     if (app.Environment.IsDevelopment())
@@ -48,6 +61,7 @@ try
     }
 
 
+    //app.UseCors(option=> option.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod().AllowCredentials());
     app.UseHttpsRedirection();
 
     app.MapGroup("api/identity")
@@ -55,6 +69,7 @@ try
         .MapIdentityApi<User>();
 
     app.UseAuthorization();
+    app.UseStaticFiles();
 
     app.MapControllers();
 

@@ -1,5 +1,7 @@
-﻿using MallMedia.Application.Devices.Command.CreateDevice;
+using MallMedia.Application.Devices.Command.CreateDevice;
 using MallMedia.Application.Devices.Command.GetDeviceById;
+﻿using MallMedia.Application.Contents.Queries.GetDeviceSchedule;
+using MallMedia.Application.Devices.Command.GetDeviceDetails;
 using MallMedia.Application.Devices.Command.UpdateDevice;
 using MallMedia.Application.Devices.GetDeviceById;
 using MallMedia.Application.Devices.Queries.GetAllDevices;
@@ -44,11 +46,11 @@ namespace MallMedia.API.Controllers
         [HttpGet("/clients/{deviceId}")]
         public async Task<ActionResult> GetDeviceDetails(int deviceId)
         {
-            var device = await mediator.Send(new GetDeviceDetailsQuery(deviceId));
+            var device = await mediator.Send(new Application.Devices.Command.GetDeviceDetails.GetDeviceDetailsQuery(deviceId));
             if (device == null)
                 return NotFound("Device not found.");
 
-            var currentSchedule = await mediator.Send(new GetDeviceScheduleQuery(deviceId, DateTime.Now));
+            var currentSchedule = await mediator.Send(new Application.Devices.Command.GetDeviceById.GetDeviceScheduleQuery(deviceId, DateTime.Now));
 
             return Ok(new
             {

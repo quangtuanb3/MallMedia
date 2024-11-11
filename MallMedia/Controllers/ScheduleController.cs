@@ -1,58 +1,71 @@
-
-using MallMedia.Application.Schedules.Dto;
-using MallMedia.Application.Schedules.Queries;
-using MallMedia.Domain.Entities;
-using MallMedia.Infrastructure.Persistence;
+using MallMedia.Application.Contents.Command;
+using MallMedia.Application.Schedules.Commands.CreateSchedules;
+using MallMedia.Application.Schedules.Commands.CreateSchedules;
+using MallMedia.Application.Schedules.Queries.GetAllSchedule;
+using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
+//using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
+using MallMedia.Application.Schedules.Queries.GetScheduleById;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using MallMedia.Domain.Repositories;
+using MallMedia.Application.Schedules.Queries;
+using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 
 namespace MallMedia.API.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("api/schedule")]
-    public class ScheduleController : ControllerBase
+    public class ScheduleController(IMediator mediator, IScheduleRepository contentRepository) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IMediator _mediator;
-
-        public ScheduleController(ApplicationDbContext context, IMediator mediator)
-        {
-            _context = context;
-            _mediator = mediator;
-        }
-        [HttpGet]
-        public async Task<ActionResult> GetMatchingDevices([FromQuery] GetMatchingDevicesQuery getMatchingDevicesQuery, IMediator mediator)
+        [HttpGet("matchingdevices")]
+        public async Task<ActionResult> GetMatchingDevices([FromQuery] GetMatchingDeviceQuery getMatchingDevicesQuery)
         {
             var result = await mediator.Send(getMatchingDevicesQuery);
             return Ok(result);
         }
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSchedule(int id, [FromBody] SchedulesDto scheduleDto)
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetScheduleById([FromRoute] int id)
         {
-            var schedule = await _context.Schedules.FindAsync(id);
-            if (schedule == null)
+            var schedule = await mediator.Send(new GetScheduleByIdQuery(id));
+            return Ok(schedule);
+        }
+        [HttpPost]
+        public async Task<ActionResult> CreateSchedule([FromForm] CreateScheduleCommand command)
+        {
+            var result = await mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
+        {
+            var schedules = await mediator.Send(query);
+            return Ok(schedules);
+        }
+        [HttpGet("{deviceId}/current")]
+        public async Task<IActionResult> GetCurrentContent(int deviceId)
+        {
+            try
             {
-                return NotFound();
+                var content = await contentRepository.GetCurrentContentForDeviceAsync(deviceId);
+                if (content == null)
+                    return NotFound("No content available for the current schedule.");
+
+                return Ok(content);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
-            // Update schedule details
-            schedule.Title = (string)scheduleDto.Title;
-            schedule.ContentId = scheduleDto.ContentId;
-            schedule.DeviceId = scheduleDto.DeviceId;
-            schedule.StartDate = scheduleDto.StartDate;
-            schedule.EndDate = scheduleDto.EndDate;
-            schedule.Status = scheduleDto.Status;
-
-            // Validate date intervals and other business rules
-            if (schedule.StartDate >= schedule.EndDate)
-            {
-                return BadRequest("EndDate must be greater than StartDate.");
-            }
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+        }
+        [HttpGet("device/{deviceId}/current")]
+        public async Task<IActionResult> GetCurrentContentForDevice([FromRoute] int deviceId)
+        {
+            var schedules = await mediator.Send(new GetCurrentContentForDeviceQuery(deviceId));
+            return Ok(schedules);
         }
     }
 }

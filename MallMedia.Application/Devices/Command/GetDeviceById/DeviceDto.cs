@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MallMedia.Application.Schedules.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,6 @@ namespace MallMedia.Application.Devices.Command.GetDeviceById
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public List<SchedulesDto> SchedulesDtos { get; internal set; }
     }
 }

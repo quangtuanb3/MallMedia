@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 
-namespace MallMedia.Application.Schedules.Commands;
+namespace MallMedia.Application.Schedules.Commands.CreateSchedules;
 
 class CreateScheduleCommandHandler(
     ILogger<CreateContentCommandHandler> logger,

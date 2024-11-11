@@ -1,5 +1,6 @@
 ﻿using MallMedia.Application.Devices.Command.GetDeviceById;
 using MallMedia.Application.Devices.Commands.UpdateDevice;
+using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Interfaces;
 using MallMedia.Domain.Repositories;
@@ -36,6 +37,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<LocationSeeder>();
         services.AddScoped<DeviceSeeder>();
         services.AddScoped<TimeFrameSeeder>();
+        services.AddScoped<UserSeeder>();
         services.AddScoped<IInitialSeeder, InitialSeeder>();
         services.AddScoped<IMasterDataRepository, MasterDataRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
@@ -46,8 +48,8 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
-            configuration.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>();
+            configuration.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>();
         });
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>());
     }
 }
