@@ -1,9 +1,14 @@
-
 using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
+using MallMedia.Application.Devices.Command.GetDeviceById;
+using MallMedia.Application.Devices.Commands.UpdateDevice;
 using MallMedia.Application.Extensions;
 using MallMedia.Infrastructure.Extensions;
+using MallMedia.Infrastructure.Persistence;
+using MallMedia.Infrastructure.Repositories;
 using MallMedia.Infrastructure.Seeders;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System.Net;
 
@@ -67,7 +72,6 @@ catch (Exception ex)
 {
     Log.Fatal(ex, "Application startup failed");
 }
-finally
 {
     Log.CloseAndFlush();
 }

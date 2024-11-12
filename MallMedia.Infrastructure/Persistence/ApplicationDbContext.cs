@@ -3,22 +3,25 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MallMedia.Infrastructure.Persistence;
-internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : IdentityDbContext<User>(options)
 {
-    internal DbSet<Device> Devices { get; set; }
-    internal DbSet<Content> Contents { get; set; }
-    internal DbSet<Schedule> Schedules { get; set; }
+    public DbSet<Device> Devices { get; set; }
+    public DbSet<Content> Contents { get; set; }
+    public DbSet<Schedule> Schedules { get; set; }
 
-    internal DbSet<Category> Categories { get; set; }
-    internal DbSet<Location> Locations { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Location> Locations { get; set; }
 
-    internal DbSet<Media> Medias { get; set; }
-    internal DbSet<TimeFrame> TimeFrames { get; set; }
+    public DbSet<Media> Medias { get; set; }
+    public DbSet<TimeFrame> TimeFrames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Schedule>()
+        .Ignore(s => s.Title);
 
         modelBuilder.Entity<Device>()
             .HasOne(d => d.User)
@@ -49,10 +52,28 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
             .HasForeignKey(m => m.ContentId)
             .OnDelete(DeleteBehavior.Restrict); // Changed to Restrict
 
+        /*
         modelBuilder.Entity<Schedule>()
             .HasOne(s => s.TimeFrame)
             .WithMany(t => t.Schedules)
-            .HasForeignKey(s => s.TimeFrameId);
+            .HasForeignKey(s => s.TimeFrameId);*/
+
+        modelBuilder.Entity<Schedule>()
+            .HasMany(s => s.TimeFrames)
+            .WithMany(t => t.Schedules)
+            .UsingEntity<Dictionary<string, object>>(
+                "ScheduleTimeFrame", // Name of the join table
+                j => j
+                    .HasOne<TimeFrame>()
+                    .WithMany()
+                    .HasForeignKey("TimeFrameId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j
+                    .HasOne<Schedule>()
+                    .WithMany()
+                    .HasForeignKey("ScheduleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+            );
 
     }
 

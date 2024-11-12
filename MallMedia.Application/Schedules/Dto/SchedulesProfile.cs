@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MallMedia.Application.Schedules.Commands.CreateSchedules;
-using MallMedia.Domain.Entities;
 namespace MallMedia.Application.Schedules.Dto
 {
     public class SchedulesProfile : Profile

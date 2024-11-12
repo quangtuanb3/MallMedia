@@ -6,7 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MallMedia.Application.Devices.Command.UpdateDevice
 {
-    public class UpdateDevicesCommandHandler(ILogger<UpdateDevicesCommandHandler>logger,IDevicesRepository devicesRepository,IMapper mapper) : IRequestHandler<UpdateDevicesCommand, int>
+    public class UpdateDevicesCommandHandler(
+        ILogger<UpdateDevicesCommandHandler>logger,
+        IDevicesRepository devicesRepository,IMapper mapper) : IRequestHandler<UpdateDevicesCommand, int>
     {
         public async Task<int> Handle(UpdateDevicesCommand request, CancellationToken cancellationToken)
         {

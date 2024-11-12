@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MallMedia.Infrastructure.Seeders;
-
-internal class TimeFrameSeeder(ApplicationDbContext dbContext)
+namespace MallMedia.Infrastructure.Seeders
+{
+    public class TimeFrameSeeder(ApplicationDbContext dbContext)
 {
     public async Task Seed()
     {
@@ -30,6 +30,7 @@ internal class TimeFrameSeeder(ApplicationDbContext dbContext)
             await dbContext.SaveChangesAsync();
         }
     }
+}
 }
 
 

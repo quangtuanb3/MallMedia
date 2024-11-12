@@ -78,6 +78,9 @@ namespace MallMedia.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("isDeFault")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -94,6 +97,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConfigurationId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -428,8 +434,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TimeFrameId")
-                        .HasColumnType("int");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -476,6 +483,9 @@ namespace MallMedia.Infrastructure.Migrations
                     b.OwnsOne("MallMedia.Domain.Constants.DeviceConfiguration", "Configuration", b1 =>
                         {
                             b1.Property<int>("DeviceId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
                                 .HasColumnType("int");
 
                             b1.Property<string>("Resolution")
@@ -602,6 +612,11 @@ namespace MallMedia.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>
+                {
+                    b.Navigation("Schedules");
+                });
+
+            modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
                 {
                     b.Navigation("Schedules");
                 });
