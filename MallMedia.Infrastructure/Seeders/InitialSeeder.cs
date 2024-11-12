@@ -11,7 +11,6 @@ internal class InitialSeeder(
     CategorySeeder categorySeeder,
     LocationSeeder locationSeeder,
     DeviceSeeder deviceSeeder,
-    TimeFrameSeeder timeFrameSeeder,
     UserSeeder userSeeder,
     IServiceProvider serviceProvider,
     ApplicationDbContext dbContext) : IInitialSeeder
@@ -28,7 +27,6 @@ internal class InitialSeeder(
             await categorySeeder.Seed();
             await locationSeeder.Seed();
             await deviceSeeder.Seed();
-            await timeFrameSeeder.Seed();
             await userSeeder.Seed(serviceProvider);
         }
 

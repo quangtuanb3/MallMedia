@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241105082454_Initial")]
+    [Migration("20241112094040_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -188,25 +188,6 @@ namespace MallMedia.Infrastructure.Migrations
                     b.HasIndex("ContentId");
 
                     b.ToTable("Medias");
-                });
-
-            modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<TimeOnly>("EndTime")
-                        .HasColumnType("time");
-
-                    b.Property<TimeOnly>("StartTime")
-                        .HasColumnType("time");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TimeFrames");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.User", b =>
@@ -431,16 +412,11 @@ namespace MallMedia.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TimeFrameId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ContentId");
 
                     b.HasIndex("DeviceId");
-
-                    b.HasIndex("TimeFrameId");
 
                     b.ToTable("Schedules");
                 });
@@ -581,17 +557,9 @@ namespace MallMedia.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MallMedia.Domain.Entities.TimeFrame", "TimeFrame")
-                        .WithMany("Schedules")
-                        .HasForeignKey("TimeFrameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Content");
 
                     b.Navigation("Device");
-
-                    b.Navigation("TimeFrame");
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
@@ -600,11 +568,6 @@ namespace MallMedia.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
-                {
-                    b.Navigation("Schedules");
-                });
-
-            modelBuilder.Entity("MallMedia.Domain.Entities.TimeFrame", b =>
                 {
                     b.Navigation("Schedules");
                 });
