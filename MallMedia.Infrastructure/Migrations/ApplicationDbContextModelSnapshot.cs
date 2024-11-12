@@ -138,9 +138,12 @@ namespace MallMedia.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Department")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Floor")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
