@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.WebSockets;
 
 namespace MallMedia.Infrastructure.Extensions;
 
@@ -45,11 +46,35 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IScheduleRepository, ScheduleRepostiroy>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IDevicesRepository, DevicesRepository>();
+        services.AddScoped<ITimeFramesRepository, TimeFramesRepository>();
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
             configuration.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>();
         });
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDevicesByIdQueryHandler>());
+    }
+    private static async Task Echo(WebSocket webSocket)
+    {
+        var buffer = new byte[1024 * 4];
+        var receiveResult = await webSocket.ReceiveAsync(
+            new ArraySegment<byte>(buffer), CancellationToken.None);
+
+        while (!receiveResult.CloseStatus.HasValue)
+        {
+            await webSocket.SendAsync(
+                new ArraySegment<byte>(buffer, 0, receiveResult.Count),
+                receiveResult.MessageType,
+                receiveResult.EndOfMessage,
+                CancellationToken.None);
+
+            receiveResult = await webSocket.ReceiveAsync(
+                new ArraySegment<byte>(buffer), CancellationToken.None);
+        }
+
+        await webSocket.CloseAsync(
+            receiveResult.CloseStatus.Value,
+            receiveResult.CloseStatusDescription,
+            CancellationToken.None);
     }
 }

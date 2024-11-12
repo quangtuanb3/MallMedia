@@ -126,15 +126,21 @@ public class IdentityController(
         }
 
         Device device = await devicesRepository.GetByUserIdAsync(userId);
-        return Ok(device.Id);
-        var deviceDto = new DeviceDto()
+
+        if (device != null)
         {
-            Id = device.Id,
-            DeviceName = device.DeviceName,
-            Size = device.Configuration.Size,
-            Resolution = device.Configuration.Resolution,
-            NameLocation = device.Location.Name,
-        };
+            var deviceDto = new DeviceDto()
+            {
+                Id = device.Id,
+                DeviceName = device.DeviceName,
+                Size = device.Configuration.Size,
+                Resolution = device.Configuration.Resolution,
+                Floor = device.Location.Floor,
+                Department = device.Location.Department
+            };
+            return Ok(deviceDto);
+        }
+
 
         return Unauthorized();
     }

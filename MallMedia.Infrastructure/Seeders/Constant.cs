@@ -35,22 +35,25 @@ public static class LocationData
 {
     public static readonly List<Location> Locations = new List<Location>
     {
-        new Location { Name = "Cổng chính" },
-        new Location { Name = "Sảnh trung tâm" },
-        new Location { Name = "Khu vực thang máy" },
-        new Location { Name = "Khu vực thang cuốn" },
-        new Location { Name = "Khu ẩm thực" },
-        new Location { Name = "Lối đi" },
-        new Location { Name = "Quầy thông tin" },
-        new Location { Name = "Lối vào cửa hàng" },
-        new Location { Name = "Lối vào bãi đỗ xe" },
-        new Location { Name = "Lối vào nhà vệ sinh" },
-        new Location { Name = "Khu vui chơi trẻ em" },
-        new Location { Name = "Khu vực rạp chiếu phim" },
-        new Location { Name = "Phòng chờ VIP" },
-        new Location { Name = "Khu vực tổ chức sự kiện" },
-        new Location { Name = "Khu vực ATM" },
-        new Location { Name = "Khu vực ngoài trời" }
+        new Location {Floor = 1, Department = "Sảnh chính"},
+        new Location { Floor = 1, Department = "Khu vực ẩm thực" },
+        new Location { Floor = 1, Department = "Khu vực thời trang - phụ kiện" },
+        new Location { Floor = 1, Department = "Khu vực cửa hàng chuyên dụng" },
+        new Location { Floor = 1, Department = "Khu vực thang máy" },
+        new Location { Floor = 1, Department = "Khu vực thang cuốn" },
+        new Location { Floor = 2, Department = "Khu vực thời trang - phụ kiện" },
+        new Location { Floor = 2, Department = "Khu vực cửa hàng chuyên dụng" },
+        new Location { Floor = 2, Department = "Khu vực thang máy" },
+        new Location { Floor = 2, Department = "Khu vui thang cuốn" },
+        new Location { Floor = 3, Department = "Khu vực ẩm thực" },
+        new Location { Floor = 3, Department = "Khu vực cửa hàng chuyên dụng" },
+        new Location { Floor = 3, Department = "Khu vui chơi - giải trí" },
+        new Location { Floor = 3, Department = "Khu vực thang máy" },
+        new Location { Floor = 3, Department = "Khu vực thang cuốn" },
+        new Location { Floor = 4, Department = "Khu vực thời trang - phụ kiện" },
+        new Location { Floor = 4, Department = "Khu vực cửa hàng chuyên dụng" },
+        new Location { Floor = 4, Department = "Khu vực thang máy" },
+        new Location { Floor = 4, Department = "Khu vực thang cuốn" },
     };
 }
 
