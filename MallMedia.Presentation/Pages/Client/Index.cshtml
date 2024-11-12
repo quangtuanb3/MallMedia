@@ -15,8 +15,25 @@
     </div>
 </div>
 
+
+
 @section Scripts {
     <script>
+        function scaleContent(element, deviceWidth, deviceHeight, contentWidth, contentHeight) {
+            const monitorWidth = deviceWidth;  // Full screen width
+            const monitorHeight = deviceHeight;  // Full screen height
+
+            // Calculate scale factor based on content and screen dimensions
+            const scaleX = monitorWidth / contentWidth;
+            const scaleY = monitorHeight / contentHeight;
+
+            // Use the smaller scale factor to ensure content fits proportionally
+            const scale = Math.min(scaleX, scaleY);
+
+            // Apply the scaling to the content
+            element.style.transform = `scale(${scale})`;
+            element.style.transformOrigin = 'center center'; // Ensure scaling starts from the center
+        }
         document.addEventListener("DOMContentLoaded", async function () {
             // Get the token from localStorage
             const token = localStorage.getItem("authToken");
@@ -38,7 +55,11 @@
                     });
 
                     if (!response.ok) {
-                        throw new Error(`API call failed with status ${response.status}`);
+                        if (response.status === 401) { // Check if the status is 401 Unauthorized
+        window.location.href = '/Auth/Login'; // Redirect to the login page
+    } else {
+        throw new Error(`API call failed with status ${response.status}`);
+    }
                     }
 
                     const data = await response.json();
@@ -53,12 +74,14 @@
             // Define API endpoints
             const currentUserUrl = baseUrl + '/api/identity/currentUser';
             const currentDeviceUrl = baseUrl + '/api/identity/currentDevice';
-            const currentDeviceScheduleUrl = baseUrl + '/api/Schedule/device/{deviceId}/current'; // Replace {deviceId} with actual deviceId
+            const currentDeviceScheduleUrl = baseUrl + '/api/Schedule/device/{deviceId}/current';
 
             // Call the APIs in sequence
             const currentUser = await callApi(currentUserUrl);
             const currentDevice = await callApi(currentDeviceUrl);
-
+            var resolution = currentDevice.resolution.split("x");
+            var deviceWidth = resolution[0];
+            var deviceHeight = resolution[1];
             if (!currentUser || !currentDevice) {
                 console.log("Error fetching current user or current device");
                 return; // Exit if there's an issue fetching data
@@ -88,21 +111,33 @@
 
                 if (content.contentType === "Text") {
                     // Display text content in full-screen
-                    document.getElementById("text-content").style.display = "block";
-                    document.getElementById("text-content").innerText = content.Description;
+                    const textContent = document.getElementById("text-content");
+                    textContent.style.display = "flex"; // Show the text content div
+                    textContent.style.color = "Black"; // Set text color
+                    textContent.style.backgroundColor = "white";
+                    document.getElementById("text-content").innerText = content.description;
 
-                    setTimeout(showNextContent, 3000); // Show text for 3 seconds before moving to next content
-                } else if (content.contentType === "Image") {
+                    setTimeout(showNextContent, 5000); // Show text for 3 seconds before moving to next content
+                } else if (content.contentType === "Images") {
                     // Display image content in full-screen as a slideshow
-                    const images = content.Media.filter(media => media.Type === "Image");
+                    const images = content.media.filter(media => media.type.toLowerCase().includes("image"));
+
                     let imageIndex = 0;
 
                     function showNextImage() {
                         if (imageIndex < images.length) {
+                            const imageElement = document.getElementById("image-slide");
                             document.getElementById("image-content").style.display = "block";
-                            document.getElementById("image-slide").src = baseUrl + images[imageIndex].Path;
+                            const imagePath = baseUrl + "\\" + images[imageIndex].path; // Ensure baseUrl is correctly defined
+                            imageElement.src = imagePath;
+
+                            // Load the image and apply scaling once the image is fully loaded
+                            imageElement.onload = function () {
+                                //    scaleContent(imageElement, deviceWidth, deviceHeight, imageElement.naturalWidth, imageElement.naturalHeight);
+                            };
+
                             imageIndex++;
-                            setTimeout(showNextImage, 2000); // Show each image for 2 seconds before showing next image
+                            setTimeout(showNextImage, 3000); // Show each image for 3 seconds before showing the next one
                         } else {
                             setTimeout(showNextContent, 3000); // Show next content after images are done
                         }
@@ -111,24 +146,37 @@
                     showNextImage();
                 } else if (content.contentType === "Video") {
                     // Display video content in full-screen and handle multiple videos
-                    const videos = content.media.filter(media => media.type === "video/mp4");
+                    const videos = content.media?.filter(media => media.type === "video/mp4") || [];
                     let videoIndex = 0;
                     const videoPlayer = document.getElementById("video-player");
 
                     // Function to play the next video, if available
                     function playNextVideo() {
                         if (videoIndex < videos.length) {
-                            videoPlayer.src = baseUrl + "\\" + videos[videoIndex].path;
+                            const videoPath = videos[videoIndex]?.path;
+                            if (!videoPath) {
+                                console.warn("Invalid video path. Skipping video.");
+                                videoIndex++;
+                                playNextVideo();
+                                return;
+                            }
+
+                            videoPlayer.src = baseUrl + "\\" + videoPath;
+                            videoPlayer.onloadedmetadata = function () {
+                                scaleContent(videoPlayer, deviceWidth, deviceHeight, videoPlayer.videoWidth, videoPlayer.videoHeight);
+                            };
                             videoPlayer.play().then(() => {
                                 document.getElementById("video-content").style.display = "block";
+
                                 videoIndex++;
                             }).catch(error => {
-                                videoIndex--;
-                                console.log("Autoplay was prevented", error);
-                                // Optionally show a message or a play button
+                                console.log("Autoplay was prevented or interrupted:", error);
+                                // Show a play button or an error message if necessary
+                                setTimeout(playNextVideo, 10); // Retry after a delay
                             });
                         } else {
-                            setTimeout(showNextContent, 1); // Show next content after all videos are done
+                            videoPlayer.removeEventListener("ended", playNextVideo);
+                            setTimeout(showNextContent, 10); // Show next content after all videos are done
                         }
                     }
 
@@ -152,14 +200,58 @@
             }
 
             // Set the resolution of the monitor container
-            const resolution = currentDevice.resolution.split("x");
-            const width = resolution[0];
-            const height = resolution[1];
+            resolution = currentDevice.resolution.split("x");
+            let width = resolution[0];
+            let height = resolution[1];
             document.getElementById("monitor").style.width = width + "px";
             document.getElementById("monitor").style.height = height + "px";
         });
     </script>
 }
+
+<!--
+<style>
+      /* Full-screen styling for content */
+      body, html {
+          height: 100%;
+          margin: 0;
+      }
+
+      #monitor {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: black; /* Set background color */
+      }
+
+      #text-content, #image-content, #video-content {
+          text-align: center;
+          max-width: 100%;
+          max-height: 100%;
+          display: none;
+      }
+
+      #image-slide, #video-player {
+          width: 100%; /* Full-screen width */
+          height: 100%; /* Full-screen height */
+          object-fit: contain; /* Ensure content scales proportionally */
+      }
+
+      /* Ensure text is displayed in full screen */
+      #text-content {
+          color: white; /* Text color for visibility */
+          font-size: 3em;
+          font-weight: bold;
+          padding: 20px;
+          background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      }
+  </style>
+
+ -->
 
 <style>
     /* Full-screen styling for content */
@@ -175,6 +267,7 @@
         justify-content: center;
         align-items: center;
         background-color: black; /* Set background color */
+        overflow: hidden; /* Ensure content does not overflow */
     }
 
     #text-content, #image-content, #video-content {
@@ -184,20 +277,26 @@
         display: none;
     }
 
+    /* Image and video will scale proportionally, maintaining aspect ratio */
     #image-slide, #video-player {
-        width: 100%; /* Full-screen width */
-        height: 100%; /* Full-screen height */
+        width: 100%;
+        height: 100%;
         object-fit: contain; /* Ensure content scales proportionally */
     }
 
     /* Ensure text is displayed in full screen */
     #text-content {
-        color: white; /* Text color for visibility */
+        color: white;
         font-size: 3em;
         font-weight: bold;
         padding: 20px;
         background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
         border-radius: 10px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 100%;
+        min-height: 100%;
     }
 </style>
