@@ -12,10 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241112095414_InitialCreate")]
+    [Migration("20241112103143_InitialCreate")]
     partial class InitialCreate
-    [Migration("20241112094040_Initial")]
-    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

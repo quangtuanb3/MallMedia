@@ -42,7 +42,6 @@ public static class LocationData
         new Location { Floor = 1 , Department = "Khu vực thang máy" },
         new Location { Floor = 1 , Department = "Khu vực thang cuốn" },
         new Location { Floor = 2 , Department = "Khu vực Thời trang -  phụ kiện" },
-        new Location { Floor = 2 , Department = "Khu vực Thời trang -  phụ kiện" },
         new Location { Floor = 2 , Department = "Khu vực thang máy" },
         new Location { Floor = 2 , Department = "Khu vực thang cuốn" },
         new Location { Floor = 3 , Department = "Khu vực Đồ ăn & nước uống" },
