@@ -1,29 +1,23 @@
-
-using MallMedia.Application.Schedules.Dto;
-using MallMedia.Application.Schedules.Queries;
-using MallMedia.Domain.Entities;
-using MallMedia.Infrastructure.Persistence;
+using MallMedia.Application.Schedules.Commands.CreateSchedules;
+using MallMedia.Application.Schedules.Queries.GetAllSchedule;
+using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
+using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
+using MallMedia.Application.Schedules.Queries.GetScheduleById;
+using MallMedia.Domain.Constants;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MallMedia.API.Controllers
 {
     [ApiController]
-    [Route("api/schedule")]
-    public class ScheduleController : ControllerBase
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly IMediator _mediator;
 
-        public ScheduleController(ApplicationDbContext context, IMediator mediator)
-        {
-            _context = context;
-            _mediator = mediator;
-        }
-        [HttpGet]
-        public async Task<ActionResult> GetMatchingDevices([FromQuery] GetMatchingDevicesQuery getMatchingDevicesQuery, IMediator mediator)
+    public class ScheduleController(IMediator mediator) : ControllerBase
+    {
+        [HttpGet("matchingdevices")]
+        public async Task<ActionResult> GetMatchingDevices([FromQuery] GetMatchingDevicesQuery getMatchingDevicesQuery)
         {
             var result = await mediator.Send(getMatchingDevicesQuery);
             return Ok(result);
@@ -37,22 +31,32 @@ namespace MallMedia.API.Controllers
                 return NotFound();
             }
 
-            // Update schedule details
-            schedule.Title = (string)scheduleDto.Title;
-            schedule.ContentId = scheduleDto.ContentId;
-            schedule.DeviceId = scheduleDto.DeviceId;
-            schedule.StartDate = scheduleDto.StartDate;
-            schedule.EndDate = scheduleDto.EndDate;
-            schedule.Status = scheduleDto.Status;
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetScheduleById([FromRoute] int id)
+        {
+            var schedule = await mediator.Send(new GetScheduleByIdQuery(id));
+            return Ok(schedule);
+        }
+        [HttpPost]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+        public async Task<ActionResult> CreateSchedule([FromForm] CreateScheduleCommand command)
+        {
+            var result = await mediator.Send(command);
+            return Ok(result);
+        }
+        [HttpGet]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+        public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
+        {
+            var schedules = await mediator.Send(query);
+            return Ok(schedules);
+        }
 
-            // Validate date intervals and other business rules
-            if (schedule.StartDate >= schedule.EndDate)
-            {
-                return BadRequest("EndDate must be greater than StartDate.");
-            }
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+        [HttpGet("device/{deviceId}/current")]
+        public async Task<IActionResult> GetCurrentContentForDevice([FromRoute] int deviceId)
+        {
+            var schedules = await mediator.Send(new GetCurrentContentForDeviceQuery(deviceId));
+            return Ok(schedules);
         }
     }
 }

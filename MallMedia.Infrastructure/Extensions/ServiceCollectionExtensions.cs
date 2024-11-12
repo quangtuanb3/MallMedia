@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<LocationSeeder>();
         services.AddScoped<DeviceSeeder>();
         services.AddScoped<TimeFrameSeeder>();
+        services.AddScoped<UserSeeder>();
         services.AddScoped<IInitialSeeder, InitialSeeder>();
         services.AddScoped<IMasterDataRepository, MasterDataRepository>();
         services.AddScoped<IMediaRepository, MediaRepository>();
@@ -43,11 +44,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IScheduleRepository, ScheduleRepostiroy>();
         services.AddScoped<IFileStorageService, FileStorageService>();
         services.AddScoped<IDevicesRepository, DevicesRepository>();
-        services.AddMediatR(configuration =>
-        {
-            configuration.RegisterServicesFromAssembly(typeof(UpdateDeviceCommandHandler).Assembly);
-            configuration.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>();
-        });
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetDeviceByIdQueryHandler>());
+        services.AddScoped<ITimeFramesRepository, TimeFramesRepository>();
     }
 }

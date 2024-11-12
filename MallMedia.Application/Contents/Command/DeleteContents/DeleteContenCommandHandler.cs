@@ -26,7 +26,7 @@ namespace MallMedia.Application.Contents.Command.DeleteContents
                     catch (Exception ex)
                     {
                         // Bắt lỗi nếu có vấn đề khi xóa
-                        throw new Exception();
+                           logger.LogError(ex.Message);
                     }
                 }
                 await contentRepository.UpdateAsync(content);

@@ -3,13 +3,17 @@ using MallMedia.Application.Contents.Command.DeleteContents;
 using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Contents.Queries.GetAllContents;
 using MallMedia.Application.Contents.Queries.GetContentById;
+using MallMedia.Domain.Constants;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MallMedia.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
 public class ContentController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
@@ -31,9 +35,10 @@ public class ContentController(IMediator mediator) : ControllerBase
         return Ok(contents);
     }
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteContent([FromRoute]int id)
+    public async Task<IActionResult> DeleteContent([FromRoute] int id)
     {
         await mediator.Send(new DeleteContenCommand(id));
         return NoContent();
     }
+
 }

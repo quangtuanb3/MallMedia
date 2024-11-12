@@ -20,16 +20,16 @@
                         <h3>Login</h3>
                     </div>
                     <div class="card-body">
-                        <form method="post">
+                        <form method="post" onsubmit="event.preventDefault(); login();">
                             <div class="form-group mb-3">
                                 <label asp-for="Input.Username" class="form-label">Username</label>
-                                <input asp-for="Input.Username" class="form-control" required />
+                                <input id="username" asp-for="Input.Username" class="form-control" required value="admin" />
                                 <span asp-validation-for="Input.Username" class="text-danger"></span>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label asp-for="Input.Password" class="form-label">Password</label>
-                                <input asp-for="Input.Password" class="form-control" type="password" required />
+                                <input id="password" asp-for="Input.Password" class="form-control" type="password" value="Password123!" required />
                                 <span asp-validation-for="Input.Password" class="text-danger"></span>
                             </div>
 
@@ -56,3 +56,62 @@
 
 </body>
 </html>
+
+@section Scripts {
+    <script>
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/; Secure; SameSite=None";
+
+        }
+
+        async function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const requestPayload = {
+                username: username,
+                password: password
+            };
+
+            try {
+                const response = await fetch('http://10.20.54.244:5056/api/identity/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestPayload)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const token = data.token;
+
+                    if (token) {
+                        // Save token to localStorage
+                        localStorage.setItem("authToken", token);
+                        console.log("Token saved to localStorage");
+
+                        // Set a client-side cookie
+                        setCookie("authToken", token, 365);
+
+                        // Redirect after successful login
+                        window.location.href = "/";
+                    }
+                } else if (response.status === 423) { // If account is locked
+                    alert("This account has been locked. Please try again later.");
+                } else {
+                    alert("Invalid login attempt.");
+                }
+            } catch (error) {
+                console.error("Error during login:", error);
+            }
+        }
+    </script>
+
+}

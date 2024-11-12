@@ -1,5 +1,106 @@
 ﻿@page
 @model MallMedia.Presentation.Pages.Admin.Content.CreateModel
-@{
+@if (Model == null || Model.CurrentUser == null)
+{
+    <div class="alert alert-danger">
+        Error: Model or CurrentUser is null.
+    </div>
 }
-<div>Create content</div>
+@{
+    ViewData["Title"] = "Create Content";
+}
+
+<div class="container mt-5">
+    <h2>Create Content</h2>
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Title Input -->
+            <div class="form-group pt-3">
+                <label for="title">Title</label>
+                <input type="text" id="title" asp-for="Content.Title" class="form-control" />
+                <span asp-validation-for="Content.Title" class="text-danger"></span>
+            </div>
+
+            <!-- Description Input -->
+            <div class="form-group pt-3">
+                <label for="description">Description</label>
+                <textarea id="description" asp-for="Content.Description" rows="4" class="form-control"></textarea>
+                <span asp-validation-for="Content.Description" class="text-danger"></span>
+            </div>
+
+
+            <!-- Category Dropdown -->
+            <div class="form-group pt-3">
+                <label for="category">Category</label>
+                <select id="categoryDropdown" asp-for="Content.CategoryId" class="form-control">
+                    <option value="">Select Category</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="Content.CategoryId" class="text-danger"></span>
+            </div>
+            <!-- Content Type Dropdown -->
+            <div class="form-group col-6 pt-3">
+                <label for="contentType">Content Type</label>
+                <select id="contentType" asp-for="Content.ContentType" class="form-control" onchange="toggleContentFields()">
+                    <option value="">Select Content Type</option>
+                    <option value="Text">Text</option>
+                    <option value="Video">Video</option>
+                    <option value="Images">Images</option>
+                </select>
+                <span asp-validation-for="Content.ContentType" class="text-danger"></span>
+            </div>
+            <div class="form-group col-6 pt-3">
+                <label for="currentUser">Created By</label>
+                <input type="text" id="userId" asp-for="Content.UserId" readonly hidden value="64ee5912-0852-46b4-96be-43ebde23b543" class="form-control" />
+                <input type="text" value="Admin" readonly class="form-control" />
+            </div>
+
+
+
+            <!-- Conditional Inputs based on Content Type -->
+            <div id="textContent" class="form-group pt-3" style="display: none;">
+                <span>Nội dung ở mục Description sẽ được hiển thị!</span>
+            </div>
+
+            <div id="videoContent" class="form-group pt-3" style="display: none;">
+                <label for="videoInput">Video Content</label>
+                <input type="file" id="videoInput" asp-for="Content.Files" class="form-control" />
+            </div>
+
+            <div id="imagesContent" class="form-group pt-3" style="display: none;">
+                <label for="imagesInput">Image Content</label>
+                <input type="file" id="imagesInput" asp-for="Content.Files" class="form-control" multiple />
+            </div>
+        </div>
+
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-4">Create Content</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleContentFields() {
+            const contentType = document.getElementById("contentType").value;
+            document.getElementById("textContent").style.display = contentType === "Text" ? "block" : "none";
+            document.getElementById("videoContent").style.display = contentType === "Video" ? "block" : "none";
+            document.getElementById("imagesContent").style.display = contentType === "Images" ? "block" : "none";
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categoryDropdown = new Choices('#categoryDropdown', {
+                searchEnabled: true,
+                itemSelectText: '', // Optional: removes "Press to select" text
+                placeholder: true,
+                placeholderValue: 'Select Category',
+            });
+        });
+    </script>
+
+}
