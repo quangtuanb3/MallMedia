@@ -6,4 +6,5 @@ public interface IMasterDataRepository
 {
     Task<IEnumerable<Category>> GetAllCategories();
     Task<IEnumerable<Location>> GetAllLocations();
+    Task<IEnumerable<Location>> GetLocations(int? floor,string department);
 }

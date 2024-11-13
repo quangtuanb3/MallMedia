@@ -53,14 +53,14 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
                 StartDate = schedule.StartDate,  
                 EndDate = schedule.EndDate,
                 ContentId = schedule.ContentId,
-                TimeFrameId = schedule.TimeFrameId,
+                //TimeFrameId = schedule.TimeFrameId,
                 DeviceId = schedule.DeviceId,
             };
             using var Schedule = new MultipartFormDataContent();
             Schedule.Add(new StringContent(command.StartDate.ToString()), "StartDate");
             Schedule.Add(new StringContent(command.EndDate.ToString()), "EndDate");
             Schedule.Add(new StringContent(command.ContentId.ToString()), "ContentId");
-            Schedule.Add(new StringContent(command.TimeFrameId.ToString()), "TimeFrameId");
+            //Schedule.Add(new StringContent(command.TimeFrameId.ToString()), "TimeFrameId");
             Schedule.Add(new StringContent(command.DeviceId.ToString()), "DeviceId");
 
             authenticationHelper.AddBearerToken(httpClient);

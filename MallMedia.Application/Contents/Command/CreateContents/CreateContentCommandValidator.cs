@@ -5,7 +5,7 @@ namespace MallMedia.Application.Contents.Command.CreateContents
 {
     public class CreateContentCommandValidator : AbstractValidator<CreateContentCommand>
     {
-        private string[] allowContentType = ["Images", "Video", "Text"];
+        private string[] allowContentType = ["Video"];
         public CreateContentCommandValidator()
         {
             // Title validation: not empty, min length 5
@@ -22,7 +22,7 @@ namespace MallMedia.Application.Contents.Command.CreateContents
             RuleFor(x => x.ContentType)
                 .NotEmpty().WithMessage("ContentType is required.")
                 .Must(contentType => allowContentType.Contains(contentType))
-                .WithMessage("ContentType must be one of the following: Images, Video, or Text.");
+                .WithMessage("ContentType must be one of the following: Video.");
 
             // CategoryId validation: ensure it has a value (non-zero) and required
             RuleFor(x => x.CategoryId)

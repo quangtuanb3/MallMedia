@@ -111,4 +111,13 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         return contentListWithMedia;
     }
 
+    public async Task<bool> IsExistSchedule(Schedule schedule)
+    {
+        var sche = await dbContext.Schedules
+            .FirstOrDefaultAsync(s => s.DeviceId == schedule.DeviceId 
+                 && s.ContentId == schedule.ContentId
+                 && s.StartDate == schedule.StartDate
+                 && s.EndDate == schedule.EndDate);
+        return sche is null ? false : true;
+    }
 }

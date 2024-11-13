@@ -31,24 +31,13 @@
                     <option value="">Select Content</option>
                     @foreach (var content in Model.Content)
                     {
-                        <option value="@content.Id">[@content.ContentType] - [@content.Category.Name] - @content.Title</option>
+                        <option value="@content.Id">[@content.ContentType] - [@content.Category.Name] - [@content.Title]</option>
                     }
                 </select>
                 <span asp-validation-for="schedule.ContentId" class="text-danger"></span>
             </div>
 
-            <!-- Time Frames Type Dropdown -->
-            <div class="form-group pt-3  col-md-6">
-                <label for="timeFramId">Time-frames</label>
-                <select id="timeFramId" class="form-control" asp-for="schedule.TimeFrameId">
-                    <option value="">Select Time-frame</option>
-                    @foreach (var time in Model.TimeFrames)
-                    {
-                        <option value="@time.Id">@time.StartTime - @time.EndTime</option>
-                    }
-                </select>
-                <span asp-validation-for="schedule.TimeFrameId" class="text-danger"></span>
-            </div>
+            
         </div>
 
         <!-- Devices Dropdown (Auto-populated) -->

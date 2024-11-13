@@ -1,13 +1,7 @@
-﻿using MallMedia.Application.MasterData.Queries.GetAllCategories;
-using MallMedia.Domain.Entities;
+﻿using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MallMedia.Application.MasterData.Queries.GetAllLocations;
 

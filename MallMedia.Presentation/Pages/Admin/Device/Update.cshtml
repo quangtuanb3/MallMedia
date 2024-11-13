@@ -47,7 +47,7 @@
                     <option value="">Select location</option>
                     @foreach (var location in Model.Locations)
                     {
-                        <option value="@location.Id">@location.Name</option>
+                        <option value="@location.Id">@location.Department</option>
                     }
                 </select>
                 <span asp-validation-for="Device.LocationId" class="text-danger"></span>

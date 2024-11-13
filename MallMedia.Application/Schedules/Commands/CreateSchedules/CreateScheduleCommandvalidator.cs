@@ -21,8 +21,8 @@ namespace MallMedia.Application.Schedules.Commands.CreateSchedules
                 .GreaterThan(x => x.StartDate).When(x => x.StartDate.HasValue)
                 .WithMessage("EndDate must be after StartDate.");
 
-            RuleFor(x => x.TimeFrameId)
-                .GreaterThan(0).WithMessage("TimeFrameId must be greater than 0.");
+            //RuleFor(x => x.TimeFrameId)
+            //    .GreaterThan(0).WithMessage("TimeFrameId must be greater than 0.");
 
             //RuleFor(x => x.Status)
             //    .Must(status => status == "SCHEDULED" || status == "PLAYED")
