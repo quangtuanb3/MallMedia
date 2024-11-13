@@ -14,7 +14,6 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
     internal DbSet<Location> Locations { get; set; }
 
     internal DbSet<Media> Medias { get; set; }
-    internal DbSet<TimeFrame> TimeFrames { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,10 +48,6 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
             .HasForeignKey(m => m.ContentId)
             .OnDelete(DeleteBehavior.Restrict); // Changed to Restrict
 
-        modelBuilder.Entity<Schedule>()
-            .HasOne(s => s.TimeFrame)
-            .WithMany(t => t.Schedules)
-            .HasForeignKey(s => s.TimeFrameId);
 
     }
 

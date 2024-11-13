@@ -63,6 +63,24 @@ public class CreateModel(HttpClient httpClient, AuthenticationHelper authenticat
                 }
 
                 var mediaInfo = await FFmpeg.GetMediaInfo(tempFilePath);
+                var videoStream = mediaInfo.VideoStreams.FirstOrDefault();
+                if (videoStream == null)
+                {
+                    throw new Exception("No video stream found in the media file.");
+                }
+
+                // Validate the video duration
+                if (mediaInfo.Duration.TotalSeconds <= 0)
+                {
+                    throw new Exception("Invalid video duration.");
+                }
+
+                // Extract and validate resolution
+                var resolution = $"{videoStream.Width}x{videoStream.Height}";
+                if (videoStream.Width <= 0 || videoStream.Height <= 0)
+                {
+                    throw new Exception("Invalid video resolution.");
+                }
                 fileMetadata.Duration = mediaInfo.Duration;
                 fileMetadata.Resolution = $"{mediaInfo.VideoStreams.First().Width}x{mediaInfo.VideoStreams.First().Height}";
 

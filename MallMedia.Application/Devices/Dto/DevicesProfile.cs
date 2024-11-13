@@ -20,7 +20,8 @@ namespace MallMedia.Application.Devices.Dto
             CreateMap<Device, DeviceDto>()
                 .ForMember(d=>d.Size, opt => opt.MapFrom(src => src.Configuration.Size))
                 .ForMember(d => d.Resolution, opt => opt.MapFrom(src => src.Configuration.Resolution))
-                .ForMember(d => d.NameLocation, opt => opt.MapFrom(src => src.Location.Name));
+                .ForMember(d => d.Department, opt => opt.MapFrom(src => src.Location.Department))
+                .ForMember(d => d.Floor, opt => opt.MapFrom(src => src.Location.Floor));
 
             CreateMap<UpdateDevicesCommand,Device>()
                     .ForMember(d => d.Configuration, opt => opt.MapFrom(src => new DeviceConfiguration()

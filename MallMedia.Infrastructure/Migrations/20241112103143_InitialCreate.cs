@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MallMedia.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,25 +69,12 @@ namespace MallMedia.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Floor = table.Column<int>(type: "int", nullable: false),
+                    Department = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Locations", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TimeFrames",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
-                    EndTime = table.Column<TimeOnly>(type: "time", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TimeFrames", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -296,7 +283,6 @@ namespace MallMedia.Infrastructure.Migrations
                     ContentId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TimeFrameId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -312,12 +298,6 @@ namespace MallMedia.Infrastructure.Migrations
                         name: "FK_Schedules_Devices_DeviceId",
                         column: x => x.DeviceId,
                         principalTable: "Devices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Schedules_TimeFrames_TimeFrameId",
-                        column: x => x.TimeFrameId,
-                        principalTable: "TimeFrames",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -396,11 +376,6 @@ namespace MallMedia.Infrastructure.Migrations
                 name: "IX_Schedules_DeviceId",
                 table: "Schedules",
                 column: "DeviceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Schedules_TimeFrameId",
-                table: "Schedules",
-                column: "TimeFrameId");
         }
 
         /// <inheritdoc />
@@ -435,9 +410,6 @@ namespace MallMedia.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Devices");
-
-            migrationBuilder.DropTable(
-                name: "TimeFrames");
 
             migrationBuilder.DropTable(
                 name: "Categories");
