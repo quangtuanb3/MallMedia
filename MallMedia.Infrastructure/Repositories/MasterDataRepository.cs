@@ -1,4 +1,5 @@
-﻿using MallMedia.Domain.Entities;
+﻿using MallMedia.Domain.Constants;
+using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -33,4 +34,82 @@ internal class MasterDataRepository(ApplicationDbContext dbContext) : IMasterDat
         }
         return await this.GetAllLocations();
     }
+
+    public async Task<(List<FloorDeviceResult>, List<DepartmentDeviceResult>)> GetOptionSelectLocations(string deviceType)
+    {
+        if (!string.IsNullOrEmpty(deviceType))
+        {
+            // Get the distinct list of floors where the devices match the given deviceType
+            var floors = await dbContext.Devices
+                  .Where(d => d.Configuration.DeviceType.ToLower() == deviceType.ToLower())
+                  .Join(dbContext.Locations,
+                      d => d.LocationId,
+                      l => l.Id,
+                      (d, l) => new { l.Floor, d.Configuration.DeviceType })
+                  .GroupBy(x => new { x.Floor, x.DeviceType })
+                  .OrderBy(x => x.Key.Floor)
+                  .Select(g => new FloorDeviceResult
+                  {
+                      Floor = g.Key.Floor,
+                      DeviceType = g.Key.DeviceType
+                  })
+                  .ToListAsync();
+
+            // Get the distinct list of departments where the devices match the given deviceType
+            var departments = await dbContext.Devices
+                       .Where(d => d.Configuration.DeviceType.ToLower() == deviceType.ToLower())
+                       .Join(dbContext.Locations,
+                           d => d.LocationId,
+                           l => l.Id,
+                           (d, l) => new { l.Department, d.Configuration.DeviceType })
+                       .GroupBy(x => new { x.Department, x.DeviceType })
+                       .OrderBy(x => x.Key.Department)
+                       .Select(g => new DepartmentDeviceResult
+                       {
+                           Department = g.Key.Department,
+                           DeviceType = g.Key.DeviceType
+                       })
+                       .ToListAsync();
+
+            return (floors, departments);  // Return both lists as a tuple
+        }
+        else
+        {
+            var floors = await dbContext.Devices
+                  .Where(d => d.Configuration.DeviceType == "Digital Poster" ||
+                              d.Configuration.DeviceType == "LED" ||
+                              d.Configuration.DeviceType == "Vertical LCD")
+                  .Join(dbContext.Locations,
+                      d => d.LocationId,
+                      l => l.Id,
+                      (d, l) => new { l.Floor, d.Configuration.DeviceType })
+                  .GroupBy(x => new { x.Floor, x.DeviceType })
+                  .OrderBy(x => x.Key.DeviceType)
+                  .Select(g => new FloorDeviceResult
+                  {
+                      Floor = g.Key.Floor,
+                      DeviceType = g.Key.DeviceType
+                  })
+                  .ToListAsync();
+
+            // Get the distinct list of departments where the devices match the given deviceType
+            var departments = await dbContext.Devices
+                       .Where(d => d.Configuration.DeviceType == "Digital Poster" ||
+                              d.Configuration.DeviceType == "LED" ||
+                              d.Configuration.DeviceType == "Vertical LCD")
+                        .Join(dbContext.Locations,
+                            d => d.LocationId,
+                            l => l.Id,
+                            (d, l) => new { l.Department, d.Configuration.DeviceType })
+                        .GroupBy(x => new { x.Department, x.DeviceType })
+                        .OrderBy(x => x.Key.DeviceType)
+                        .Select(g => new DepartmentDeviceResult
+                        {
+                            Department = g.Key.Department,
+                            DeviceType = g.Key.DeviceType
+                        }).ToListAsync();
+            return (floors, departments);  // Return both lists as a tuple
+        }
+    }
 }
+

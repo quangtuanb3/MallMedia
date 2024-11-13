@@ -5,7 +5,6 @@ public class Device
 
     public int Id { get; set; }
     public string DeviceName { get; set; }
-    public string DeviceType { get; set; }
     public int LocationId { get; set; }
     public Location Location { get; set; }
     public DeviceConfiguration Configuration { get; set; }

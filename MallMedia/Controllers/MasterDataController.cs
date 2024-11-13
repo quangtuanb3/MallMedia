@@ -1,6 +1,7 @@
 ﻿using MallMedia.Application.MasterData.Queries.GetAllCategories;
 using MallMedia.Application.MasterData.Queries.GetAllLocations;
-using MallMedia.Application.MasterData.Queries.GetLocationsByFloorOrDepartment;
+using MallMedia.Application.MasterData.Queries.GetFloorAndDepartment;
+using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,12 +26,20 @@ public class MasterDataController(IMediator mediator) : ControllerBase
         return Ok(categories);
     }
 
-    [HttpGet("api/locations/getAllByFloorOrDepartment")]
-    public async Task<ActionResult<IEnumerable<Location>>> GetAllLocations([FromQuery] GetLocationsByFloorOrDepartmentQuery query)
+    [HttpGet("api/floor-department")]
+    public async Task<IActionResult> GetFloorAndDepartmentByDeviceType([FromQuery] GetFloorAndDepartmentQuery query)
     {
-        
-        var locations = await mediator.Send(query);
-        return Ok(locations);
+        var (floors, departments) = await mediator.Send(query);
+        var temp = new TempCl()
+        {
+            Floors = floors,
+            Departments = departments
+        };
+        return Ok(temp);
     }
-
 }
+    public class TempCl
+    {
+        public  List<FloorDeviceResult> Floors { get; set; }
+        public List<DepartmentDeviceResult> Departments { get; set; }
+    }
