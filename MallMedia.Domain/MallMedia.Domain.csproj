@@ -14,9 +14,5 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\MallMedia.Domain\MallMedia.Domain.csproj" />
-		<ProjectReference Include="..\MallMedia.Application\MallMedia.Application.csproj" />
-	</ItemGroup>
 
 </Project>

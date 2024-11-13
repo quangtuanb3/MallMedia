@@ -2,6 +2,7 @@
 
 using AutoMapper;
 using MallMedia.Domain.Constants;
+using MallMedia.Domain.Entities;
 using MallMedia.Domain.Interfaces;
 using MallMedia.Domain.Repositories;
 using MediatR;

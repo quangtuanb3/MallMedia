@@ -14,6 +14,7 @@ namespace MallMedia.Application.Schedules.Dto
         public SchedulesProfile()
         {
             CreateMap<Schedule, SchedulesDto>();
+
             CreateMap<CreateScheduleCommand, Schedule>();
         }
     }

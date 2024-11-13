@@ -56,99 +56,276 @@ public static class LocationData
         new Location { Floor = 4, Department = "Khu vực thang cuốn" },
     };
 }
-
 public static class DeviceData
 {
     public static readonly List<Device> Devices = new List<Device>
 {
-    new Device
-    {
-        DeviceName = "Samsung-UA8",
-        DeviceType = "TV",
-        LocationId = 1,
-        Configuration = new DeviceConfiguration { Size = "55 inches", Resolution = "3840x2160" },
-        Status = "Active",
-        CreatedAt = DateTime.UtcNow
-    },
-    new Device
-    {
-        DeviceName = "LG-50U",
-        DeviceType = "TV",
-        LocationId = 2,
-        Configuration = new DeviceConfiguration { Size = "50 inches", Resolution = "1920x1080" },
-        Status = "Active",
-        CreatedAt = DateTime.UtcNow
-    },
-    new Device
-    {
-        DeviceName = "Sony-X950H",
-        DeviceType = "LED",
-        LocationId = 3,
-        Configuration = new DeviceConfiguration { Size = "65 inches", Resolution = "3840x2160" },
-        Status = "Active",
-        CreatedAt = DateTime.UtcNow
-    },
-    new Device
-    {
-        DeviceName = "TCL-75C1",
-        DeviceType = "LED",
-        LocationId = 4,
-        Configuration = new DeviceConfiguration { Size = "75 inches", Resolution = "3840x2160" },
-        Status = "Active",
-        CreatedAt = DateTime.UtcNow
-    },
-    new Device
-    {
-        DeviceName = "Vizio-P-Series",
-        DeviceType = "TV",
-        LocationId = 5,
-        Configuration = new DeviceConfiguration { Size = "65 inches", Resolution = "3840x2160" },
-        Status = "Active",
-        CreatedAt = DateTime.UtcNow
-    },
-    new Device
-    {
-        DeviceName = "Philips-55PUS",
-        DeviceType = "LED",
-        LocationId = 6,
-        Configuration = new DeviceConfiguration { Size = "55 inches", Resolution = "3840x2160" },
-        Status = "Active",
-        CreatedAt = DateTime.UtcNow
-    },
-    new Device
-    {
-        DeviceName = "Hisense-H65",
-        DeviceType = "TV",
-        LocationId = 7,
-        Configuration = new DeviceConfiguration { Size = "43 inches", Resolution = "1920x1080" },
-        Status = "Active",
-        CreatedAt = DateTime.UtcNow
-    },
-    new Device
-    {
 
-        DeviceName = "Sharp-LC-65",
-        DeviceType = "LED",
-        LocationId = 8,
-        Configuration = new DeviceConfiguration { Size = "65 inches", Resolution = "3840x2160" },
+             new Device
+    {
+        DeviceName = "DP-F4.1",
+        LocationId = 15,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP ,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP
+        },
         Status = "Active",
         CreatedAt = DateTime.UtcNow
     },
-    new Device
+             new Device
     {
-        DeviceName = "Samsung-Q60T",
-        DeviceType = "LED",
-        LocationId = 9,
-        Configuration = new DeviceConfiguration { Size = "55 inches", Resolution = "3840x2160" },
+        DeviceName = "DP-F4.2",
+        LocationId = 16,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP ,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP
+        },
         Status = "Active",
         CreatedAt = DateTime.UtcNow
     },
+                    new Device
+    {
+        DeviceName = "LCD-F4.1",
+        LocationId = 17,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LCD ,
+            Size = DeviceSize.LCD,
+            Resolution = DeviceResolution.LCD
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+                             new Device
+    {
+        DeviceName = "LCD-F4.2",
+        LocationId = 18,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LCD ,
+            Size = DeviceSize.LCD,
+            Resolution = DeviceResolution.LCD
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+        new Device
+    {
+        DeviceName = "DP-F3.1",
+        LocationId = 11,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP ,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+             new Device
+    {
+        DeviceName = "DP-F3.2",
+        LocationId = 12,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP ,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+                    new Device
+    {
+        DeviceName = "LCD-F3.1",
+        LocationId = 13,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LCD ,
+            Size = DeviceSize.LCD,
+            Resolution = DeviceResolution.LCD
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+                             new Device
+    {
+        DeviceName = "LCD-F3.2",
+        LocationId = 14,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LCD ,
+            Size = DeviceSize.LCD,
+            Resolution = DeviceResolution.LCD
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+
     new Device
     {
-        DeviceName = "LG-BX",
-        DeviceType = "TV",
+        DeviceName = "LED-F1",
+        LocationId = 1,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LED,
+            Size = DeviceSize.LED,
+            Resolution = DeviceResolution.LED
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+        new Device
+    {
+        DeviceName = "LED-F2",
+        LocationId = 5,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LED,
+            Size = DeviceSize.LED,
+            Resolution = DeviceResolution.LED
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+            new Device
+    {
+        DeviceName = "LED-F3",
         LocationId = 10,
-        Configuration = new DeviceConfiguration { Size = "48 inches", Resolution = "3840x2160" },
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LED,
+            Size = DeviceSize.LED,
+            Resolution = DeviceResolution.LED
+        },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+    new Device
+    {
+        DeviceName = "DP-F1.1",
+        LocationId = 2,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+    new Device
+    {
+        DeviceName = "DP-F1.2",
+        LocationId = 2,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+    new Device
+    {
+        DeviceName = "DP-F1.3",
+        LocationId = 3,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+    new Device
+    {
+        DeviceName = "DP-F1.4",
+        LocationId = 4,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+      new Device
+    {
+        DeviceName = "LCD-F1.1",
+        LocationId = 5,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LCD,
+            Size = DeviceSize.LCD,
+            Resolution = DeviceResolution.LCD },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+            new Device
+    {
+        DeviceName = "LCD-F1.2",
+        LocationId = 6,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.LCD,
+            Size = DeviceSize.LCD,
+            Resolution = DeviceResolution.LCD },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+
+       new Device
+    {
+        DeviceName = "DP-F2.1",
+        LocationId = 7,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+
+       new Device
+    {
+        DeviceName = "DP-F2.2",
+        LocationId =7,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+
+       new Device
+    {
+        DeviceName = "DP-F2.3",
+        LocationId =8,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+          new Device
+    {
+        DeviceName = "DP-F2.4",
+        LocationId =8,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+                 new Device
+    {
+        DeviceName = "LCD-F2.1",
+        LocationId =9,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
+        Status = "Active",
+        CreatedAt = DateTime.UtcNow
+    },
+                        new Device
+    {
+        DeviceName = "LCD-F2.2",
+        LocationId =10,
+        Configuration = new DeviceConfiguration {
+            DeviceType = DeviceType.DP,
+            Size = DeviceSize.DP,
+            Resolution = DeviceResolution.DP },
         Status = "Active",
         CreatedAt = DateTime.UtcNow
     },

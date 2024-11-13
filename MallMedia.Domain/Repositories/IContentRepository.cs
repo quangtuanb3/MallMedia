@@ -1,6 +1,5 @@
 ﻿using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
-using MallMedia.Application.Contents.Command.CreateContents;
 using Microsoft.AspNetCore.Http;
 namespace MallMedia.Domain.Repositories;
 

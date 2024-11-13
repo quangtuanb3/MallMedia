@@ -10,12 +10,11 @@ namespace MallMedia.Domain.Repositories;
 
 public interface IScheduleRepository
 {
-     Task<List<Device>> GetMatchingDevices(DateTime StartDate, DateTime EndDate, int ContentId, int TimeFrameId);
-     Task<int> Create(Schedule schedule);
-
+    Task<int> Create(Schedule schedule);
     Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pagenumber, string? sortBy, SortDirection sortDirection);
     Task<Schedule> GetByIdAsync(int id);
     Task<List<Content>> GetCurrentContentForDevice(int id);
     Task<Content?> GetCurrentContentForDeviceAsync(int deviceId);
     Task<Schedule> GetCurrentScheduleForDevice(int deviceId, DateTime currentTime);
+    Task<List<Device>> GetMatchingDevices(DateTime dateTime1, DateTime dateTime2, int contentId, int timeFramId);
 }

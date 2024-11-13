@@ -10,10 +10,8 @@ public class Schedule
     public Content Content { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public ICollection<TimeFrame> TimeFrames { get; set; } = new List<TimeFrame>();
-    public string Status { get; set; }
-    [NotMapped]
-    public string Title { get; set; }
-    public int TimeFrameId { get; set; }
+    public string Status { get; set; } = "SCHEDULED";
+    public object TimeFrame { get; set; }
+    public object? Title { get; set; }
 }
 

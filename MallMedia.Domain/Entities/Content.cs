@@ -29,4 +29,7 @@ public class Content
     public int DeviceId { get; set; }
     public bool IsUpdated { get; set; }
     public object UpdateDate { get; set; }
+
+    public bool isDefault { get; set; }
+    public DateTime Schedule { get; set; }
 }

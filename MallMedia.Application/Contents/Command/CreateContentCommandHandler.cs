@@ -17,9 +17,9 @@ public class CreateContentCommandHandler(
     IMediaRepository mediaRepository,
     IFileStorageService fileStorageService,
     IContentRepository contentRepository
-    ) : IRequestHandler<CreateContentCommand, int>
+    ) : IRequestHandler<CreateContents.CreateContentCommand, int>
 {
-    public async Task<int> Handle([FromForm] CreateContentCommand request, CancellationToken cancellationToken)
+    public async Task<int> Handle([FromForm] CreateContents.CreateContentCommand request, CancellationToken cancellationToken)
 
     {
 

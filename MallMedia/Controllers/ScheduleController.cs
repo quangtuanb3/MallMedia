@@ -3,7 +3,6 @@ using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
-//using MallMedia.Application.Schedules.Queries.GetMathchingDevices;
 using MallMedia.Application.Schedules.Queries.GetScheduleById;
 using MallMedia.Domain.Constants;
 using MediatR;

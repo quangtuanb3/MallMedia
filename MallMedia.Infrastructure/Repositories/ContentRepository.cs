@@ -8,11 +8,14 @@ using MallMedia.Application.Contents.Command.CreateContents;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel.DataAnnotations;
+using MallMedia.Application.ConnectHubs;
 
 namespace MallMedia.Infrastructure.Repositories;
 
-internal class ContentRepository(ApplicationDbContext dbContext, IHubContext<NotificationHub> _hubContext) : IContentRepository
+internal class ContentRepository(ApplicationDbContext dbContext, IHubContext<ContentHub> _hubContext) : IContentRepository
 {
+    public long MaxFileSize { get; private set; }
+
     public async Task<int> CreateAsync(Content entity)
     {
         dbContext.Contents.Add(entity);
@@ -84,7 +87,7 @@ internal class ContentRepository(ApplicationDbContext dbContext, IHubContext<Not
             .FirstOrDefaultAsync();
     }
 
-    public async Task<Content> CreateContentAsync(CreateContentCommand request)
+    public async Task<Content> CreateContentAsync(Application.Contents.Command.CreateContents.CreateContentCommand request)
     {
         var content = new Content
         {
@@ -128,5 +131,10 @@ internal class ContentRepository(ApplicationDbContext dbContext, IHubContext<Not
 
         // Emit real-time event for schedule update
         await _hubContext.Clients.All.SendAsync("ContentScheduleUpdated", content);
+    }
+
+    public Task<Content> CreateContentAsync(Domain.Repositories.CreateContentCommand request)
+    {
+        throw new NotImplementedException();
     }
 }
