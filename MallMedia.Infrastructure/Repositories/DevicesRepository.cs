@@ -21,7 +21,7 @@ namespace MallMedia.Infrastructure.Repositories
             //query
             var baseQuery = dbContext.Devices.Include(r => r.Location)
                 .Where(r => search == null || r.DeviceName.ToLower().Contains(search)
-                        || r.DeviceType.ToLower().Contains(search));
+                        || r.Configuration.DeviceType.ToString().ToLower().Contains(search));
             //total items
             var totalCount = await baseQuery.CountAsync();
             // sort
@@ -29,7 +29,7 @@ namespace MallMedia.Infrastructure.Repositories
             {
                 var columsSelector = new Dictionary<string, Expression<Func<Device, object>>>
                 {
-                    {nameof(Device.DeviceType),r=>r.DeviceType},
+                    {nameof(Device.Configuration.DeviceType),r=>r.Configuration.DeviceType},
                     {nameof(Device.DeviceName),r=>r.DeviceName},
                     {nameof(Device.Configuration.Resolution),r=>r.Configuration.Resolution},
                     {nameof(Device.Configuration.Size),r=>r.Configuration.Size},
