@@ -11,7 +11,7 @@ public class Schedule
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public string Status { get; set; } = "SCHEDULED";
-    public object TimeFrame { get; set; }
+    public string TimeFrames { get; set; }
     public object? Title { get; set; }
 }
 

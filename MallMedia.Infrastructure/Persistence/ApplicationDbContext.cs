@@ -58,22 +58,22 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany(t => t.Schedules)
             .HasForeignKey(s => s.TimeFrameId);*/
 
-        //modelBuilder.Entity<Schedule>()
-        //    .HasMany(s => s.TimeFrames)
-        //    .WithMany(t => t.Schedules)
-        //    .UsingEntity<Dictionary<string, object>>(
-        //        "ScheduleTimeFrame", // Name of the join table
-        //        j => j
-        //            .HasOne<TimeFrame>()
-        //            .WithMany()
-        //            .HasForeignKey("TimeFrameId")
-        //            .OnDelete(DeleteBehavior.Cascade),
-        //        j => j
-        //            .HasOne<Schedule>()
-        //            .WithMany()
-        //            .HasForeignKey("ScheduleId")
-        //            .OnDelete(DeleteBehavior.Cascade)
-        //    );
+        modelBuilder.Entity<Schedule>()
+            .HasMany(s => s.TimeFrames)
+            .WithMany(t => t.Schedules)
+            .UsingEntity<Dictionary<string, object>>(
+                "ScheduleTimeFrame", // Name of the join table
+                j => j
+                    .HasOne<TimeFrame>()
+                    .WithMany()
+                    .HasForeignKey("TimeFrameId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j
+                    .HasOne<Schedule>()
+                    .WithMany()
+                    .HasForeignKey("ScheduleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+            );
 
     }
 
