@@ -29,6 +29,7 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
             {
                 config.Property(c => c.Size).HasColumnName("Size");
                 config.Property(c => c.Resolution).HasColumnName("Resolution");
+                config.Property(c => c.DeviceType).HasColumnName("DeviceType");
             });
 
         modelBuilder.Entity<Device>()

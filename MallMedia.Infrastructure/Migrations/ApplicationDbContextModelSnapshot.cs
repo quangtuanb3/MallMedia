@@ -78,6 +78,9 @@ namespace MallMedia.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("isDefault")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -99,10 +102,6 @@ namespace MallMedia.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeviceName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DeviceType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -456,6 +455,11 @@ namespace MallMedia.Infrastructure.Migrations
                         {
                             b1.Property<int>("DeviceId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("DeviceType")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("DeviceType");
 
                             b1.Property<string>("Resolution")
                                 .IsRequired()
