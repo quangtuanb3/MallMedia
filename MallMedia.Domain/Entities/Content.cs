@@ -23,4 +23,6 @@ public class Content
     public User? CreatedByUser { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+
+    public bool isDefault { get; set; }
 }
