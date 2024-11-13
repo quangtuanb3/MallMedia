@@ -1,6 +1,7 @@
 ﻿using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
-
+using MallMedia.Application.Contents.Command.CreateContents;
+using Microsoft.AspNetCore.Http;
 namespace MallMedia.Domain.Repositories;
 
 public interface IContentRepository
@@ -11,4 +12,7 @@ public interface IContentRepository
     Task<(List<Content>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pagenumber, string? sortBy, SortDirection sortDirection);
     Task<Content> GetCurrentContentForDeviceAsync(int deviceId);
     Task<Content> GetUpdatedContentForDeviceAsync(int deviceId);
+    Task<Content> CreateContentAsync(CreateContentCommand request);
+    Task ValidateAndUploadMediaAsync(IFormFileCollection files);
+    Task UpdateContentScheduleAsync(int contentId, DateTime schedule);
 }

@@ -7,11 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MallMedia.Domain\MallMedia.Domain.csproj" />
+		<ProjectReference Include="..\MallMedia.Application\MallMedia.Application.csproj" />
 	</ItemGroup>
 
 </Project>

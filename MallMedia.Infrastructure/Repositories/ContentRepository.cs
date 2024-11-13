@@ -4,10 +4,14 @@ using MallMedia.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using MallMedia.Domain.Constants;
 using System.Linq.Expressions;
+using MallMedia.Application.Contents.Command.CreateContents;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
+using System.ComponentModel.DataAnnotations;
 
 namespace MallMedia.Infrastructure.Repositories;
 
-internal class ContentRepository(ApplicationDbContext dbContext) : IContentRepository
+internal class ContentRepository(ApplicationDbContext dbContext, IHubContext<NotificationHub> _hubContext) : IContentRepository
 {
     public async Task<int> CreateAsync(Content entity)
     {
@@ -78,5 +82,51 @@ internal class ContentRepository(ApplicationDbContext dbContext) : IContentRepos
             .Where(c => c.DeviceId == deviceId && c.IsUpdated)
             .OrderByDescending(c => c.UpdateDate)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<Content> CreateContentAsync(CreateContentCommand request)
+    {
+        var content = new Content
+        {
+            Title = request.Title,
+            Description = request.Description,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await CreateAsync(content);
+
+        // Emit real-time event after creating new content
+        await _hubContext.Clients.All.SendAsync("ContentCreated", content);
+
+        return content;
+    }
+
+    public async Task ValidateAndUploadMediaAsync(IFormFileCollection files)
+    {
+        foreach (var file in files)
+        {
+            if (!file.ContentType.StartsWith("video/"))
+                throw new ValidationException("Only video files are allowed.");
+
+            if (file.Length > MaxFileSize)
+                throw new ValidationException("File size exceeds the maximum allowed size.");
+
+            var filePath = Path.Combine("Uploads", file.FileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+        }
+    }
+
+    public async Task UpdateContentScheduleAsync(int contentId, DateTime schedule)
+    {
+        var content = await GetByIdAsync(contentId);
+        content.Schedule = schedule;
+
+        await UpdateAsync(content);
+
+        // Emit real-time event for schedule update
+        await _hubContext.Clients.All.SendAsync("ContentScheduleUpdated", content);
     }
 }
