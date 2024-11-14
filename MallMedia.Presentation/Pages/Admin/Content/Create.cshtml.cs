@@ -38,138 +38,134 @@ public class CreateModel(HttpClient httpClient, AuthenticationHelper authenticat
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync()
-    {
-        await InitialPage();
-        //Content.UserId = authenticationHelper.GetCurrentUser().Id;
-        if (!ModelState.IsValid) return Page();
+    //public async Task<IActionResult> OnPostAsync()
+    //{
+    //    await InitialPage();
+    //    //Content.UserId = authenticationHelper.GetCurrentUser().Id;
+    //    if (!ModelState.IsValid) return Page();
 
-        var filesMetadata = new List<FilesMetadata>();
-        foreach (var file in Content.Files)
-        {
-            var fileMetadata = new FilesMetadata
-            {
-                FileName = file.FileName,
-                Type = file.ContentType,
-                Size = (int)file.Length
-            };
-            if (file.ContentType.StartsWith("video"))
-            {
-                // Use FFmpeg to get video duration and resolution
-                var tempFilePath = Path.GetTempFileName();
-                using (var stream = System.IO.File.Create(tempFilePath))
-                {
-                    await file.CopyToAsync(stream);
-                }
+    //    var filesMetadata = new List<FilesMetadata>();
+    //    foreach (var file in Content.Files)
+    //    {
+    //        var fileMetadata = new FilesMetadata
+    //        {
+    //            FileName = file.FileName,
+    //            Type = file.ContentType,
+    //            Size = (int)file.Length
+    //        };
+    //        if (file.ContentType.StartsWith("video"))
+    //        {
+    //            // Use FFmpeg to get video duration and resolution
+    //            var tempFilePath = Path.GetTempFileName();
+    //            using (var stream = System.IO.File.Create(tempFilePath))
+    //            {
+    //                await file.CopyToAsync(stream);
+    //            }
 
-                var mediaInfo = await FFmpeg.GetMediaInfo(tempFilePath);
-                var videoStream = mediaInfo.VideoStreams.FirstOrDefault();
-                if (videoStream == null)
-                {
-                    throw new Exception("No video stream found in the media file.");
-                }
+    //            var mediaInfo = await FFmpeg.GetMediaInfo(tempFilePath);
+    //            var videoStream = mediaInfo.VideoStreams.FirstOrDefault();
+    //            if (videoStream == null)
+    //            {
+    //                throw new Exception("No video stream found in the media file.");
+    //            }
 
-                // Validate the video duration
-                if (mediaInfo.Duration.TotalSeconds <= 0)
-                {
-                    throw new Exception("Invalid video duration.");
-                }
+    //            // Validate the video duration
+    //            if (mediaInfo.Duration.TotalSeconds <= 0)
+    //            {
+    //                throw new Exception("Invalid video duration.");
+    //            }
 
-                // Extract and validate resolution
-                var resolution = $"{videoStream.Width}x{videoStream.Height}";
-                if (videoStream.Width <= 0 || videoStream.Height <= 0)
-                {
-                    throw new Exception("Invalid video resolution.");
-                }
-                fileMetadata.Duration = mediaInfo.Duration;
-                fileMetadata.Resolution = $"{mediaInfo.VideoStreams.First().Width}x{mediaInfo.VideoStreams.First().Height}";
+    //            // Extract and validate resolution
+    //            var resolution = $"{videoStream.Width}x{videoStream.Height}";
+    //            if (videoStream.Width <= 0 || videoStream.Height <= 0)
+    //            {
+    //                throw new Exception("Invalid video resolution.");
+    //            }
+    //            fileMetadata.Duration = mediaInfo.Duration;
+    //            fileMetadata.Resolution = $"{mediaInfo.VideoStreams.First().Width}x{mediaInfo.VideoStreams.First().Height}";
 
-                System.IO.File.Delete(tempFilePath); // Clean up temp file
-            }
-            else if (file.ContentType.StartsWith("image"))
-            {
-                // Use ImageSharp to get image resolution
-                using var image = Image.Load<Rgba32>(file.OpenReadStream());
-                fileMetadata.Resolution = $"{image.Width}x{image.Height}";
-            }
+    //            System.IO.File.Delete(tempFilePath); // Clean up temp file
+    //        }
+    //        else
+    //        {
+    //            throw new Exception("Invalid File");
+    //        }
 
-            filesMetadata.Add(fileMetadata);
-        }
-        var create_url = $"{Constants.ClientConstant.BaseURl}/api/content";
-        var createContentCommand = new CreateContentCommand
-        {
-            Title = Content.Title,
-            Description = Content.Description,
-            ContentType = Content.ContentType,
-            CategoryId = Content.CategoryId,
-            UserId = Content.UserId,
-            FilesMetadataJson = JsonConvert.SerializeObject(filesMetadata),
-            Files = Content.Files // This is the file list
-        };
+    //        filesMetadata.Add(fileMetadata);
+    //    }
+    //    var create_url = $"{Constants.ClientConstant.BaseURl}/api/content";
+    //    var createContentCommand = new CreateContentCommand
+    //    {
+    //        Title = Content.Title,
+    //        Description = Content.Description,
+    //        CategoryId = Content.CategoryId,
+    //        UserId = Content.UserId,
+    //        FilesMetadataJson = JsonConvert.SerializeObject(filesMetadata),
+    //        Files = Content.Files // This is the file list
+    //    };
 
-        using var content = new MultipartFormDataContent();
+    //    using var content = new MultipartFormDataContent();
 
-        // Add form values
-        content.Add(new StringContent(createContentCommand.Title), "Title");
-        content.Add(new StringContent(createContentCommand.Description), "Description");
-        content.Add(new StringContent(createContentCommand.ContentType), "ContentType");
-        content.Add(new StringContent(createContentCommand.CategoryId.ToString()), "CategoryId");
-        content.Add(new StringContent(createContentCommand.UserId), "UserId");
-        content.Add(new StringContent(createContentCommand.FilesMetadataJson), "FilesMetadataJson");
+    //    // Add form values
+    //    content.Add(new StringContent(createContentCommand.Title), "Title");
+    //    content.Add(new StringContent(createContentCommand.Description), "Description");
+    //    content.Add(new StringContent(createContentCommand.CategoryId.ToString()), "CategoryId");
+    //    content.Add(new StringContent(createContentCommand.UserId), "UserId");
+    //    content.Add(new StringContent(createContentCommand.FilesMetadataJson), "FilesMetadataJson");
 
-        // Add file content
-        foreach (var file in createContentCommand.Files)
-        {
-            var fileContent = new StreamContent(file.OpenReadStream())
-            {
-                Headers = { ContentType = new MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream") }
-            };
-            content.Add(fileContent, "Files", file.FileName);
-        }
+    //    // Add file content
+    //    foreach (var file in createContentCommand.Files)
+    //    {
+    //        var fileContent = new StreamContent(file.OpenReadStream())
+    //        {
+    //            Headers = { ContentType = new MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream") }
+    //        };
+    //        content.Add(fileContent, "Files", file.FileName);
+    //    }
 
-        var httpClient = new HttpClient();
-        authenticationHelper.AddBearerToken(httpClient);
-        var response = await httpClient.PostAsync(create_url, content);
+    //    var httpClient = new HttpClient();
+    //    authenticationHelper.AddBearerToken(httpClient);
+    //    var response = await httpClient.PostAsync(create_url, content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            TempData["SuccessMessage"] = "Create successfully";
+    //    if (response.IsSuccessStatusCode)
+    //    {
+    //        TempData["SuccessMessage"] = "Create successfully";
 
-            // Redirect to Admin/Content page
-            return RedirectToPage("/Admin/Content/Index");
-        }
-        else
-        {
-            ModelState.AddModelError(string.Empty, "An error occurred while creating content.");
-            return Page();
-        }
+    //        // Redirect to Admin/Content page
+    //        return RedirectToPage("/Admin/Content/Index");
+    //    }
+    //    else
+    //    {
+    //        ModelState.AddModelError(string.Empty, "An error occurred while creating content.");
+    //        return Page();
+    //    }
 
-    }
+    //}
 
     private async Task InitialPage()
     {
-        //authenticationHelper.AddBearerToken(httpClient);
-        // Fetch Current User
-        //var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
-        //var responseCurrentUser = await httpClient.GetAsync(url_current_user);
-        //if (responseCurrentUser.IsSuccessStatusCode)
-        //{
-        //    var contentJson = await responseCurrentUser.Content.ReadAsStringAsync();
-        //    CurrentUser = JsonConvert.DeserializeObject<CurrentUser>(contentJson);
+        authenticationHelper.AddBearerToken(httpClient);
+        //Fetch Current User
+        var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
+        var responseCurrentUser = await httpClient.GetAsync(url_current_user);
+        if (responseCurrentUser.IsSuccessStatusCode)
+        {
+            var contentJson = await responseCurrentUser.Content.ReadAsStringAsync();
+            CurrentUser = JsonConvert.DeserializeObject<CurrentUser>(contentJson);
 
-        //    // Redirect to login if current user is not an admin
-        //    if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
-        //    {
-        //        Redirect("Auth/Login");
+            // Redirect to login if current user is not an admin
+            if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
+            {
+                Redirect("Auth/Login");
 
-        //    }
-        //}
-        //else
-        //{
-        //    // Handle failure in fetching current user data
-        //    TempData["ErrorMessage"] = "Failed to fetch current user data.";
-        //    Redirect("Auth/Login");
-        //}
+            }
+        }
+        else
+        {
+            // Handle failure in fetching current user data
+            TempData["ErrorMessage"] = "Failed to fetch current user data.";
+            Redirect("Auth/Login");
+        }
 
         // Fetch Categories
         var url_category = $"{Constants.ClientConstant.BaseURl}/api/categories";

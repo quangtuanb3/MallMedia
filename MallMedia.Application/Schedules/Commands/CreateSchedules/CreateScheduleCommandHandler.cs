@@ -14,7 +14,7 @@ class CreateScheduleCommandHandler(
     IScheduleRepository scheduleRepository, IDevicesRepository devicesRepository
     ) : IRequestHandler<CreateScheduleCommand, List<int>>
 {
-    public async Task<List<int>> Handle([FromForm] CreateScheduleCommand request, CancellationToken cancellationToken)
+    public async Task<List<int>> Handle(CreateScheduleCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation($"CreateScheduleCommandHandler {request}");
         List<int> listId = new List<int>();

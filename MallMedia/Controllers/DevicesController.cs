@@ -5,7 +5,6 @@ using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MallMedia.Application.Devices.Queries.GetDeviceByFloorOrDepartment;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.WebSockets;
 
 namespace MallMedia.API.Controllers
 {

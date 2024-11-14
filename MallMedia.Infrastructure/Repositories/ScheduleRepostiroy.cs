@@ -100,10 +100,7 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
             .Select(x =>
             {
                 var content = x.Content;
-                if (content.ContentType != ContentType.Text)
-                {
-                    content.Media = x.Media.ToList(); // Assign the media if it's not Text
-                }
+                content.Media = x.Media.ToList();
                 return content;
             })
             .ToList();
