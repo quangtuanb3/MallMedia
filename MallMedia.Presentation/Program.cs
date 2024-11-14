@@ -1,11 +1,14 @@
 
+using MallMedia.Application.ConnectHubs;
 using MallMedia.Presentation.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Xabe.FFmpeg;
 
 var builder = WebApplication.CreateBuilder(args);
 FFmpeg.SetExecutablesPath("C:\\Users\\TUANBQ\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-7.1-full_build\\bin");
 builder.Services.AddHttpClient();
+builder.Services.AddSignalR();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -37,6 +40,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.MapHub<ScheduleHub>("/real-time-update");
+app.MapHub<ContentHub>("/real-time-update");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

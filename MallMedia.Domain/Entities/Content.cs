@@ -25,4 +25,5 @@ public class Content
     public DateTime? UpdatedAt { get; set; }
 
     public bool isDefault { get; set; }
+    public DateTime Schedule { get; set; }
 }

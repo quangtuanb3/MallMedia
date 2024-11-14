@@ -1,19 +1,19 @@
-﻿using MallMedia.Application.Schedules.Commands.CreateSchedules;
+﻿using MallMedia.Application.ConnectHubs;
+using MallMedia.Application.Schedules.Commands.CreateSchedules;
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 using MallMedia.Application.Schedules.Queries.GetScheduleById;
-using MallMedia.Domain.Constants;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MallMedia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
 
-    public class ScheduleController(IMediator mediator) : ControllerBase
+    public class ScheduleController(IMediator mediator,
+        IHubContext<ScheduleHub> _scheduleHub) : ControllerBase
     {
 
         [HttpGet("{id}")]
@@ -27,6 +27,7 @@ namespace MallMedia.API.Controllers
         public async Task<ActionResult> CreateSchedule([FromForm] CreateScheduleCommand command)
         {
             var result = await mediator.Send(command);
+            await _scheduleHub.Clients.All.SendAsync("ReceiveScheduleUpdate"); // Notify clients of schedule creation
             return Ok(result);
         }
         [HttpGet]

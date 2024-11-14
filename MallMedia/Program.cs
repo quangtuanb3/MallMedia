@@ -1,6 +1,7 @@
 
 using MallMedia.API.Extensions;
 using MallMedia.API.Middlewares;
+using MallMedia.Application.ConnectHubs;
 using MallMedia.Application.Extensions;
 using MallMedia.Infrastructure.Extensions;
 using MallMedia.Infrastructure.Seeders;
@@ -14,15 +15,16 @@ try
     builder.AddPresentation();
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
+    builder.Services.AddSignalR();
 
     // Add CORS policy to allow requests from localhost:7220
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowLocalhost", policy =>
-            policy.WithOrigins("http://10.20.54.244:5179")  // Allow frontend origin
-                  .AllowAnyHeader()  // Allow any headers
-                  .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
-    });
+    //builder.Services.AddCors(options =>
+    //{
+    //    options.AddPolicy("AllowLocalhost", policy =>
+    //        policy.WithOrigins("http://localhost:5179")  // Allow frontend origin
+    //              .AllowAnyHeader()  // Allow any headers
+    //              .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
+    //});
     //builder.WebHost.ConfigureKestrel(options =>
     //{
     //    // This will use the default development certificate if available
@@ -31,11 +33,11 @@ try
     //        listenOptions.UseHttps(); // No certificate path is needed here
     //    });
     //});
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.Listen(IPAddress.Parse("127.0.0.1"), 5001);   // Listen on localhost
-        options.Listen(IPAddress.Parse("10.20.54.244"), 5057);  // Listen on LAN IP
-    });
+    //builder.WebHost.ConfigureKestrel(options =>
+    //{
+    //    options.Listen(IPAddress.Parse("127.0.0.1"), 5001);   // Listen on localhost
+    //    options.Listen(IPAddress.Parse("localhost"), 5057);  // Listen on LAN IP
+    //});
     var app = builder.Build();
     // Enable CORS globally (apply to all controllers)
     app.UseCors("AllowLocalhost");
@@ -53,7 +55,8 @@ try
         app.UseSwaggerUI();
     }
 
-
+    app.MapHub<ScheduleHub>("/real-time-update");
+    app.MapHub<ContentHub>("/real-time-update");
     app.UseHttpsRedirection();
 
     app.UseAuthorization();

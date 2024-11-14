@@ -1,13 +1,16 @@
-﻿using MallMedia.Domain.Constants;
+﻿using MallMedia.Application.ConnectHubs;
+using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MallMedia.Infrastructure.Persistence;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace MallMedia.Infrastructure.Repositories;
 
-internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRepository
+internal class ScheduleRepostiroy(ApplicationDbContext dbContext,
+    IHubContext<ScheduleHub> _hubContext) : IScheduleRepository
 {
     public async Task<int> Create(Schedule schedule)
     {
@@ -33,6 +36,11 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         await dbContext.AddAsync(schedule);
         await dbContext.SaveChangesAsync();
         return schedule.Id;
+    }
+
+    public async Task CreateScheduleAsync(string scheduleId)
+    {
+        await _hubContext.Clients.All.SendAsync("ScheduleCreated", scheduleId);
     }
 
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
@@ -112,4 +120,8 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         return contentListWithMedia;
     }
 
+    public async Task UpdateScheduleAsync(string scheduleId)
+    {
+        await _hubContext.Clients.All.SendAsync("ScheduleUpdated", scheduleId); ;
+    }
 }
