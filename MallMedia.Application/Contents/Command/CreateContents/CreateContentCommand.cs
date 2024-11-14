@@ -13,7 +13,7 @@ public class CreateContentCommand : IRequest<int>
     [Required(ErrorMessage = "Please select a category.")]
     public int CategoryId { get; set; }
     public string UserId { get; set; }
-    [FromForm]
-    public List<IFormFile> Files { get; set; } = new();
+
+    public int[] MediaIds { get; set; }
 }
 

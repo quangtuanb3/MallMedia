@@ -41,12 +41,10 @@
             </div>
 
 
-
-
             <!-- Video Content Upload -->
             <div id="videoContent" class="form-group pt-3 col-6">
                 <label for="videoInput">Video Content</label>
-                <input type="file" id="videoInput" asp-for="Content.Files" class="form-control" multiple accept="video/mp4" />
+                <input type="file" id="videoInput" class="form-control" multiple accept="video/mp4" />
                 <span id="videoValidation" class="text-danger"></span>
             </div>
 
@@ -67,6 +65,8 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
+        const UrlBase = "http://10.20.54.244:5056";
+        const authToken = localStorage.getItem('authToken');
         const tolerance = 0.01;
 
         // Helper function to check if value is a multiple of resolution by a specific factor
@@ -90,12 +90,13 @@
             });
         });
 
-        const chunkSize = 1024 * 1024; // 1MB per chunk
-        const uploadEndpoint = '/api/upload-chunked'; // Update with your actual endpoint
+        const chunkSize = 1024 * 1024;
+        const uploadEndpoint = UrlBase + '/api/content/upload-media';
         const form = document.getElementById('contentForm');
         const submitBtn = document.getElementById('submitBtn');
         const videoInput = document.getElementById('videoInput');
         const videoValidationMessage = document.getElementById('videoValidation');
+
 
         // Function to validate videos
         async function validateVideos(files) {
@@ -112,19 +113,17 @@
                     video.onloadedmetadata = function () {
                         if (file.type === 'video/mp4' &&
                             file.size <= 200 * 1024 * 1024 &&
-                            video.duration >= 25 && video.duration <= 30
+                            // video.duration >= 25 &&
+                            video.duration <= 30
                         ) { // Ensure duration is between 25-30 seconds
 
                             // Extract video metadata (duration and resolution)
                             const metadata = {
-                                fileName: file.name,
-                                fileType: file.type,
+                               fileName: file.name,
+                               fileType: file.type,
                                 fileSize: file.size,
-                                duration: video.duration, // Duration in seconds
-                                resolution: {
-                                    width: video.videoWidth,
-                                    height: video.videoHeight
-                                }
+                                duration: Math.floor(video.duration), // Duration in seconds
+                                resolution: `${video.videoWidth}x${video.videoHeight}`
                             };
 
                             // Check if the resolution matches either 1920x1080 or 1080x1920
@@ -163,13 +162,39 @@
                 formData.append("fileName", file.name);
                 formData.append("chunkIndex", chunkIndex);
                 formData.append("totalChunks", totalChunks);
-                formData.append("metadata", metadata);
-
+                formData.append("fileType", file.type);
+                formData.append("fileSize", file.size);
+                formData.append("duration", metadata.duration);
+                formData.append("resolution", metadata.resolution);
+    
                 const response = await fetch(uploadEndpoint, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
                 });
+                if (response.ok) {
+                // Parse the JSON response from the server
+                const data = await response.json();
+                if(data){
+                    const { fileName, type, path, size, duration, resolution } = data;
+                     console.log("MediaDto Response:", data);
+                }
+                // Handle the response data (which is a MediaDto)
+              
 
+                // Example: Accessing the fields of MediaDto
+                
+
+                // Do something with the response data (e.g., display it)
+                console.log(`File Name: ${fileName}`);
+                console.log(`Type: ${type}`);
+                console.log(`Path: ${path}`);
+                console.log(`Size: ${size}`);
+                console.log(`Duration: ${duration}`);
+                console.log(`Resolution: ${resolution}`);
+            }
                 if (!response.ok) {
                     throw new Error('Failed to upload chunk ' + chunkIndex);
                 }
@@ -183,7 +208,7 @@
         submitBtn.addEventListener('click', async () => {
             const files = videoInput.files;
             const validVideos = await validateVideos(files);
-            
+
             // If validation fails, return
             if (validVideos.length !== 2) {
                 return;
@@ -211,7 +236,7 @@
                     alert('Error creating content.');
                 }
             } catch (error) {
-                alert('File upload failed: ' + error.message);
+                alert('Create content failed: ' + error.message);
             }
         });
     </script>

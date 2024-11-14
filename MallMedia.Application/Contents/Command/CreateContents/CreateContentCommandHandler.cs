@@ -24,9 +24,6 @@ public class CreateContentCommandHandler(
     public async Task<int> Handle([FromForm] CreateContentCommand request, CancellationToken cancellationToken)
 
     {
-
-
-
         throw new NotImplementedException();
     }
 }
