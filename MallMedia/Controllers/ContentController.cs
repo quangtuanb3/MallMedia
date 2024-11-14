@@ -15,8 +15,9 @@ namespace MallMedia.API.Controllers;
 public class ContentController(IMediator mediator, IWebHostEnvironment _webHostEnvironment) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult> CreateContent([FromForm] CreateContentCommand command)
+    public async Task<ActionResult> CreateContent([FromBody] CreateContentCommand command)
     {
+        //var mediaDtos = JsonConvert.DeserializeObject<List<MediaDto>>(command.MediaDtos);
         int id = await mediator.Send(command);
         return Created();
     }

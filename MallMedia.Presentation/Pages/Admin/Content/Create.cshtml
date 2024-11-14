@@ -65,7 +65,8 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
-        const UrlBase = "http://10.20.54.244:5056";
+        // const UrlBase = "http:10.20.54.244:5056";
+        const UrlBase = "https://localhost:7199";
         const authToken = localStorage.getItem('authToken');
         const tolerance = 0.01;
 
@@ -92,6 +93,7 @@
 
         const chunkSize = 1024 * 1024;
         const uploadEndpoint = UrlBase + '/api/content/upload-media';
+        const createContentEndpoint = UrlBase + '/api/content';
         const form = document.getElementById('contentForm');
         const submitBtn = document.getElementById('submitBtn');
         const videoInput = document.getElementById('videoInput');
@@ -151,7 +153,8 @@
         }
 
         // Chunked upload function
-        async function uploadFileInChunks(file, metadata) {
+        async function uploadFileInChunks(file, metadata, mediaDtos) {
+            
             let start = 0;
             let chunkIndex = 0;
             const totalChunks = Math.ceil(file.size / chunkSize);
@@ -177,9 +180,8 @@
                 if (response.ok) {
                 // Parse the JSON response from the server
                 const data = await response.json();
-                if(data){
-                    const { fileName, type, path, size, duration, resolution } = data;
-                     console.log("MediaDto Response:", data);
+                if (Array.isArray(data) && data.length > 0) {
+                    mediaDtos.push(data[0]);
                 }
                 // Handle the response data (which is a MediaDto)
               
@@ -188,12 +190,7 @@
                 
 
                 // Do something with the response data (e.g., display it)
-                console.log(`File Name: ${fileName}`);
-                console.log(`Type: ${type}`);
-                console.log(`Path: ${path}`);
-                console.log(`Size: ${size}`);
-                console.log(`Duration: ${duration}`);
-                console.log(`Resolution: ${resolution}`);
+               
             }
                 if (!response.ok) {
                     throw new Error('Failed to upload chunk ' + chunkIndex);
@@ -202,13 +199,14 @@
                 start += chunkSize;
                 chunkIndex++;
             }
+            return mediaDtos;
         }
 
         // Handle submit button click
         submitBtn.addEventListener('click', async () => {
             const files = videoInput.files;
             const validVideos = await validateVideos(files);
-
+            let mediaDtos = [];
             // If validation fails, return
             if (validVideos.length !== 2) {
                 return;
@@ -218,14 +216,20 @@
                 for (const { file, metadata } of validVideos) {
                     // You now have access to the file and its metadata (duration and resolution)
                     console.log('Video Metadata:', metadata);
-
                     // Upload file in chunks
-                    await uploadFileInChunks(file, metadata);
+                    await uploadFileInChunks(file, metadata, mediaDtos);
                 }
 
                 // Upload form data
-                const formData = new FormData(form);
-                const response = await fetch(form.action, {
+              
+                const formData = new FormData();
+
+                formData.append("Title", document.getElementById("title").value);
+                formData.append("CategoryId", document.getElementById("categoryDropdown").value);
+                formData.append("Description", document.getElementById("description").value);
+                formData.append("UserId", document.getElementById("userId").value);
+                formData.append("mediaDtos", JSON.stringify(mediaDtos));
+                const response = await fetch(createContentEndpoint, {
                     method: 'POST',
                     body: formData
                 });
