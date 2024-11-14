@@ -96,5 +96,32 @@ namespace MallMedia.Infrastructure.Repositories
             if (device == null) return false;
             return true;
         }
+
+        public async Task<List<Device>> GetByTypeAndFloorOrDepartmant(List<string> types, List<int>? floors, List<string>? departments)
+        {
+            if (floors != null && floors.Any())
+            {
+                var query = from d in dbContext.Devices
+                            join l in dbContext.Locations on d.LocationId equals l.Id into deviceLocations
+                            from l in deviceLocations.DefaultIfEmpty()  // Dùng DefaultIfEmpty() để mô phỏng LEFT JOIN
+                            where floors.Contains(l.Floor) && types.Contains(d.Configuration.DeviceType)
+                            select d;
+
+                var result = await query.ToListAsync();
+                return result;
+            }
+            if (departments != null && departments.Any())
+            {
+                var query = from d in dbContext.Devices
+                            join l in dbContext.Locations on d.LocationId equals l.Id into deviceLocations
+                            from l in deviceLocations.DefaultIfEmpty()  // Dùng DefaultIfEmpty() để mô phỏng LEFT JOIN
+                            where departments.Contains(l.Department) && types.Contains(d.Configuration.DeviceType)
+                            select d;
+
+                var result = await query.ToListAsync();
+                return result;
+            }
+            return null;
+        }
     }
 }

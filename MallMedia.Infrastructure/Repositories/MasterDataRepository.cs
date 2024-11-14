@@ -35,50 +35,13 @@ internal class MasterDataRepository(ApplicationDbContext dbContext) : IMasterDat
         return await this.GetAllLocations();
     }
 
-    public async Task<(List<FloorDeviceResult>, List<DepartmentDeviceResult>)> GetOptionSelectLocations(string deviceType)
+    public async Task<(List<FloorDeviceResult>, List<DepartmentDeviceResult>)> GetOptionSelectLocations(string[] deviceTypes)
     {
-        if (!string.IsNullOrEmpty(deviceType))
+        if (deviceTypes != null && deviceTypes.Any())
         {
-            // Get the distinct list of floors where the devices match the given deviceType
+            // Get the distinct list of floors where the devices match any of the given deviceTypes
             var floors = await dbContext.Devices
-                  .Where(d => d.Configuration.DeviceType.ToLower() == deviceType.ToLower())
-                  .Join(dbContext.Locations,
-                      d => d.LocationId,
-                      l => l.Id,
-                      (d, l) => new { l.Floor, d.Configuration.DeviceType })
-                  .GroupBy(x => new { x.Floor, x.DeviceType })
-                  .OrderBy(x => x.Key.Floor)
-                  .Select(g => new FloorDeviceResult
-                  {
-                      Floor = g.Key.Floor,
-                      DeviceType = g.Key.DeviceType
-                  })
-                  .ToListAsync();
-
-            // Get the distinct list of departments where the devices match the given deviceType
-            var departments = await dbContext.Devices
-                       .Where(d => d.Configuration.DeviceType.ToLower() == deviceType.ToLower())
-                       .Join(dbContext.Locations,
-                           d => d.LocationId,
-                           l => l.Id,
-                           (d, l) => new { l.Department, d.Configuration.DeviceType })
-                       .GroupBy(x => new { x.Department, x.DeviceType })
-                       .OrderBy(x => x.Key.Department)
-                       .Select(g => new DepartmentDeviceResult
-                       {
-                           Department = g.Key.Department,
-                           DeviceType = g.Key.DeviceType
-                       })
-                       .ToListAsync();
-
-            return (floors, departments);  // Return both lists as a tuple
-        }
-        else
-        {
-            var floors = await dbContext.Devices
-                  .Where(d => d.Configuration.DeviceType == "Digital Poster" ||
-                              d.Configuration.DeviceType == "LED" ||
-                              d.Configuration.DeviceType == "Vertical LCD")
+                  .Where(d => deviceTypes.Contains(d.Configuration.DeviceType.ToLower()))  // Filter based on multiple deviceTypes
                   .Join(dbContext.Locations,
                       d => d.LocationId,
                       l => l.Id,
@@ -92,24 +55,63 @@ internal class MasterDataRepository(ApplicationDbContext dbContext) : IMasterDat
                   })
                   .ToListAsync();
 
-            // Get the distinct list of departments where the devices match the given deviceType
+            // Get the distinct list of departments where the devices match any of the given deviceTypes
             var departments = await dbContext.Devices
-                       .Where(d => d.Configuration.DeviceType == "Digital Poster" ||
-                              d.Configuration.DeviceType == "LED" ||
-                              d.Configuration.DeviceType == "Vertical LCD")
-                        .Join(dbContext.Locations,
-                            d => d.LocationId,
-                            l => l.Id,
-                            (d, l) => new { l.Department, d.Configuration.DeviceType })
-                        .GroupBy(x => new { x.Department, x.DeviceType })
-                        .OrderBy(x => x.Key.DeviceType)
-                        .Select(g => new DepartmentDeviceResult
-                        {
-                            Department = g.Key.Department,
-                            DeviceType = g.Key.DeviceType
-                        }).ToListAsync();
+                       .Where(d => deviceTypes.Contains(d.Configuration.DeviceType.ToLower()))  // Filter based on multiple deviceTypes
+                       .Join(dbContext.Locations,
+                           d => d.LocationId,
+                           l => l.Id,
+                           (d, l) => new { l.Department, d.Configuration.DeviceType })
+                       .GroupBy(x => new { x.Department, x.DeviceType })
+                       .OrderBy(x => x.Key.DeviceType)
+                       .Select(g => new DepartmentDeviceResult
+                       {
+                           Department = g.Key.Department,
+                           DeviceType = g.Key.DeviceType
+                       })
+                       .ToListAsync();
+
+            return (floors, departments);  // Return both lists as a tuple
+        }
+        else
+        {
+            // Default to certain device types if deviceTypes is empty or null
+            var defaultDeviceTypes = new[] { "Digital Poster", "LED", "Vertical LCD" };
+
+            var floors = await dbContext.Devices
+                  .Where(d => defaultDeviceTypes.Contains(d.Configuration.DeviceType))  // Use default device types
+                  .Join(dbContext.Locations,
+                      d => d.LocationId,
+                      l => l.Id,
+                      (d, l) => new { l.Floor, d.Configuration.DeviceType })
+                  .GroupBy(x => new { x.Floor, x.DeviceType })
+                  .OrderBy(x => x.Key.DeviceType)
+                  .Select(g => new FloorDeviceResult
+                  {
+                      Floor = g.Key.Floor,
+                      DeviceType = g.Key.DeviceType
+                  })
+                  .ToListAsync();
+
+            // Get the distinct list of departments where the devices match the default deviceTypes
+            var departments = await dbContext.Devices
+                       .Where(d => defaultDeviceTypes.Contains(d.Configuration.DeviceType))  // Use default device types
+                       .Join(dbContext.Locations,
+                           d => d.LocationId,
+                           l => l.Id,
+                           (d, l) => new { l.Department, d.Configuration.DeviceType })
+                       .GroupBy(x => new { x.Department, x.DeviceType })
+                       .OrderBy(x => x.Key.DeviceType)
+                       .Select(g => new DepartmentDeviceResult
+                       {
+                           Department = g.Key.Department,
+                           DeviceType = g.Key.DeviceType
+                       })
+                       .ToListAsync();
+
             return (floors, departments);  // Return both lists as a tuple
         }
     }
+
 }
 

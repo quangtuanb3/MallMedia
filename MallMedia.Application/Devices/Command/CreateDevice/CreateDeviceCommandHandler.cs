@@ -24,6 +24,7 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
             if (result.Succeeded) 
             {
                 var device = mapper.Map<Device>(request);
+                device.Configuration.Size = device.Configuration.Size.ToString()+" inches";
                 device.UserId = user.Id;
                 device.Status = "Active";
                 return await devicesRepository.CreateAsync(device);

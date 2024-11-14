@@ -3,7 +3,6 @@ using MallMedia.Presentation.Dtos;
 using MallMedia.Presentation.Helper;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using MallMedia.Presentation.Helper;
 namespace MallMedia.Presentation.Pages.Admin.Schedule
 {
     public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticationHelper) : PageModel

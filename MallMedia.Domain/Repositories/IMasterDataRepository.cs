@@ -8,5 +8,5 @@ public interface IMasterDataRepository
     Task<IEnumerable<Category>> GetAllCategories();
     Task<IEnumerable<Location>> GetAllLocations();
     Task<IEnumerable<Location>> GetLocations(int? floor,string department);
-    Task<(List<FloorDeviceResult>, List<DepartmentDeviceResult>)> GetOptionSelectLocations(string deviceType);
+    Task<(List<FloorDeviceResult>, List<DepartmentDeviceResult>)> GetOptionSelectLocations(string[] deviceType);
 }

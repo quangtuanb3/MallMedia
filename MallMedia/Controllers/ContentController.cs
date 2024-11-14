@@ -3,10 +3,7 @@ using MallMedia.Application.Contents.Command.DeleteContents;
 using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Contents.Queries.GetAllContents;
 using MallMedia.Application.Contents.Queries.GetContentById;
-using MallMedia.Domain.Constants;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MallMedia.API.Controllers;

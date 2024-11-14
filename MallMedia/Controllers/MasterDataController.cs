@@ -26,8 +26,8 @@ public class MasterDataController(IMediator mediator) : ControllerBase
         return Ok(categories);
     }
 
-    [HttpGet("api/floor-department")]
-    public async Task<IActionResult> GetFloorAndDepartmentByDeviceType([FromQuery] GetFloorAndDepartmentQuery query)
+    [HttpPost("api/floor-department")]
+    public async Task<IActionResult> GetFloorAndDepartmentByDeviceType([FromBody] GetFloorAndDepartmentQuery query)
     {
         var (floors, departments) = await mediator.Send(query);
         var temp = new TempCl()
@@ -38,8 +38,8 @@ public class MasterDataController(IMediator mediator) : ControllerBase
         return Ok(temp);
     }
 }
-    public class TempCl
-    {
-        public  List<FloorDeviceResult> Floors { get; set; }
-        public List<DepartmentDeviceResult> Departments { get; set; }
-    }
+public class TempCl
+{
+    public  List<FloorDeviceResult> Floors { get; set; }
+    public List<DepartmentDeviceResult> Departments { get; set; }
+}

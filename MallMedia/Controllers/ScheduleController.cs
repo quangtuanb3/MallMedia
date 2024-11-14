@@ -2,10 +2,7 @@
 using MallMedia.Application.Schedules.Queries.GetAllSchedule;
 using MallMedia.Application.Schedules.Queries.GetCurrentContentForDevice;
 using MallMedia.Application.Schedules.Queries.GetScheduleById;
-using MallMedia.Domain.Constants;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MallMedia.API.Controllers
@@ -22,13 +19,14 @@ namespace MallMedia.API.Controllers
             var schedule = await mediator.Send(new GetScheduleByIdQuery(id));
             return Ok(schedule);
         }
+
         [HttpPost]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-        public async Task<ActionResult> CreateSchedule([FromForm] CreateScheduleCommand command)
+        public async Task<ActionResult> CreateSchedule([FromBody] CreateScheduleCommand command)
         {
             var result = await mediator.Send(command);
             return Ok(result);
         }
+
         [HttpGet]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)

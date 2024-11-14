@@ -4,7 +4,7 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
 {
     public class CreateDeviceCommandValidator : AbstractValidator<CreateDeviceCommand>
     {
-        private string[] allowDeviceType = ["TV", "LED"];
+        private string[] allowDeviceType = ["LED", "Digital Poster", "Vertical LCD"];
         public CreateDeviceCommandValidator() 
         {
             // Validate DeviceName: not empty and minimum length 3
@@ -16,7 +16,7 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
             RuleFor(x => x.DeviceType)
                 .NotEmpty().WithMessage("Device Type is required.")
                 .Must(contentType => allowDeviceType.Contains(contentType))
-                .WithMessage("DeviceType must be one of the following: TV or LED.");
+                .WithMessage("DeviceType must be one of the following: LED, Digital Poster, Vertical LCD.");
 
             // Validate LocationId: it must be greater than 0
             RuleFor(x => x.LocationId)
