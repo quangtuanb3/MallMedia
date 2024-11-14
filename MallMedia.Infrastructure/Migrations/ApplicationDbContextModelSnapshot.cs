@@ -36,7 +36,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
@@ -83,7 +83,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Contents");
+                    b.ToTable("Contents", (string)null);
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Device", b =>
@@ -122,7 +122,7 @@ namespace MallMedia.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Devices");
+                    b.ToTable("Devices", (string)null);
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Location", b =>
@@ -142,7 +142,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Media", b =>
@@ -182,7 +182,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasIndex("ContentId");
 
-                    b.ToTable("Medias");
+                    b.ToTable("Medias", (string)null);
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.User", b =>
@@ -413,7 +413,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("Schedules");
+                    b.ToTable("Schedules", (string)null);
                 });
 
             modelBuilder.Entity("MallMedia.Domain.Entities.Content", b =>
@@ -447,7 +447,7 @@ namespace MallMedia.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("MallMedia.Domain.Constants.DeviceConfiguration", "Configuration", b1 =>
+                    b.OwnsOne("MallMedia.Domain.Entities.Device.Configuration#MallMedia.Domain.Constants.DeviceConfiguration", "Configuration", b1 =>
                         {
                             b1.Property<int>("DeviceId")
                                 .HasColumnType("int");
@@ -469,7 +469,7 @@ namespace MallMedia.Infrastructure.Migrations
 
                             b1.HasKey("DeviceId");
 
-                            b1.ToTable("Devices");
+                            b1.ToTable("Devices", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("DeviceId");

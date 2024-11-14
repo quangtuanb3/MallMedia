@@ -1,5 +1,4 @@
 ﻿using MallMedia.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 namespace MallMedia.Infrastructure.Seeders;
 
 internal class CategorySeeder(ApplicationDbContext dbContext)

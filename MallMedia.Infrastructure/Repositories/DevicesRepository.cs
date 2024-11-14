@@ -11,6 +11,20 @@ namespace MallMedia.Infrastructure.Repositories
     {
         public async Task<int> CreateAsync(Device entity)
         {
+            try
+            {
+                bool exists = await dbContext.Devices.AnyAsync(d => d.DeviceName.Equals(entity.DeviceName));
+                // Throw a specific exception if a match is found
+                if (exists)
+                {
+                    throw new ArgumentException("A device with the name already exists.");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
             dbContext.Devices.Add(entity);
             await dbContext.SaveChangesAsync();
             return entity.Id;
@@ -45,6 +59,7 @@ namespace MallMedia.Infrastructure.Repositories
             return (devies, totalCount);
         }
 
+        
         public Task<Device?> GetByIdAsync(int id)
         {
             return dbContext.Devices.Include(d => d.Location).Include(d => d.Schedules).FirstOrDefaultAsync(d => d.Id == id);
@@ -57,9 +72,56 @@ namespace MallMedia.Infrastructure.Repositories
 
         public async Task<int> UpdateDevicesAsync(Device entity)
         {
+            try
+            {
+                bool exists = await dbContext.Devices.AnyAsync(d => d.DeviceName.Equals(entity.DeviceName));
+                // Throw a specific exception if a match is found
+                if (exists)
+                {
+                    throw new ArgumentException("A device with the name already exists.");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
             dbContext.Devices.Update(entity);
             await dbContext.SaveChangesAsync();
             return entity.Id;
+        }
+
+        public async Task<bool> CheckNameDevice(string name)
+        {
+            var device = await dbContext.Devices.FirstOrDefaultAsync(d=>d.DeviceName.Equals(name));
+            if (device == null) return false;
+            return true;
+        }
+
+        public async Task<List<Device>> GetByTypeAndFloorOrDepartmant(List<string> types, List<int>? floors, List<string>? departments)
+        {
+            if (floors != null && floors.Any())
+            {
+                var query = from d in dbContext.Devices
+                            join l in dbContext.Locations on d.LocationId equals l.Id into deviceLocations
+                            from l in deviceLocations.DefaultIfEmpty()  // Dùng DefaultIfEmpty() để mô phỏng LEFT JOIN
+                            where floors.Contains(l.Floor) && types.Contains(d.Configuration.DeviceType)
+                            select d;
+
+                var result = await query.ToListAsync();
+                return result;
+            }
+            if (departments != null && departments.Any())
+            {
+                var query = from d in dbContext.Devices
+                            join l in dbContext.Locations on d.LocationId equals l.Id into deviceLocations
+                            from l in deviceLocations.DefaultIfEmpty()  // Dùng DefaultIfEmpty() để mô phỏng LEFT JOIN
+                            where departments.Contains(l.Department) && types.Contains(d.Configuration.DeviceType)
+                            select d;
+
+                var result = await query.ToListAsync();
+                return result;
+            }
+            return null;
         }
     }
 }
