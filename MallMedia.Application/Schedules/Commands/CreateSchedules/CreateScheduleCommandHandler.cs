@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MallMedia.Application.Contents.Command;
+using MallMedia.Application.Contents.Command.CreateContents;
 using MallMedia.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

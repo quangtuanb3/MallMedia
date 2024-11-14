@@ -28,7 +28,7 @@ public class UserSeeder
 
         // Seed the Admin user
         var adminUsername = "admin"; // Change as needed
-        var adminPassword = "Admin@123"; // Change as needed
+        var adminPassword = "Password123!"; // Change as needed
 
         var adminUser = await userManager.FindByNameAsync(adminUsername);
         if (adminUser == null)
