@@ -11,5 +11,8 @@ namespace MallMedia.Domain.Repositories
         Task<Device> GetByIdAsync(int id);
         Task<Device> GetByUserIdAsync(string userId);
         Task<int> UpdateDevicesAsync(Device entity);
+        Task<bool> CheckNameDevice(string name);
+
+        Task<List<Device>> GetByTypeAndFloorOrDepartmant(List<string> type, List<int>? floor,List<string>? department);
     }
 }

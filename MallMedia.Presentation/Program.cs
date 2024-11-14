@@ -6,6 +6,7 @@ using Xabe.FFmpeg;
 var builder = WebApplication.CreateBuilder(args);
 FFmpeg.SetExecutablesPath("C:\\Users\\TUANBQ\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-7.1-full_build\\bin");
 builder.Services.AddHttpClient();
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -22,7 +23,6 @@ builder.Services.AddAuthentication("Cookies")
             options.AccessDeniedPath = "/Auth/AccessDenied"; // Optional: Path for access-denied
         });
 
-
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
 builder.Services.AddSingleton<AuthenticationHelper>(); // Register your helper
 builder.Services.AddHttpClient();
@@ -34,7 +34,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.       
     app.UseHsts();
 }
 
@@ -48,4 +48,3 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.UsePathBase("/Client");
 app.Run();
-
