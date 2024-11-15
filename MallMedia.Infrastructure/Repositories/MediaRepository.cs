@@ -14,7 +14,7 @@ internal class MediaRepository(ApplicationDbContext dbContext) : IMediaRepositor
 
     public async Task<int> Update(Media entity)
     {
-       dbContext.Medias.Update(entity);
+        dbContext.Medias.Update(entity);
         await dbContext.SaveChangesAsync();
         return entity.Id;
     }

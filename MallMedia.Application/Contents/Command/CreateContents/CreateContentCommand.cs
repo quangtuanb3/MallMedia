@@ -14,8 +14,9 @@ public class CreateContentCommand : IRequest<int>
     [Required(ErrorMessage = "Please select a category.")]
     public int CategoryId { get; set; }
     public string UserId { get; set; }
+
     [FromForm(Name = "MediaDtos")]
-    public string MediaDtos { get; set; };
+    public string MediaDtos { get; set; } = string.Empty;
 
 }
 

@@ -18,7 +18,7 @@ public class MediaDto
 
     public int Size { get; set; }
 
-    public TimeSpan Duration { get; set; }
+    public int Duration { get; set; }
 
     public string Resolution { get; set; }
 
