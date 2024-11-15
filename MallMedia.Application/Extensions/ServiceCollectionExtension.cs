@@ -1,5 +1,6 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MallMedia.Application.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MallMedia.Application.Extensions;
@@ -17,5 +18,8 @@ public static class ServiceCollectionExtensions
             .AddFluentValidationAutoValidation();
 
         services.AddHttpContextAccessor();
+
+        services.AddSingleton<IBackgroundServiceQueue, BackgroundServiceQueue>();
+        services.AddHostedService<FileMergeService>();
     }
 }

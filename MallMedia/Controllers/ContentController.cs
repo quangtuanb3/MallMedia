@@ -1,8 +1,10 @@
 ﻿using MallMedia.Application.Contents.Command.CreateContents;
+using MallMedia.Application.Contents.Command.CreateMedia;
 using MallMedia.Application.Contents.Command.DeleteContents;
 using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Contents.Queries.GetAllContents;
 using MallMedia.Application.Contents.Queries.GetContentById;
+using MallMedia.Application.Contents.Queries.GetContentMedia;
 using MallMedia.Domain.Constants;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -41,60 +43,17 @@ public class ContentController(IMediator mediator, IWebHostEnvironment _webHostE
         return NoContent();
     }
 
-    [HttpPost("/upload-video")]
-    public async Task<IActionResult> UploadChunk([FromForm] IFormFile chunk, [FromForm] string fileName, [FromForm] int chunkIndex, [FromForm] string metadata, [FromForm] int totalChunks)
+    [HttpPost("/api/content/upload-media")]
+    public async Task<IActionResult> UploadChunk([FromForm] UploadMediaCommand createMediaCommand)
     {
-        try
-        {
-            // Create a unique path for storing chunks
-            string chunkDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", "chunks", fileName);
-            Directory.CreateDirectory(chunkDirectory);
-
-            // Create a temporary file path for the chunk
-            string chunkFilePath = Path.Combine(chunkDirectory, $"{chunkIndex}.part");
-
-            // Save the chunk to the file system
-            using (var fileStream = new FileStream(chunkFilePath, FileMode.Create))
-            {
-                await chunk.CopyToAsync(fileStream);
-            }
-
-            // Log the current chunk info (optional)
-            Console.WriteLine($"Received chunk {chunkIndex + 1}/{totalChunks} for {fileName}");
-
-            // Check if all chunks have been uploaded
-            if (chunkIndex + 1 == totalChunks)
-            {
-                // Combine all chunks into the final file
-                string finalFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", fileName);
-                using (var outputFileStream = new FileStream(finalFilePath, FileMode.Create))
-                {
-                    for (int i = 0; i < totalChunks; i++)
-                    {
-                        string chunkFile = Path.Combine(chunkDirectory, $"{i}.part");
-                        using (var chunkStream = new FileStream(chunkFile, FileMode.Open))
-                        {
-                            await chunkStream.CopyToAsync(outputFileStream);
-                        }
-
-                        // Optionally, delete the chunk after it is copied
-                        System.IO.File.Delete(chunkFile);
-                    }
-                }
-
-                // Optionally, remove the chunk directory once file is reconstructed
-                Directory.Delete(chunkDirectory);
-
-                Console.WriteLine($"File {fileName} uploaded and reconstructed successfully.");
-            }
-
-            return NoContent(); // Successful response
-        }
-        catch (Exception ex)
-        {
-            // Handle error
-            return StatusCode(500, new { message = "File upload failed", error = ex.Message });
-        }
+        var result = await mediator.Send(createMediaCommand);
+        return Ok(result);
     }
-
+    [HttpGet("/api/content/{contentId}/medias")]
+    public async Task<IActionResult> GetContentMedia([FromRoute] int contentId)
+    {
+        var query = new GetContentMediaQuery(contentId);
+        var contents = await mediator.Send(query);
+        return Ok(contents);
+    }
 }
