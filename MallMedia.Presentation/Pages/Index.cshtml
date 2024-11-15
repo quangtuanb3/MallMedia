@@ -3,28 +3,43 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-page="/Index">Home</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Admin/Index">Admin</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Client/Index">Client</a>
-                    </li>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Kiểm tra trạng thái đăng nhập khi trang được tải
+        window.onload = function () {
+            // Lấy token từ localStorage
+            var token = localStorage.getItem('authToken');  // Hoặc sessionStorage.getItem('userToken')
 
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
-<div class="text-center">
-    <p>Home Page</p>
-</div>
+            if (!token) {
+                // Nếu không có token, chuyển hướng đến trang đăng nhập
+                window.location.href = '/Auth/Login';  // Đường dẫn đến trang đăng nhập của bạn
+            } else {
+                // Nếu có token, gọi API để lấy thông tin người dùng
+                    fetch('https://localhost:7199/api/identity/currentUser', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Kiểm tra xem người dùng có vai trò Admin không
+                        if (data.roles && data.roles.includes('Admin')) {
+                            // Nếu có vai trò Admin, chuyển hướng đến trang Admin
+                            window.location.href = '/Admin';  // Đường dẫn đến trang Admin
+                        } else {
+                            // Nếu không có vai trò Admin, vẫn cho phép truy cập trang hiện tại
+                            console.log('Người dùng không phải Admin');
+                            window.location.href = '/Client';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi lấy thông tin người dùng:', error);
+                        window.location.href = '/Auth/Login';  // Nếu có lỗi, chuyển hướng về trang login
+                    });
+            }
+        };
+    </script>
+
+ } 

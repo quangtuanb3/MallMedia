@@ -3,6 +3,21 @@
 @{
     ViewData["Title"] = "List content";
 }
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module">
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
+
+        window.onload = async function () {
+            try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+                const currentUser = await checkUserAuthentication();
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+</head>
 <div class="container mt-5">
     <h2>Devices List</h2>
     <a class="btn btn-info" asp-page="/Admin/Device/Create">Create</a>
@@ -16,8 +31,7 @@
                 <th>Size</th>
                 <th>Resolution</th>
                 <th>CreatedAt</th>
-                <th>Status</th>
-                <th>Action</th>   
+                <th>Status</th>  
             </tr>
         </thead>
         <tbody>
@@ -35,11 +49,6 @@
                     <td>@content.Resolution</td>
                     <td>@content.CreatedAt.ToString("yyyy-MM-dd")</td>
                     <td>@content.Status</td>
-                    <td>
-                        <!-- Action Buttons (Edit/Delete) -->
-                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
                 </tr>
 
                 ++index;
@@ -84,14 +93,17 @@
         }
     </div>
 </div>
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         // Check if there is a success message in TempData
     @if (TempData["SuccessMessage"] != null)
     {
         <text>
-                        toastr.success("@TempData["SuccessMessage"]");
+             toastr.success("@TempData["SuccessMessage"]");
         </text>
     }
-                                                                                                                                                });
+    });
 </script>
+}

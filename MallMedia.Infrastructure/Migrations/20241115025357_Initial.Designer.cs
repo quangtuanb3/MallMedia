@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MallMedia.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241113073003_Initial")]
+    [Migration("20241115025357_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -52,10 +52,6 @@ namespace MallMedia.Infrastructure.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -163,8 +159,8 @@ namespace MallMedia.Infrastructure.Migrations
                     b.Property<int>("ContentId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan?>("Duration")
-                        .HasColumnType("time");
+                    b.Property<int?>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<string>("FileName")
                         .IsRequired()

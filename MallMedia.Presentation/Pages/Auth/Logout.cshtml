@@ -2,3 +2,11 @@
 @model MallMedia.Presentation.Pages.Auth.LogoutModel
 @{
 }
+<head>
+    <script>
+        localStorage.removeItem('authToken');  // Hoặc sessionStorage.removeItem('authToken');
+
+        // Chuyển hướng người dùng về trang đăng nhập
+        window.location.href = '/Auth/Login';  // Đường dẫn đến trang đăng nhập
+    </script>
+</head>

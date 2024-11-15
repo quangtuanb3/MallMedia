@@ -75,7 +75,6 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext,
         return schedule;
     }
 
-
     public async Task<List<Content>> GetCurrentContentForDevice(int deviceId)
     {
         var currentTime = DateTime.Now;
@@ -109,10 +108,7 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext,
             .Select(x =>
             {
                 var content = x.Content;
-                if (content.ContentType != ContentType.Text)
-                {
-                    content.Media = x.Media.ToList(); // Assign the media if it's not Text
-                }
+                content.Media = x.Media.ToList();
                 return content;
             })
             .ToList();
@@ -120,8 +116,13 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext,
         return contentListWithMedia;
     }
 
-    public async Task UpdateScheduleAsync(string scheduleId)
+    public async Task<bool> IsExistSchedule(Schedule schedule)
     {
-        await _hubContext.Clients.All.SendAsync("ScheduleUpdated", scheduleId); ;
+        var sche = await dbContext.Schedules
+            .FirstOrDefaultAsync(s => s.DeviceId == schedule.DeviceId 
+                 && s.ContentId == schedule.ContentId
+                 && s.StartDate == schedule.StartDate
+                 && s.EndDate == schedule.EndDate);
+        return sche is null ? false : true;
     }
 }

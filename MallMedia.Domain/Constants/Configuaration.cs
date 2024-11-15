@@ -28,9 +28,5 @@ public class DeviceResolution
     public static string DP = "1920x1080";
     public static string LED = "1920x1080";
 }
-public class ContentType
-{
-    public static string Text = "Text";
-    public static string Images = "Images";
-    public static string Video = "Video";
-}
+
+

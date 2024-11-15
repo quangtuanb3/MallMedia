@@ -5,6 +5,50 @@
 }
 
 <header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">You do not have access to this resource.</p>
+    <div class="access-denied-container">
+        <div class="message">
+            <h1>Access Denied</h1>
+            <p>Sorry, you do not have permission to access this page.</p>
+        </div>
+    </div>
 </header>
+<style>
+    /* Thiết lập font chữ mặc định và loại bỏ margin, padding */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    html, body {
+        height: 100%; /* Đảm bảo trang có chiều cao đầy đủ */
+        display: flex; /* Sử dụng Flexbox để căn giữa */
+        justify-content: center; /* Căn giữa theo chiều ngang */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        background-color: #f8f8f8; /* Màu nền của trang */
+    }
+
+    .access-denied-container {
+        text-align: center;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        width: 100%;
+        max-width: 500px; /* Đảm bảo container không rộng quá 500px */
+        margin: 20px; /* Đảm bảo có khoảng cách xung quanh */
+    }
+
+    .message h1 {
+        color: #e74c3c;
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .message p {
+        color: #333;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+</style>

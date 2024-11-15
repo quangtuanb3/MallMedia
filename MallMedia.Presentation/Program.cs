@@ -25,7 +25,6 @@ builder.Services.AddAuthentication("Cookies")
             options.AccessDeniedPath = "/Auth/AccessDenied"; // Optional: Path for access-denied
         });
 
-
 builder.Services.AddHttpContextAccessor(); // Register IHttpContextAccessor
 builder.Services.AddSingleton<AuthenticationHelper>(); // Register your helper
 builder.Services.AddHttpClient();
@@ -37,7 +36,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.       
     app.UseHsts();
 }
 app.MapHub<ScheduleHub>("/real-time-update_hub");
@@ -53,4 +52,3 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.UsePathBase("/Client");
 app.Run();
-

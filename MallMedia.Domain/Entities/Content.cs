@@ -8,8 +8,6 @@ public class Content
 
     public string Description { get; set; }
 
-    public string ContentType { get; set; }
-
     public int CategoryId { get; set; }
     public Category Category { get; set; }
 
@@ -24,6 +22,5 @@ public class Content
 
     public DateTime? UpdatedAt { get; set; }
 
-    public bool isDefault { get; set; }
-    public DateTime Schedule { get; set; }
+    public bool isDefault { get; set; } = false;
 }

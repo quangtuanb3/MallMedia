@@ -1,6 +1,19 @@
 ﻿@page
 @model MallMedia.Presentation.Pages.Admin.Schedule.IndexModel
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module">
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
 
+        window.onload = async function () {
+            try {
+                const currentUser = await checkUserAuthentication();
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+</head>
 <div class="container mt-5">
     <h2>Schedule List</h2>
     <a class="btn btn-info" asp-page="/Admin/Schedule/Create">Create</a>
@@ -10,7 +23,6 @@
                 <th>No.</th>
                 <th>StartDate</th>
                 <th>EndDate</th>
-                <th>TimeFrame</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -24,7 +36,6 @@
                     <td>@index</td>
                     <td>@content.StartDate</td>
                     <td>@content.EndDate</td>
-                    <td>[ @content.TimeFrame.StartTime - @content.TimeFrame.EndTime ]</td>
                     <td>
                         <!-- Action Buttons (Edit/Delete) -->
                         <a href="#" class="btn btn-primary btn-sm">Edit</a>
@@ -76,14 +87,3 @@
         }
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        // Check if there is a success message in TempData
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <text>
-            toastr.success("@TempData["SuccessMessage"]");
-        </text>
-    }
-    });
-</script>

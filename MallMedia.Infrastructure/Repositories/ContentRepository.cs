@@ -34,9 +34,8 @@ internal class ContentRepository(ApplicationDbContext dbContext,
     {
         var search = searchPhrase?.ToLower();
         //query
-        var baseQuery = dbContext.Contents.Include(r => r.Category).Include(r=>r.Media)
-            .Where(r => search == null || r.ContentType.ToLower().Contains(search)
-                    || r.Category.Name.ToLower().Contains(search)|| r.Status.ToLower().Contains(search));
+        var baseQuery = dbContext.Contents.Include(r => r.Category).Include(r => r.Media)
+            .Where(r => search == null || r.Category.Name.ToLower().Contains(search) || r.Status.ToLower().Contains(search));
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
@@ -48,7 +47,7 @@ internal class ContentRepository(ApplicationDbContext dbContext,
                     {nameof(Content.Title),r=>r.Title},
                     {nameof(Content.Category.Name),r=>r.Category.Name},
                     {nameof(Content.CreatedAt),r=>r.CreatedAt},
-                   
+
                 };
             var selectedColum = columsSelector[sortBy];
             baseQuery = sortDirection == SortDirection.Ascending
@@ -63,7 +62,7 @@ internal class ContentRepository(ApplicationDbContext dbContext,
 
     public async Task<Content> GetByIdAsync(int id)
     {
-        var content = await dbContext.Contents.Include(c=>c.Category).Include(c=>c.Media).FirstOrDefaultAsync(x => x.Id == id);
+        var content = await dbContext.Contents.Include(c => c.Category).Include(c => c.Media).FirstOrDefaultAsync(x => x.Id == id);
         return content;
     }
 

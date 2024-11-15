@@ -52,7 +52,6 @@ namespace MallMedia.Presentation.Pages.Admin.Device
                 LocationId = Device.LocationId,
                 Resolution = Device.Resolution,
                 Size= Device.Size,
-                
             };
             using var CreateDevice = new MultipartFormDataContent();
             CreateDevice.Add(new StringContent(command.DeviceName.ToString()), "DeviceName");
@@ -69,7 +68,7 @@ namespace MallMedia.Presentation.Pages.Admin.Device
             if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "Create successfully";
-                return RedirectToPage("/Admin/Schedule/Index");
+                return RedirectToPage("/Admin/Device/Index");
             }
 
             // Handle error if the response is not successful

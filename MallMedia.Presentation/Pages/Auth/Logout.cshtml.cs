@@ -8,5 +8,6 @@ public class LogoutModel : PageModel
     public void OnGet()
     {
         HttpContext.Response.Cookies.Delete("authToken");
+
     }
 }

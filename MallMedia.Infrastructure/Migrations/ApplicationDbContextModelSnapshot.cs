@@ -50,10 +50,6 @@ namespace MallMedia.Infrastructure.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -160,8 +156,8 @@ namespace MallMedia.Infrastructure.Migrations
                     b.Property<int>("ContentId")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan?>("Duration")
-                        .HasColumnType("time");
+                    b.Property<int?>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<string>("FileName")
                         .IsRequired()

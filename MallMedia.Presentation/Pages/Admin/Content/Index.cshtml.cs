@@ -1,12 +1,10 @@
 
+using MallMedia.Application.Contents.Dtos;
 using MallMedia.Presentation.Dtos;
+using MallMedia.Presentation.Helper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using MallMedia.Presentation.Helper;
-using System.Net.Http;
-using MallMedia.Application.Contents.Dtos;
-using Microsoft.AspNetCore.Mvc;
 namespace MallMedia.Presentation.Pages.Admin.Content;
 
 public class IndexModel(HttpClient httpClient, AuthenticationHelper authHelper) : PageModel
@@ -16,9 +14,8 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authHelper) 
     public int TotalItemsCount { get; set; }
     public int ItemsFrom { get; set; }
     public int ItemsTo { get; set; }
-    public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 5;
-
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -35,7 +32,7 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authHelper) 
         // Parse and validate query parameters
         PageNumber = Request.Query.ContainsKey("pageNumber") && int.TryParse(Request.Query["pageNumber"], out var pageNum) ? pageNum : 1;
         PageSize = Request.Query.ContainsKey("pageSize") && int.TryParse(Request.Query["pageSize"], out var pageSize) ? pageSize : 5;
-
+        authHelper.AddBearerToken(httpClient);
         var url = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber={PageNumber}&PageSize={PageSize}";
         var response = await httpClient.GetAsync(url);
 

@@ -11,9 +11,8 @@ namespace MallMedia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
-    public class ScheduleController(IMediator mediator,
-        IHubContext<ScheduleHub> _scheduleHub) : ControllerBase
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+    public class ScheduleController(IMediator mediator) : ControllerBase
     {
 
         [HttpGet("{id}")]
@@ -22,14 +21,15 @@ namespace MallMedia.API.Controllers
             var schedule = await mediator.Send(new GetScheduleByIdQuery(id));
             return Ok(schedule);
         }
+
         [HttpPost]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-        public async Task<ActionResult> CreateSchedule([FromForm] CreateScheduleCommand command)
+        public async Task<ActionResult> CreateSchedule([FromBody] CreateScheduleCommand command)
         {
             var result = await mediator.Send(command);
             await _scheduleHub.Clients.All.SendAsync("ReceiveScheduleUpdate"); // Notify clients of schedule creation
             return Ok(result);
         }
+
         [HttpGet]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)

@@ -9,30 +9,36 @@
 @{
     ViewData["Title"] = "Create Content";
 }
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module" defer>
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
 
+        window.onload = async function () {
+            try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+                const currentUser = await checkUserAuthentication();
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+</head>
 <div class="container mt-5">
     <h2>Create Content</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form id="contentForm" enctype="multipart/form-data">
         <div class="row">
             <!-- Title Input -->
-            <div class="form-group pt-3">
+            <div class="form-group pt-3 col-6">
                 <label for="title">Title</label>
-                <input type="text" id="title" asp-for="Content.Title" class="form-control" />
+                <input required type="text" id="title" asp-for="Content.Title" class="form-control" />
                 <span asp-validation-for="Content.Title" class="text-danger"></span>
+                <div id="titleError" class="text-danger"></div>
             </div>
-
-            <!-- Description Input -->
-            <div class="form-group pt-3">
-                <label for="description">Description</label>
-                <textarea id="description" asp-for="Content.Description" rows="4" class="form-control"></textarea>
-                <span asp-validation-for="Content.Description" class="text-danger"></span>
-            </div>
-
-
             <!-- Category Dropdown -->
-            <div class="form-group pt-3">
+            <div class="form-group pt-3 col-6">
                 <label for="category">Category</label>
-                <select id="categoryDropdown" asp-for="Content.CategoryId" class="form-control">
+                <select required id="categoryDropdown" asp-for="Content.CategoryId" class="form-control">
                     <option value="">Select Category</option>
                     @foreach (var category in Model.Categories)
                     {
@@ -40,67 +46,271 @@
                     }
                 </select>
                 <span asp-validation-for="Content.CategoryId" class="text-danger"></span>
+                <div id="categoryError" class="text-danger"></div>
             </div>
-            <!-- Content Type Dropdown -->
-            <div class="form-group col-6 pt-3">
-                <label for="contentType">Content Type</label>
-                <select id="contentType" asp-for="Content.ContentType" class="form-control" onchange="toggleContentFields()">
-                    <option value="">Select Content Type</option>
-                    <option value="Text">Text</option>
-                    <option value="Video">Video</option>
-                    <option value="Images">Images</option>
-                </select>
-                <span asp-validation-for="Content.ContentType" class="text-danger"></span>
+
+            <!-- Description Input -->
+            <div class="form-group pt-3">
+                <label for="description">Description</label>
+                <textarea required id="description" asp-for="Content.Description" rows="4" class="form-control"></textarea>
+                <span asp-validation-for="Content.Description" class="text-danger"></span>
+                <div id="descriptionError" class="text-danger"></div>
             </div>
+
+
+            <!-- Video Content Upload -->
+            <div id="videoContent" class="form-group pt-3 col-6">
+                <label for="videoInput">Video Content</label>
+                <input required type="file" id="videoInput" class="form-control" multiple accept="video/mp4" />
+                <span id="videoValidation" class="text-danger"></span>
+            </div>
+
+            <!-- Created By Field -->
             <div class="form-group col-6 pt-3">
                 <label for="currentUser">Created By</label>
-                <input type="text" id="userId" asp-for="Content.UserId" readonly hidden value="64ee5912-0852-46b4-96be-43ebde23b543" class="form-control" />
+                <input type="text" id="userId" asp-for="Content.UserId" readonly hidden value="4395b053-a38e-46d7-afd1-065cbb5fce15" class="form-control" />
                 <input type="text" value="Admin" readonly class="form-control" />
+                <div id="userIdError" class="text-danger"></div>
             </div>
 
-
-
-            <!-- Conditional Inputs based on Content Type -->
-            <div id="textContent" class="form-group pt-3" style="display: none;">
-                <span>Nội dung ở mục Description sẽ được hiển thị!</span>
-            </div>
-
-            <div id="videoContent" class="form-group pt-3" style="display: none;">
-                <label for="videoInput">Video Content</label>
-                <input type="file" id="videoInput" asp-for="Content.Files" class="form-control" />
-            </div>
-
-            <div id="imagesContent" class="form-group pt-3" style="display: none;">
-                <label for="imagesInput">Image Content</label>
-                <input type="file" id="imagesInput" asp-for="Content.Files" class="form-control" multiple />
-            </div>
         </div>
 
-
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary mt-4">Create Content</button>
+        <button type="button" class="btn btn-primary mt-4" id="submitBtn">Create Content</button>
     </form>
 </div>
 
 @section Scripts {
-    <script>
-        function toggleContentFields() {
-            const contentType = document.getElementById("contentType").value;
-            document.getElementById("textContent").style.display = contentType === "Text" ? "block" : "none";
-            document.getElementById("videoContent").style.display = contentType === "Video" ? "block" : "none";
-            document.getElementById("imagesContent").style.display = contentType === "Images" ? "block" : "none";
-        }
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
+        // const UrlBase = "http:10.20.54.244:5056";
+        const UrlBase = "https://localhost:7199";
+        const authToken = localStorage.getItem('authToken');
+        const tolerance = 0.01;
+
+        // Helper function to check if value is a multiple of resolution by a specific factor
+        function isMultipleOf(value, resolution, factor) {
+            const ratio = value / resolution;
+            return Math.abs(ratio - factor) < tolerance; // Check if the ratio is close to the desired factor
+        }
+
+        // Helper function to check if value is an integer multiple of resolution
+        function isIntegerMultiple(value, resolution) {
+            const ratio = value / resolution;
+            return Math.abs(ratio - Math.round(ratio)) < tolerance; // Check if the ratio is close to an integer
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const categoryDropdown = new Choices('#categoryDropdown', {
                 searchEnabled: true,
-                itemSelectText: '', // Optional: removes "Press to select" text
+                itemSelectText: '',
                 placeholder: true,
                 placeholderValue: 'Select Category',
             });
         });
-    </script>
 
+        const chunkSize = 1024 * 1024;
+        const uploadEndpoint = UrlBase + '/api/content/upload-media';
+        const createContentEndpoint = UrlBase + '/api/content';
+        const form = document.getElementById('contentForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const videoInput = document.getElementById('videoInput');
+        const videoValidationMessage = document.getElementById('videoValidation');
+
+
+        // Function to validate videos
+        async function validateVideos(files) {
+            const validVideos = [];
+            let found1080x1920 = false;
+            let found1920x1080 = false;
+
+            for (const file of files) {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+
+                // Wait for metadata to load to get video dimensions and duration
+                await new Promise((resolve) => {
+                    video.onloadedmetadata = function () {
+                        if (file.type === 'video/mp4' &&
+                            file.size <= 200 * 1024 * 1024 &&
+                            // video.duration >= 25 &&
+                            video.duration <= 30
+                        ) { // Ensure duration is between 25-30 seconds
+
+                            // Extract video metadata (duration and resolution)
+                            const metadata = {
+                                fileName: file.name,
+                                fileType: file.type,
+                                fileSize: file.size,
+                                duration: Math.floor(video.duration), // Duration in seconds
+                                resolution: `${video.videoWidth}x${video.videoHeight}`
+                            };
+
+                            // Check if the resolution matches either 1920x1080 or 1080x1920
+                            if (!found1920x1080 && isIntegerMultiple(video.videoWidth, 1920) && isIntegerMultiple(video.videoHeight, 1080)) {
+                                validVideos.push({ file, metadata });
+                                found1920x1080 = true;
+                            } else if (!found1080x1920 && isIntegerMultiple(video.videoWidth, 1080) && isIntegerMultiple(video.videoHeight, 1920)) {
+                                validVideos.push({ file, metadata });
+                                found1080x1920 = true;
+                            }
+                        }
+                        resolve();
+                    };
+                });
+            }
+
+            // Final validation message
+            if ((validVideos.length === 2 && found1920x1080 & found1080x1920) || validVideos.length === 1) {
+                videoValidationMessage.textContent = 'Videos are valid. Uploading...';
+            } else {
+                videoValidationMessage.textContent = 'Upload 2 videos in MP4 format with durations less than 30 seconds, and resolutions 1920x1080 and 1080x1920 (or multiples). Or just 1 video';
+            }
+
+            return validVideos; // Return valid videos with metadata
+        }
+
+        // Chunked upload function
+        async function uploadFileInChunks(file, metadata, mediaDtos) {
+
+            let start = 0;
+            let chunkIndex = 0;
+            const totalChunks = Math.ceil(file.size / chunkSize);
+            while (start < file.size) {
+                const chunk = file.slice(start, start + chunkSize);
+                const formData = new FormData();
+                formData.append("chunk", chunk);
+                formData.append("fileName", file.name);
+                formData.append("chunkIndex", chunkIndex);
+                formData.append("totalChunks", totalChunks);
+                formData.append("fileType", file.type);
+                formData.append("fileSize", file.size);
+                formData.append("duration", metadata.duration);
+                formData.append("resolution", metadata.resolution);
+
+                const response = await fetch(uploadEndpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                if (response.ok) {
+                    // Parse the JSON response from the server
+                    const data = await response.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        mediaDtos.push(data[0]);
+                    }
+                    // Handle the response data (which is a MediaDto)
+
+
+                    // Example: Accessing the fields of MediaDto
+
+
+                    // Do something with the response data (e.g., display it)
+
+                }
+                if (!response.ok) {
+                    throw new Error('Failed to upload chunk ' + chunkIndex);
+                }
+
+                start += chunkSize;
+                chunkIndex++;
+            }
+            return mediaDtos;
+        }
+
+        // Handle submit button click
+        submitBtn.addEventListener('click', async () => {
+
+            ////
+
+
+            // Clear previous error messages
+            document.querySelectorAll(".error").forEach(e => e.innerText = "");
+
+            let isValid = true;
+
+            document.getElementById("titleError").innerText = "";
+            document.getElementById("descriptionError").innerText = "";
+            document.getElementById("categoryError").innerText = "";
+            document.getElementById("userIdError").innerText = "";
+
+            // Title validation
+            const title = document.getElementById("title").value.trim();
+            if (title.length < 5) {
+                document.getElementById("titleError").innerText = "Title must be at least 5 characters.";
+                isValid = false;
+            }
+
+            // Description validation
+            const description = document.getElementById("description").value.trim();
+            if (description.length < 10) {
+                document.getElementById("descriptionError").innerText = "Description must be at least 10 characters.";
+                isValid = false;
+            }
+
+            // CategoryId validation
+            const categoryId = parseInt(document.getElementById("categoryDropdown").value, 10);
+            if (isNaN(categoryId) || categoryId <= 0) {
+                document.getElementById("categoryError").innerText = "Please select a valid category.";
+                isValid = false;
+            }
+
+            // UserId validation
+            const userId = document.getElementById("userId").value.trim();
+            if (!userId) {
+                document.getElementById("userIdError").innerText = "UserId is required.";
+                isValid = false;
+            }
+
+            const files = videoInput.files;
+            const validVideos = await validateVideos(files);
+            let mediaDtos = [];
+            // If validation fails, return
+            if (validVideos.length !== 2 && validVideos.length !== 1) {
+                isValid = false;
+            }
+
+
+            // If all validations pass, submit the form
+            if (!isValid) {
+                return;
+            }
+
+            ////
+
+            try {
+                for (const { file, metadata } of validVideos) {
+                    // You now have access to the file and its metadata (duration and resolution)
+                    console.log('Video Metadata:', metadata);
+                    // Upload file in chunks
+                    await uploadFileInChunks(file, metadata, mediaDtos);
+                }
+
+                // Upload form data
+
+                const formData = new FormData();
+
+                formData.append("Title", document.getElementById("title").value);
+                formData.append("CategoryId", document.getElementById("categoryDropdown").value);
+                formData.append("Description", document.getElementById("description").value);
+                formData.append("UserId", document.getElementById("userId").value);
+                formData.append("MediaDtos", JSON.stringify(mediaDtos));
+                const response = await fetch(createContentEndpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    videoValidationMessage.textContent = "";
+                    window.location.href = "/admin/content";
+                } else {
+                    alert('Error creating content.');
+                }
+            } catch (error) {
+                alert('Create content failed: ' + error.message);
+            }
+        });
+    </script>
 }
