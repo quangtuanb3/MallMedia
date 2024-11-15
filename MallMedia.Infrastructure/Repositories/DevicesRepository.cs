@@ -24,7 +24,7 @@ namespace MallMedia.Infrastructure.Repositories
             {
                 Console.WriteLine(e.Message);
             }
-            
+
             dbContext.Devices.Add(entity);
             await dbContext.SaveChangesAsync();
             return entity.Id;
@@ -59,10 +59,10 @@ namespace MallMedia.Infrastructure.Repositories
             return (devies, totalCount);
         }
 
-        
-        public Task<Device?> GetByIdAsync(int id)
+
+        public async Task<Device?> GetByIdAsync(int id)
         {
-            return dbContext.Devices.Include(d => d.Location).Include(d => d.Schedules).FirstOrDefaultAsync(d => d.Id == id);
+            return await dbContext.Devices.Include(d => d.Location).Include(d => d.Schedules).FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<Device> GetByUserIdAsync(string userId)
@@ -92,7 +92,7 @@ namespace MallMedia.Infrastructure.Repositories
 
         public async Task<bool> CheckNameDevice(string name)
         {
-            var device = await dbContext.Devices.FirstOrDefaultAsync(d=>d.DeviceName.Equals(name));
+            var device = await dbContext.Devices.FirstOrDefaultAsync(d => d.DeviceName.Equals(name));
             if (device == null) return false;
             return true;
         }

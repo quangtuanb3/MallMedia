@@ -107,7 +107,7 @@ public class IdentityController(
     }
 
     [HttpGet("currentDevice")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.User)]
     public async Task<ActionResult<DeviceDto>> GetCurrentDevice()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -127,8 +127,6 @@ public class IdentityController(
                 DeviceName = device.DeviceName,
                 Size = device.Configuration.Size,
                 Resolution = device.Configuration.Resolution,
-                Department = device.Location.Department,
-                Floor = device.Location.Floor,
             };
             return Ok(deviceDto);
         }

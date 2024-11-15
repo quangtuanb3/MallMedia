@@ -12,7 +12,7 @@
         window.onload = async function () {
             try {
                 // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
-                const currentUser = await checkUserAuthentication();
+               const currentUser = await checkUserAuthentication("Admin");
             } catch (error) {
                 console.error('Lỗi khi xác thực:', error);
             }
@@ -27,7 +27,7 @@
             <tr>
                 <th>No.</th>
                 <th style="width:300px">Title</th>
-                <th style="width:400px">Description</th>
+                <th style="width:300px">Description</th>
                 <th>Content Type</th>
                 <th>Category</th>
                 <th>Status</th>

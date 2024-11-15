@@ -17,7 +17,7 @@
         window.onload = async function () {
             try {
                 // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
-                const currentUser = await checkUserAuthentication();
+                const currentUser = await checkUserAuthentication("Admin");
             } catch (error) {
                 console.error('Lỗi khi xác thực:', error);
             }
@@ -33,7 +33,7 @@
                 <label for="title">Title</label>
                 <input required type="text" id="title" asp-for="Content.Title" class="form-control" />
                 <span asp-validation-for="Content.Title" class="text-danger"></span>
-                <div id="titleError" class="text-danger"></div>
+                <div id="titleError" class="text-danger error"></div>
             </div>
             <!-- Category Dropdown -->
             <div class="form-group pt-3 col-6">
@@ -46,7 +46,7 @@
                     }
                 </select>
                 <span asp-validation-for="Content.CategoryId" class="text-danger"></span>
-                <div id="categoryError" class="text-danger"></div>
+                <div id="categoryError" class="text-danger error"></div>
             </div>
 
             <!-- Description Input -->
@@ -54,7 +54,7 @@
                 <label for="description">Description</label>
                 <textarea required id="description" asp-for="Content.Description" rows="4" class="form-control"></textarea>
                 <span asp-validation-for="Content.Description" class="text-danger"></span>
-                <div id="descriptionError" class="text-danger"></div>
+                <div id="descriptionError" class="text-danger error"></div>
             </div>
 
 
@@ -62,15 +62,15 @@
             <div id="videoContent" class="form-group pt-3 col-6">
                 <label for="videoInput">Video Content</label>
                 <input required type="file" id="videoInput" class="form-control" multiple accept="video/mp4" />
-                <span id="videoValidation" class="text-danger"></span>
+                <span id="videoError" class="text-danger error"></span>
             </div>
 
             <!-- Created By Field -->
             <div class="form-group col-6 pt-3">
                 <label for="currentUser">Created By</label>
                 <input type="text" id="userId" asp-for="Content.UserId" readonly hidden value="4395b053-a38e-46d7-afd1-065cbb5fce15" class="form-control" />
-                <input type="text" value="Admin" readonly class="form-control" />
-                <div id="userIdError" class="text-danger"></div>
+                <input type="text" id="username" value="Admin" readonly class="form-control" />
+                <div id="userIdError" class="text-danger error"></div>
             </div>
 
         </div>
@@ -83,8 +83,7 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
-        // const UrlBase = "http:10.20.54.244:5056";
-        const UrlBase = "https://localhost:7199";
+        const UrlBase = "https://localhost:7199";  // Ensure this matches your API base URL
         const authToken = localStorage.getItem('authToken');
         const tolerance = 0.01;
 
@@ -100,13 +99,40 @@
             return Math.abs(ratio - Math.round(ratio)) < tolerance; // Check if the ratio is close to an integer
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
             const categoryDropdown = new Choices('#categoryDropdown', {
                 searchEnabled: true,
                 itemSelectText: '',
                 placeholder: true,
                 placeholderValue: 'Select Category',
             });
+
+            try {
+                // Fetch current user data
+                const currentUserEndpoint = UrlBase + "/api/identity/currentUser";
+               const response = await fetch(currentUserEndpoint, {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${authToken}` 
+    }
+});
+                if (!response.ok) {
+                    throw new Error('Failed to fetch current user');
+                }
+
+                const currentUser = await response.json();
+
+                // Assuming the API response has a `userId` field
+                const userIdInput = document.getElementById('userId');
+                const usernameInput = document.getElementById('username');
+                if (userIdInput && currentUser && currentUser.id) {
+                    userIdInput.value = currentUser.id;
+                    usernameInput.value = currentUser.username;
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Optionally, handle error (e.g., display a message to the user)
+            }
         });
 
         const chunkSize = 1024 * 1024;
@@ -115,8 +141,7 @@
         const form = document.getElementById('contentForm');
         const submitBtn = document.getElementById('submitBtn');
         const videoInput = document.getElementById('videoInput');
-        const videoValidationMessage = document.getElementById('videoValidation');
-
+        const videoValidationMessage = document.getElementById('videoError');
 
         // Function to validate videos
         async function validateVideos(files) {
@@ -133,16 +158,13 @@
                     video.onloadedmetadata = function () {
                         if (file.type === 'video/mp4' &&
                             file.size <= 200 * 1024 * 1024 &&
-                            // video.duration >= 25 &&
-                            video.duration <= 30
-                        ) { // Ensure duration is between 25-30 seconds
+                            Math.floor(video.duration) <= 30) {
 
-                            // Extract video metadata (duration and resolution)
                             const metadata = {
                                 fileName: file.name,
                                 fileType: file.type,
                                 fileSize: file.size,
-                                duration: Math.floor(video.duration), // Duration in seconds
+                                duration: Math.floor(video.duration),
                                 resolution: `${video.videoWidth}x${video.videoHeight}`
                             };
 
@@ -161,10 +183,10 @@
             }
 
             // Final validation message
-            if ((validVideos.length === 2 && found1920x1080 & found1080x1920) || validVideos.length === 1) {
-                videoValidationMessage.textContent = 'Videos are valid. Uploading...';
-            } else {
-                videoValidationMessage.textContent = 'Upload 2 videos in MP4 format with durations less than 30 seconds, and resolutions 1920x1080 and 1080x1920 (or multiples). Or just 1 video';
+            if (validVideos.length === 0) {
+                document.getElementById("videoError").innerText = "Please upload at least one valid video (1920x1080 or 1080x1920 and less than 30s).";
+            } else if (validVideos.length !== 1 && validVideos.length !== 2) {
+                document.getElementById("videoError").innerText = "Please upload exactly one or two valid videos.";
             }
 
             return validVideos; // Return valid videos with metadata
@@ -172,7 +194,6 @@
 
         // Chunked upload function
         async function uploadFileInChunks(file, metadata, mediaDtos) {
-
             let start = 0;
             let chunkIndex = 0;
             const totalChunks = Math.ceil(file.size / chunkSize);
@@ -201,14 +222,6 @@
                     if (Array.isArray(data) && data.length > 0) {
                         mediaDtos.push(data[0]);
                     }
-                    // Handle the response data (which is a MediaDto)
-
-
-                    // Example: Accessing the fields of MediaDto
-
-
-                    // Do something with the response data (e.g., display it)
-
                 }
                 if (!response.ok) {
                     throw new Error('Failed to upload chunk ' + chunkIndex);
@@ -221,20 +234,13 @@
         }
 
         // Handle submit button click
-        submitBtn.addEventListener('click', async () => {
-
-            ////
-
+        submitBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
 
             // Clear previous error messages
             document.querySelectorAll(".error").forEach(e => e.innerText = "");
 
             let isValid = true;
-
-            document.getElementById("titleError").innerText = "";
-            document.getElementById("descriptionError").innerText = "";
-            document.getElementById("categoryError").innerText = "";
-            document.getElementById("userIdError").innerText = "";
 
             // Title validation
             const title = document.getElementById("title").value.trim();
@@ -272,34 +278,31 @@
                 isValid = false;
             }
 
-
             // If all validations pass, submit the form
             if (!isValid) {
                 return;
             }
 
-            ////
-
             try {
                 for (const { file, metadata } of validVideos) {
-                    // You now have access to the file and its metadata (duration and resolution)
-                    console.log('Video Metadata:', metadata);
                     // Upload file in chunks
                     await uploadFileInChunks(file, metadata, mediaDtos);
                 }
 
                 // Upload form data
-
                 const formData = new FormData();
-
                 formData.append("Title", document.getElementById("title").value);
                 formData.append("CategoryId", document.getElementById("categoryDropdown").value);
                 formData.append("Description", document.getElementById("description").value);
                 formData.append("UserId", document.getElementById("userId").value);
                 formData.append("MediaDtos", JSON.stringify(mediaDtos));
+
                 const response = await fetch(createContentEndpoint, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
                 });
 
                 if (response.ok) {

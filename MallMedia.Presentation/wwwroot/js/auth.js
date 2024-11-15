@@ -1,28 +1,26 @@
 ﻿// auth.js
-export function checkUserAuthentication() {
+export function checkUserAuthentication(requiredRole = null) {
     return new Promise((resolve, reject) => {
-        var currentUser = null;
-
-        // Lấy token từ localStorage
-        var token = localStorage.getItem('authToken');
+        // Get the token from localStorage
+        const token = localStorage.getItem('authToken');
 
         if (!token) {
-            // Nếu không có token, chuyển hướng đến trang đăng nhập
+            // Redirect to login if no token
             window.location.href = '/Auth/Login';
             reject('No auth token found');
             return;
         }
 
-        // Nếu có token, gọi API để lấy thông tin người dùng
+        // Call the API to fetch current user information
         fetch('https://localhost:7199/api/identity/currentUser', {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + token
-            }
+                'Authorization': `Bearer ${token}`,
+            },
         })
             .then(response => {
                 if (!response.ok) {
-                    // Nếu có lỗi với response (ví dụ: token không hợp lệ), chuyển hướng tới đăng nhập
+                    // Redirect to login if the response is not okay
                     window.location.href = '/Auth/Login';
                     reject('Failed to authenticate');
                     return;
@@ -30,19 +28,20 @@ export function checkUserAuthentication() {
                 return response.json();
             })
             .then(data => {
-                currentUser = data;
-
-                if (data.roles && !data.roles.includes('Admin')) {
-                    // Nếu không phải admin, chuyển hướng tới trang AccessDenied
+                // Check if the required role is provided and validate
+                if (requiredRole && (!data.roles || !data.roles.includes(requiredRole))) {
+                    // Redirect to AccessDenied if the user lacks the required role
                     window.location.href = '/Auth/AccessDenied';
-                    reject('Access denied');
+                    reject(`Access denied for role: ${requiredRole}`);
                     return;
                 }
-                resolve(currentUser);  // Trả về currentUser khi xác thực thành công
+
+                // Resolve with user data if authentication and role check pass
+                resolve(data);
             })
             .catch(error => {
-                console.error('Lỗi khi lấy thông tin người dùng:', error);
-                window.location.href = '/Auth/Login';  // Nếu có lỗi, chuyển hướng về trang login
+                console.error('Error fetching user information:', error);
+                window.location.href = '/Auth/Login'; // Redirect to login on error
                 reject(error);
             });
     });
