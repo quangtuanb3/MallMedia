@@ -14,7 +14,7 @@ namespace MallMedia.API.Controllers;
 
 [ApiController]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-public class MasterDataController(IMediator mediator) : ControllerBase
+public class MasterDataController(IMediator mediator, IHubContext<ContentHub> hubContext) : ControllerBase
 {
     [HttpGet("api/categories")]
     public async Task<ActionResult<IEnumerable<Category>>> GetAll([FromQuery] GetAllCategoriesQuery query)

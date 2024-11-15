@@ -11,8 +11,8 @@ namespace MallMedia.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-    public class ScheduleController(IMediator mediator) : ControllerBase
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+    public class ScheduleController(IMediator mediator, IHubContext<ScheduleHub> _scheduleHub) : ControllerBase
     {
 
         [HttpGet("{id}")]

@@ -7,6 +7,7 @@ using MallMedia.Application.Contents.Queries.GetAllContents;
 using MallMedia.Application.Contents.Queries.GetContentById;
 using MallMedia.Application.Contents.Queries.GetContentMedia;
 using MallMedia.Domain.Constants;
+using MallMedia.Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -52,6 +53,7 @@ public class ContentController(IMediator mediator,
         await contentHub.Clients.All.SendAsync("ReceivedContentUpdate");
         return NoContent();
     }
+    /*
     [HttpPost("update-content")]
     public async Task<IActionResult> UpdateContent([FromBody] ContentDto request)
     {
@@ -63,7 +65,7 @@ public class ContentController(IMediator mediator,
 
         // Gọi ContentUpdateService để gửi thông báo cập nhật
         await contentRepository.NotifyDevice(request.Title);
-
+    }*/
     [HttpPost("/api/content/upload-media")]
     public async Task<IActionResult> UploadChunk([FromForm] UploadMediaCommand createMediaCommand)
     {
