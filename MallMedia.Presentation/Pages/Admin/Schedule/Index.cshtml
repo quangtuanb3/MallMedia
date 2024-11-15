@@ -21,9 +21,9 @@
         <thead>
             <tr>
                 <th>No.</th>
+                <th>Name Device</th>
                 <th>StartDate</th>
                 <th>EndDate</th>
-                <th>Name Device</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -35,9 +35,11 @@
             {
                 <tr>
                     <td>@index</td>
-                    <td>@content.StartDate</td>
-                    <td>@content.EndDate</td>
                     <td>@content.Devicedto.DeviceName</td>
+                    <td>@(content.StartDate.HasValue ? content.StartDate.Value.ToString("dd/MM/yyyy") : "N/A")</td>
+                    <td>@(content.EndDate.HasValue ? content.EndDate.Value.ToString("dd/MM/yyyy") : "N/A")</td>
+
+
                     <td>
                         <!-- Action Buttons (Edit/Delete) -->
                         <a href="#" class="btn btn-primary btn-sm">Edit</a>

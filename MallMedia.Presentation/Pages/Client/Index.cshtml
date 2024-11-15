@@ -7,7 +7,7 @@
 
 <head>
     <script type="module">
-        import { checkUserAuthentication } from '/js/auth.js';  // Ensure the correct path
+        import { checkUserAuthentication } from '../js/auth.js';  // Ensure the correct path
 
         // Declare the currentUser globally for use in other scripts
         window.currentUser = null;
@@ -178,8 +178,8 @@
             resolution = currentDevice.resolution.split("x");
             let width = resolution[0];
             let height = resolution[1];
-            document.getElementById("monitor").style.width = width + "px";
-            document.getElementById("monitor").style.height = height + "px";
+            // document.getElementById("monitor").style.width = width + "px";
+            // document.getElementById("monitor").style.height = height + "px";
         });
     </script>
 }
