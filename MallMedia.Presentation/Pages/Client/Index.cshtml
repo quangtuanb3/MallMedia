@@ -371,8 +371,8 @@
             }
 
             // Đăng ký sự kiện sau khi chắc chắn rằng đã kết nối thành công
-            connection.on("ReceiveContentUpdate", (deviceId, contentData) => {
-                console.log("Content update received for device:", deviceId); // Kiểm tra log khi có sự kiện
+            connection.on("Đã lấy thông tin thành công", (title, contentData) => {
+                console.log("Content update received for device:", title); // Kiểm tra log khi có sự kiện
                 if (deviceId === "<current-device-id>") {
                     const data = JSON.parse(contentData);
                     showContent(data); // Hàm hiển thị nội dung mới
