@@ -1,4 +1,5 @@
 ﻿
+using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MallMedia.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +14,13 @@ internal class DeviceSeeder
     private const string DefaultPassword = "Password123!";
     private readonly ApplicationDbContext dbContext;
     private readonly UserManager<User> userManager;
+    private readonly RoleManager<IdentityRole> roleManager;
 
-    public DeviceSeeder(ApplicationDbContext dbContext, UserManager<User> userManager)
+    public DeviceSeeder(ApplicationDbContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
     {
         this.dbContext = dbContext;
         this.userManager = userManager;
+        this.roleManager = roleManager;
     }
 
     public async Task Seed()
@@ -25,7 +28,11 @@ internal class DeviceSeeder
         if (!dbContext.Devices.Any())
         {
             var devicesToAdd = new List<Device>();
-
+            string roleName = UserRoles.User;
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
             foreach (var device in DeviceData.Devices)
             {
                 var user = new User
@@ -36,9 +43,9 @@ internal class DeviceSeeder
                 };
 
                 var result = await userManager.CreateAsync(user, DefaultPassword);
-
                 if (result.Succeeded)
                 {
+                    await userManager.AddToRoleAsync(user, roleName);
                     device.UserId = user.Id;
                     devicesToAdd.Add(device);
                 }

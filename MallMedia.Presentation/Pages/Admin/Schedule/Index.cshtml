@@ -7,7 +7,7 @@
 
         window.onload = async function () {
             try {
-                const currentUser = await checkUserAuthentication();
+                const currentUser = await checkUserAuthentication("Admin");
             } catch (error) {
                 console.error('Lỗi khi xác thực:', error);
             }

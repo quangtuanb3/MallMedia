@@ -12,7 +12,7 @@
         window.onload = async function () {
             try {
                 // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
-                const currentUser = await checkUserAuthentication();
+                const currentUser = await checkUserAuthentication("Admin");
             } catch (error) {
                 console.error('Lỗi khi xác thực:', error);
             }
