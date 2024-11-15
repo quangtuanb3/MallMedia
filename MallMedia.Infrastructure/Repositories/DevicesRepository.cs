@@ -42,8 +42,7 @@ namespace MallMedia.Infrastructure.Repositories
             if (sortBy != null)
             {
                 var columsSelector = new Dictionary<string, Expression<Func<Device, object>>>
-                {
-                    {nameof(Device.Configuration.DeviceType),r=>r.Configuration.DeviceType},
+                { 
                     {nameof(Device.DeviceName),r=>r.DeviceName},
                     {nameof(Device.Configuration.Resolution),r=>r.Configuration.Resolution},
                     {nameof(Device.Configuration.Size),r=>r.Configuration.Size},

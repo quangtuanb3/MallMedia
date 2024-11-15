@@ -1,6 +1,5 @@
 ﻿using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Devices.Dto;
-using MallMedia.Domain.Entities;
 
 namespace MallMedia.Application.Schedules.Dto
 {
