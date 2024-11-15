@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using MallMedia.Application.Contents.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,8 @@ public class CreateContentCommand : IRequest<int>
     public int CategoryId { get; set; }
     public string UserId { get; set; }
 
-    public int[] MediaIds { get; set; }
+    [FromForm(Name = "MediaDtos")]
+    public string MediaDtos { get; set; } = string.Empty;
+
 }
 

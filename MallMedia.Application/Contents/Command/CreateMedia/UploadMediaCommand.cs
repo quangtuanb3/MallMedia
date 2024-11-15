@@ -17,7 +17,7 @@ public class UploadMediaCommand : IRequest<List<MediaDto>>
     public int TotalChunks { get; set; }
     public string FileType { get; set; }
     public int FileSize { get; set; }
-    public TimeSpan Duration { get; set; }
+    public int Duration { get; set; }
     public string Resolution { get; set; }
 
 }

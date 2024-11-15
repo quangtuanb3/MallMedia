@@ -258,7 +258,7 @@ namespace MallMedia.Infrastructure.Migrations
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Path = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Size = table.Column<int>(type: "int", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: true),
+                    Duration = table.Column<int>(type: "int", nullable: true),
                     Resolution = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContentId = table.Column<int>(type: "int", nullable: false)
                 },

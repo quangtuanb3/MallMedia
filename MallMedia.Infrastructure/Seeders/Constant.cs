@@ -287,7 +287,7 @@ public static class DeviceData
        new Device
     {
         DeviceName = "DP-F2.3",
-        LocationId =8,
+        LocationId =7,
         Configuration = new DeviceConfiguration {
             DeviceType = DeviceType.DP,
             Size = DeviceSize.DP,
@@ -298,7 +298,7 @@ public static class DeviceData
           new Device
     {
         DeviceName = "DP-F2.4",
-        LocationId =8,
+        LocationId =7,
         Configuration = new DeviceConfiguration {
             DeviceType = DeviceType.DP,
             Size = DeviceSize.DP,
@@ -311,15 +311,15 @@ public static class DeviceData
         DeviceName = "LCD-F2.1",
         LocationId =9,
         Configuration = new DeviceConfiguration {
-            DeviceType = DeviceType.DP,
-            Size = DeviceSize.DP,
-            Resolution = DeviceResolution.DP },
+            DeviceType = DeviceType.LCD,
+            Size = DeviceSize.LCD,
+            Resolution = DeviceResolution.LCD },
         Status = "Active",
         CreatedAt = DateTime.UtcNow
     },
                         new Device
     {
-        DeviceName = "LCD-F2.2",
+        DeviceName = "DP-F2.5",
         LocationId =10,
         Configuration = new DeviceConfiguration {
             DeviceType = DeviceType.DP,
