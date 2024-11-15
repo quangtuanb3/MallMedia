@@ -4,6 +4,7 @@ using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Contents.Queries.GetAllContents;
 using MallMedia.Application.Contents.Queries.GetContentById;
 using MallMedia.Application.Contents.Command.CreateMedia;
+using MallMedia.Application.Contents.Queries.GetContentMedia;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,5 +46,11 @@ public class ContentController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(createMediaCommand);
         return Ok(result);
     }
-
+    [HttpGet("/api/content/{contentId}/medias")]
+    public async Task<IActionResult> GetContentMedia([FromRoute] int contentId)
+    {
+        var query = new GetContentMediaQuery(contentId);
+        var contents = await mediator.Send(query);
+        return Ok(contents);
+    }
 }
