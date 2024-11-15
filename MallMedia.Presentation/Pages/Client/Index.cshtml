@@ -62,10 +62,10 @@
 
                     if (!response.ok) {
                         if (response.status === 401) { // Check if the status is 401 Unauthorized
-        window.location.href = '/Auth/Login'; // Redirect to the login page
-    } else {
-        throw new Error(`API call failed with status ${response.status}`);
-    }
+                            window.location.href = '/Auth/Login'; // Redirect to the login page
+                        } else {
+                            throw new Error(`API call failed with status ${response.status}`);
+                        }
                     }
 
                     const data = await response.json();
@@ -216,49 +216,6 @@
     </script>
 }
 
-<!--
-<style>
-      /* Full-screen styling for content */
-      body, html {
-          height: 100%;
-          margin: 0;
-      }
-
-      #monitor {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-color: black; /* Set background color */
-      }
-
-      #text-content, #image-content, #video-content {
-          text-align: center;
-          max-width: 100%;
-          max-height: 100%;
-          display: none;
-      }
-
-      #image-slide, #video-player {
-          width: 100%; /* Full-screen width */
-          height: 100%; /* Full-screen height */
-          object-fit: contain; /* Ensure content scales proportionally */
-      }
-
-      /* Ensure text is displayed in full screen */
-      #text-content {
-          color: white; /* Text color for visibility */
-          font-size: 3em;
-          font-weight: bold;
-          padding: 20px;
-          background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-          border-radius: 10px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
-      }
-  </style>
-
- -->
 
 <style>
     /* Full-screen styling for content */

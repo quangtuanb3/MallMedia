@@ -198,17 +198,17 @@
         error: function (xhr, status, error) {
             alert('Error fetching floor and department data.');
         }
-    });
-}
+        });
+        }
 
-// Attach event listeners for checkboxes and contentId
-$('input[type="checkbox"]').on('change', fetchFloorsAndDepartments);
-$('#contentId').on('change', fetchFloorsAndDepartments);
+        // Attach event listeners for checkboxes and contentId
+        $('input[type="checkbox"]').on('change', fetchFloorsAndDepartments);
+        $('#contentId').on('change', fetchFloorsAndDepartments);
 
 
-// Attach event listeners
-$('input[type="checkbox"]').on('change', fetchFloorsAndDepartments);
-$('#contentId').on('change', fetchFloorsAndDepartments);
+        // Attach event listeners
+        $('input[type="checkbox"]').on('change', fetchFloorsAndDepartments);
+        $('#contentId').on('change', fetchFloorsAndDepartments);
 
 
         $('#floorCheckboxes').on('change', 'input[type="checkbox"]', function () {
