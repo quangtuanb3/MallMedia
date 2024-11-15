@@ -9,7 +9,21 @@
 @{
     ViewData["Title"] = "Create Content";
 }
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module" defer>
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
 
+        window.onload = async function () {
+            try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+                const currentUser = await checkUserAuthentication();
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+</head>
 <div class="container mt-5">
     <h2>Create Content</h2>
     <form id="contentForm" enctype="multipart/form-data">

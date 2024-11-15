@@ -4,6 +4,21 @@
 @{
     ViewData["Title"] = "List content";
 }
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module" defer>
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
+
+        window.onload = async function () {
+            try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+                const currentUser = await checkUserAuthentication();
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+</head>
 <div class="container mt-5">
     <h2>Content List</h2>
     <a class="btn btn-info" asp-page="/Admin/Content/Create">Create</a>
@@ -83,20 +98,3 @@
         }
     </div>
 </div>
-<script>
-    $(document).ready(function () {
-        // Check if there is a success message in TempData
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <text>
-                    toastr.success("@TempData["SuccessMessage"]");
-        </text>
-    }
-                                                                                                                                                                                });
-</script>
-
-<style>
-    th {
-        text-align: center
-    }
-</style>

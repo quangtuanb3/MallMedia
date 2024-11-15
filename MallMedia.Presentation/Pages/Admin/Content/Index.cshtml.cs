@@ -19,20 +19,20 @@ public class IndexModel(HttpClient httpClient, AuthenticationHelper authHelper) 
 
     public async Task<IActionResult> OnGetAsync()
     {
-        //try
-        //{
-        //    authHelper.AddBearerToken(httpClient);
-        //}
-        //catch (UnauthorizedAccessException)
-        //{
-        //    // Redirect to login if token is missing or invalid
-        //    return Redirect("/Auth/Login");
-        //}
+        try
+        {
+            authHelper.AddBearerToken(httpClient);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // Redirect to login if token is missing or invalid
+            return Redirect("/Auth/Login");
+        }
 
         // Parse and validate query parameters
         PageNumber = Request.Query.ContainsKey("pageNumber") && int.TryParse(Request.Query["pageNumber"], out var pageNum) ? pageNum : 1;
         PageSize = Request.Query.ContainsKey("pageSize") && int.TryParse(Request.Query["pageSize"], out var pageSize) ? pageSize : 5;
-
+        authHelper.AddBearerToken(httpClient);
         var url = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber={PageNumber}&PageSize={PageSize}";
         var response = await httpClient.GetAsync(url);
 

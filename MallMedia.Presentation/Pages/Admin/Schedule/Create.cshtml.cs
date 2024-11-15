@@ -46,8 +46,6 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             {
                 schedule = new CreateScheduleCommand();
             }
-            
-           
             var url_content = $"{Constants.ClientConstant.BaseURl}/api/Content?PageNumber=1&PageSize=100";
             var url_current_user = $"{Constants.ClientConstant.BaseURl}/api/identity/currentUser";
 
@@ -56,7 +54,6 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
             {
                 var contentJson = await responseCurrentUser.Content.ReadAsStringAsync();
                 CurrentUser = JsonConvert.DeserializeObject<CurrentUser>(contentJson);
-
                 if (CurrentUser == null || !CurrentUser.Roles.Contains(UserRoles.Admin))
                 {
                     Redirect("Auth/Login");

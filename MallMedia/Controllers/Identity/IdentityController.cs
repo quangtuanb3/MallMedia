@@ -1,4 +1,5 @@
 ﻿using MallMedia.API.Extensions;
+using MallMedia.Application.Devices.Dto;
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
@@ -11,15 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using MallMedia.Domain.Entities;
-using MallMedia.Domain.Constants;
-using MallMedia.API.Extensions;
-using Microsoft.Extensions.Options;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using MallMedia.Domain.Repositories;
-using MallMedia.Application.Devices.Dto;
 
 namespace MallMedia.API.Controllers.Identity;
 
