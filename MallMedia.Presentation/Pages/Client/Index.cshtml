@@ -18,6 +18,7 @@
 
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.9/signalr.min.js"></script>
     <script>
         function scaleContent(element, deviceWidth, deviceHeight, contentWidth, contentHeight) {
             const monitorWidth = deviceWidth;  // Full screen width
@@ -214,10 +215,10 @@
 
         async function initializeRealTimeUpdates() {
             try {
-                const connection = new signalR.HubConnectionBuilder().withUrl("/real-time-update").build();
-                connection.on("ScheduleCreated", id => console.log("Schedule created:", id));
-                connection.on("ScheduleUpdated", id => console.log("Schedule updated:", id));
-                await connection.start();
+                const connection0 = new signalR.HubConnectionBuilder().withUrl("/real-time-update").build();
+                connection0.on("ScheduleCreated", id => console.log("Schedule created:", id));
+                connection0.on("ScheduleUpdated", id => console.log("Schedule updated:", id));
+                await connection0.start();
             } catch (error) {
                 console.error("Error initializing SignalR connection:", error);
             }
@@ -243,23 +244,23 @@
             .withUrl("/real-time-update")
                .build();
 
-            connection.on("ScheduleCreated", function(scheduleId) {
+            connection1.on("ScheduleCreated", function(scheduleId) {
             console.log("New Schedule Created:", scheduleId);
         });
 
-        connection.on("ScheduleUpdated", function(scheduleId) {
+        connection1.on("ScheduleUpdated", function(scheduleId) {
             console.log("Schedule Updated:", scheduleId);
         });
 
-        connection.start().catch(err => console.error(err.toString()));
+        connection1.start().catch(err => console.error(err.toString()));
     </script>
         <script>
             document.addEventListener("DOMContentLoaded", async function () {
                 const connection2 = new signalR.HubConnectionBuilder()
-                    .withUrl("/real-time-update-hub")
+                    .withUrl("/real-time-update_hub")
                     .build();
 
-                connection.on("ReceiveContentUpdate", async (deviceId, contentData) => {
+                connection2.on("ReceiveContentUpdate", async (deviceId, contentData) => {
                     console.log("Content update received for device:", deviceId);
 
                     // Update content only for the current device
@@ -271,17 +272,17 @@
                     }
                 });
 
-                await connection.start().catch(err => console.error(err.toString()));
+                await connection2.start().catch(err => console.error(err.toString()));
             });
         </script>
     <script>
         document.addEventListener("DOMContentLoaded", async function () {
             const deviceId = "<current-device-id>";  // ID thiết bị hiện tại
             const connection2 = new signalR.HubConnectionBuilder()
-                .withUrl("/real-time-update-hu")
+                .withUrl("/real-time-update_hub")
                 .build(); 
 
-            connection.on("ReceiveContentUpdate", async (receivedDeviceId, contentData) => {
+            connection2.on("ReceiveContentUpdate", async (receivedDeviceId, contentData) => {
                 console.log("Content update received for device:", receivedDeviceId);
 
                 // Chỉ cập nhật nội dung cho thiết bị hiện tại
@@ -304,7 +305,7 @@
                 }
             });
 
-            await connection.start().catch(err => console.error(err.toString()));
+            await connection2.start().catch(err => console.error(err.toString()));
         });
 
         function showContent(data) {
@@ -314,17 +315,30 @@
         }
     </script>
     <script>
+        document.addEventListener("DOMContentLoaded", async function () {
             const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/real-time-update")
-            .build();
+                .withUrl("/real-time-update_hub")
+                .build();
 
-        connection.on("Đã lấy thông tin thành công", function (message) {
-            console.log("Thông báo từ server:", message);
-            alert(message); // Hiển thị thông báo cho người dùng
-        });
+            connection.on("ReceiveContentUpdate", (deviceId, contentData) => {
+                console.log("Content update received for device:", deviceId);
+                if (deviceId === "<current-device-id>") {
+                    const data = JSON.parse(contentData);
+                    showContent(data); // Hàm hiển thị nội dung mới
+                }
+            });
 
-        connection.start().catch(function (err) {
-            return console.error(err.toString());
+            // Kiểm tra trạng thái kết nối và chỉ gọi `start` nếu chưa kết nối
+            if (connection.state === signalR.HubConnectionState.Disconnected) {
+                try {
+                    await connection.start();
+                    console.log("SignalR connection started.");
+                } catch (err) {
+                    console.error("Error starting SignalR connection:", err.toString());
+                }
+            } else {
+                console.log("Connection is already in progress or connected.");
+            }
         });
     </script>
 

@@ -55,7 +55,7 @@ try
         app.UseSwaggerUI();
     }
 
-    app.MapHub<ScheduleHub>("/real-time-update");
+    app.MapHub<ScheduleHub>("/real-time-update_hub");
     app.MapHub<ContentHub>("/real-time-update");
     app.UseHttpsRedirection();
 

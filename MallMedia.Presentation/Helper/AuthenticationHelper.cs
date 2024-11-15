@@ -114,6 +114,7 @@ public class AuthenticationHelper
                 }
             }
         }
+        /*
         public static async Task SeedSuperAdminAsync(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             var defaultUser = new IdentityUser
@@ -134,13 +135,14 @@ public class AuthenticationHelper
                 }
                 await roleManager.SeedClaimsForSuperAdmin();
             }
-        }
-        private async static Task SeedClaimsForSuperAdmin(this RoleManager<IdentityRole> roleManager)
+        }*/
+        /*
+        private async static Task SeedClaimsForSuperAdmin(RoleManager<IdentityRole> roleManager)
         {
             var adminRole = await roleManager.FindByNameAsync("SuperAdmin");
             await roleManager.AddPermissionClaim(adminRole, "Products");
-        }
-        public static async Task AddPermissionClaim(this RoleManager<IdentityRole> roleManager, IdentityRole role, string module)
+        }*/
+        public static async Task AddPermissionClaim(RoleManager<IdentityRole> roleManager, IdentityRole role, string module)
         {
             var allClaims = await roleManager.GetClaimsAsync(role);
             var allPermissions = Permissions.GeneratePermissionsForModule(module);
@@ -152,7 +154,14 @@ public class AuthenticationHelper
                 }
             }
         }
+        public class CurrentUser
+        {
+            public string Id { get; set; }
+            public string Username { get; set; }
+            public List<string> Roles { get; set; }
+        }
     }
+    /*
     public async static Task Main(string[] args)
     {
         var host = CreateHostBuilder(args).Build();
@@ -177,5 +186,5 @@ public class AuthenticationHelper
             }
         }
         host.Run();
-    }
+    }*/
 }

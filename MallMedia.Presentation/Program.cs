@@ -40,7 +40,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.MapHub<ScheduleHub>("/real-time-update");
+app.MapHub<ScheduleHub>("/real-time-update_hub");
 app.MapHub<ContentHub>("/real-time-update");
 
 app.UseHttpsRedirection();
