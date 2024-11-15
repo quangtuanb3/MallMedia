@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace MallMedia.Presentation.Pages.Admin.Device
 {
-    public class IndexModel(HttpClient httpClient, AuthenticationHelper authHelper) : PageModel
+    public class IndexModel(HttpClient httpClient, AuthenticationHelper authenticationHelper) : PageModel
     {
         public List<DeviceDto> Devices { get; set; }
         public int TotalPages { get; set; }
@@ -20,20 +20,10 @@ namespace MallMedia.Presentation.Pages.Admin.Device
 
         public async Task<IActionResult> OnGetAsync()
         {
-            try
-            {
-                authHelper.AddBearerToken(httpClient);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // Redirect to login if token is missing or invalid
-                return Redirect("/Auth/Login");
-            }
-
+            authenticationHelper.AddBearerToken(httpClient);
             // Parse and validate query parameters
             PageNumber = Request.Query.ContainsKey("pageNumber") && int.TryParse(Request.Query["pageNumber"], out var pageNum) ? pageNum : 1;
-            PageSize = Request.Query.ContainsKey("pageSize") && int.TryParse(Request.Query["pageSize"], out var pageSize) ? pageSize : 5;
-
+            PageSize = Request.Query.ContainsKey("pageSize") && int.TryParse(Request.Query["pageSize"], out var pageSize) ? pageSize : 10;
             var url = $"{Constants.ClientConstant.BaseURl}/api/devices?PageNumber={PageNumber}&PageSize={PageSize}";
             var response = await httpClient.GetAsync(url);
 

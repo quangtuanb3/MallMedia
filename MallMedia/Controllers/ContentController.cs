@@ -1,19 +1,22 @@
 ﻿using MallMedia.Application.Contents.Command.CreateContents;
+using MallMedia.Application.Contents.Command.CreateMedia;
 using MallMedia.Application.Contents.Command.DeleteContents;
 using MallMedia.Application.Contents.Dtos;
 using MallMedia.Application.Contents.Queries.GetAllContents;
 using MallMedia.Application.Contents.Queries.GetContentById;
-using MallMedia.Application.Contents.Command.CreateMedia;
 using MallMedia.Application.Contents.Queries.GetContentMedia;
+using MallMedia.Domain.Constants;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MallMedia.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-public class ContentController(IMediator mediator) : ControllerBase
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+public class ContentController(IMediator mediator, IWebHostEnvironment _webHostEnvironment) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult> CreateContent([FromForm] CreateContentCommand command)

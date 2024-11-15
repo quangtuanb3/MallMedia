@@ -4,6 +4,21 @@
 @{
     ViewData["Title"] = "Create Device";
 }
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module">
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
+
+        window.onload = async function () {
+            try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+                const currentUser = await checkUserAuthentication();
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+</head>
 <div class="container mt-5">
     <h2>Create Device</h2>
     <form id="filterForm" method="post" enctype="multipart/form-data">
@@ -20,7 +35,8 @@
                 <label for="deviceType">Device Type</label>
                 <select id="deviceType" class="form-control" asp-for="Device.DeviceType">
                     <option value="">Select type</option>
-                    <option value="TV">TV</option>
+                    <option value="Digital Poster">Digital Poster</option>
+                    <option value="Vertical LCD">Vertical LCD</option>
                     <option value="LED">LED</option>
                 </select>
                 <span asp-validation-for="Device.DeviceType" class="text-danger"></span>

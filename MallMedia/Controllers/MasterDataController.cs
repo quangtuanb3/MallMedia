@@ -4,12 +4,14 @@ using MallMedia.Application.MasterData.Queries.GetFloorAndDepartment;
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace MallMedia.API.Controllers;
 
 
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
 public class MasterDataController(IMediator mediator) : ControllerBase
 {
     [HttpGet("api/categories")]

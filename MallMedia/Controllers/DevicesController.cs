@@ -3,13 +3,17 @@ using MallMedia.Application.Devices.Command.UpdateDevice;
 using MallMedia.Application.Devices.Queries.GetAllDevices;
 using MallMedia.Application.Devices.Queries.GetByIdDevices;
 using MallMedia.Application.Devices.Queries.GetDeviceByFloorOrDepartment;
+using MallMedia.Domain.Constants;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MallMedia.API.Controllers
 {
     [Route("api/devices")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
     public class DevicesController(IMediator mediator) : ControllerBase
     {
         [HttpPost]

@@ -4,7 +4,73 @@
 @{
     ViewData["Title"] = "Admin page";
 }
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module" defer>
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
 
-<div class="text-center">
-    <h3>Admin page</h3>
-</div>
+        window.onload = async function () {
+            try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+                const currentUser = await checkUserAuthentication();
+
+                // Sử dụng thông tin currentUser
+                console.log(currentUser);
+                // Ví dụ: Hiển thị tên người dùng
+                document.getElementById('userName').textContent = `Chào, ${currentUser.roles}`;
+
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+    <style>
+        /* Cơ bản cho toàn bộ trang */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            color: #4CAF50;
+        }
+
+        p#userName {
+            text-align: center;
+            font-size: 1.2em;
+            color: #555;
+            font-weight: bold;
+        }
+
+        /* Thiết kế cho phần nội dung trang quản trị */
+        .admin-content {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .admin-content h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .admin-content p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chào mừng đến với trang quản trị</h1>
+    <p id="userName">Đang tải...</p>
+    <!-- Nội dung trang quản trị -->
+</body>

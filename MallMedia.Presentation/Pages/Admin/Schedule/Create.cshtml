@@ -3,6 +3,22 @@
 @{
     ViewData["Title"] = "Create Schedule";
 }
+<head>
+    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
+    <script type="module">
+        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
+
+        window.onload = async function () {
+            try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+                const currentUser = await checkUserAuthentication();
+            } catch (error) {
+                console.error('Lỗi khi xác thực:', error);
+            }
+        };
+    </script>
+</head>
+<body>
 <div class="container mt-5" style="max-width:880px">
     <h2 class="text-center">Create Schedule</h2>
     <form id="filterForm" method="post" enctype="multipart/form-data">
@@ -78,10 +94,12 @@
         </div>
     </form>
 </div>
+</body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        var token = localStorage.getItem('authToken');
         // Lắng nghe sự thay đổi checkbox loại thiết bị
         const baseUrl = "https://localhost:7199";
         const contentMediaEndpoint = baseUrl + "/api/content/{contentId}/medias";
@@ -103,12 +121,12 @@
                    document.getElementById("deviceTypeDigitalPoster").checked = false;
                    document.getElementById("deviceTypeLED").disabled = true;
                    document.getElementById("deviceTypeDigitalPoster").disabled = true;
-                                                      document.getElementById("deviceTypeVerticalLCD").disabled = false;
+                   document.getElementById("deviceTypeVerticalLCD").disabled = false;
                }else{
                    document.getElementById("deviceTypeLED").disabled = false;
                    document.getElementById("deviceTypeDigitalPoster").disabled = false;
                 
-                      document.getElementById("deviceTypeVerticalLCD").checked = false;
+                   document.getElementById("deviceTypeVerticalLCD").checked = false;
                    document.getElementById("deviceTypeVerticalLCD").disabled = true;
                } 
             }else {
@@ -148,6 +166,9 @@
         type: 'POST', // Use POST method
         contentType: 'application/json', // Ensure JSON content
         data: JSON.stringify({ deviceType: selectedDeviceTypes }), // Send selected device types
+        headers: {
+            'Authorization': 'Bearer ' + token
+        },
         success: function (response) {
             // Show and update floors
             $('#labelSelectFloor').css('display', 'block');
@@ -285,6 +306,9 @@ $('#contentId').on('change', fetchFloorsAndDepartments);
                 type: 'POST',
                 contentType: 'application/json', // Chỉ định rằng gửi dữ liệu dưới dạng JSON
                 data: JSON.stringify(scheduleData), // Chuyển đối tượng thành JSON string
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
                 success: function (response) {
                     // Xử lý kết quả trả về
                     alert('Schedule created successfully!');
@@ -297,120 +321,4 @@ $('#contentId').on('change', fetchFloorsAndDepartments);
         });
     });
 </script>
- @* <style>
-     /* Các kiểu CSS cho form */
-     .container {
-         max-width: 900px;
-         margin: 0 auto;
-         padding: 20px;
-     }
-
-     h2 {
-         text-align: center;
-         margin-bottom: 30px;
-         font-family: 'Arial', sans-serif;
-         color: #333;
-     }
-
-     .form-group {
-         margin-bottom: 20px;
-     }
-
-     input[type="date"],
-     select,
-     button {
-         border-radius: 5px;
-         padding: 10px;
-         font-size: 1rem;
-         width: 100%;
-         margin-top: 5px;
-     }
-
-     input[type="date"],
-     select {
-         border: 1px solid #ccc;
-     }
-
-     button {
-         background-color: #007bff;
-         color: white;
-         font-weight: bold;
-         border: none;
-         cursor: pointer;
-     }
-
-     button:hover {
-         background-color: #0056b3;
-     }
-
-     .form-check-label {
-         margin-left: 10px;
-     }
-
-     .form-check {
-         margin-bottom: 10px;
-     }
-
-     #floorCheckboxes,
-     #departmentCheckboxes {
-         display: flex;
-         flex-direction: column;
-     }
-
-     #floorCheckboxes input,
-     #departmentCheckboxes input {
-         margin-bottom: 10px;
-     }
-
-     .form-check-input:checked {
-         background-color: #007bff;
-         border-color: #007bff;
-     }
-
-     .form-check-input:focus {
-         outline: none;
-         box-shadow: 0 0 0 0.25rem rgba(38, 143, 255, 0.5);
-     }
-
-     label {
-         font-weight: 600;
-         font-size: 1.1rem;
-         color: #333;
-     }
-
-     .row {
-         display: flex;
-         justify-content: space-between;
-         margin-bottom: 20px;
-     }
-
-     .col-md-4,
-     .col-md-6 {
-         padding: 0 15px;
-     }
-
-     .pt-3 {
-         padding-top: 15px;
-     }
-
-     a.btn-danger {
-         background-color: #dc3545;
-         color: white;
-         font-weight: bold;
-         padding: 10px 15px;
-         text-decoration: none;
-         border-radius: 5px;
-     }
-
-     a.btn-danger:hover {
-         background-color: #c82333;
-     }
-
-     .text-danger {
-         font-size: 0.875rem;
-         color: #e74c3c;
-         margin-top: 5px;
-     }
- </style> *@
-
-
+ 
