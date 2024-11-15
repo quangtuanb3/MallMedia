@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using MallMedia.Application.Contents.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +14,8 @@ public class CreateContentCommand : IRequest<int>
     [Required(ErrorMessage = "Please select a category.")]
     public int CategoryId { get; set; }
     public string UserId { get; set; }
-    [FromForm]
-    public List<IFormFile> Files { get; set; } = new();
+    [FromForm(Name = "MediaDtos")]
+    public string MediaDtos { get; set; };
+
 }
 

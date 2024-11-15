@@ -41,12 +41,10 @@
             </div>
 
 
-
-
             <!-- Video Content Upload -->
             <div id="videoContent" class="form-group pt-3 col-6">
                 <label for="videoInput">Video Content</label>
-                <input type="file" id="videoInput" asp-for="Content.Files" class="form-control" multiple accept="video/mp4" />
+                <input type="file" id="videoInput" class="form-control" multiple accept="video/mp4" />
                 <span id="videoValidation" class="text-danger"></span>
             </div>
 
@@ -67,6 +65,9 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
+        // const UrlBase = "http:10.20.54.244:5056";
+        const UrlBase = "https://localhost:7199";
+        const authToken = localStorage.getItem('authToken');
         const tolerance = 0.01;
 
         // Helper function to check if value is a multiple of resolution by a specific factor
@@ -90,12 +91,14 @@
             });
         });
 
-        const chunkSize = 1024 * 1024; // 1MB per chunk
-        const uploadEndpoint = '/api/upload-chunked'; // Update with your actual endpoint
+        const chunkSize = 1024 * 1024;
+        const uploadEndpoint = UrlBase + '/api/content/upload-media';
+        const createContentEndpoint = UrlBase + '/api/content';
         const form = document.getElementById('contentForm');
         const submitBtn = document.getElementById('submitBtn');
         const videoInput = document.getElementById('videoInput');
         const videoValidationMessage = document.getElementById('videoValidation');
+
 
         // Function to validate videos
         async function validateVideos(files) {
@@ -112,19 +115,17 @@
                     video.onloadedmetadata = function () {
                         if (file.type === 'video/mp4' &&
                             file.size <= 200 * 1024 * 1024 &&
-                            video.duration >= 25 && video.duration <= 30
+                            // video.duration >= 25 &&
+                            video.duration <= 30
                         ) { // Ensure duration is between 25-30 seconds
 
                             // Extract video metadata (duration and resolution)
                             const metadata = {
-                                fileName: file.name,
-                                fileType: file.type,
+                               fileName: file.name,
+                               fileType: file.type,
                                 fileSize: file.size,
-                                duration: video.duration, // Duration in seconds
-                                resolution: {
-                                    width: video.videoWidth,
-                                    height: video.videoHeight
-                                }
+                                duration: Math.floor(video.duration), // Duration in seconds
+                                resolution: `${video.videoWidth}x${video.videoHeight}`
                             };
 
                             // Check if the resolution matches either 1920x1080 or 1080x1920
@@ -152,7 +153,8 @@
         }
 
         // Chunked upload function
-        async function uploadFileInChunks(file, metadata) {
+        async function uploadFileInChunks(file, metadata, mediaDtos) {
+            
             let start = 0;
             let chunkIndex = 0;
             const totalChunks = Math.ceil(file.size / chunkSize);
@@ -163,13 +165,33 @@
                 formData.append("fileName", file.name);
                 formData.append("chunkIndex", chunkIndex);
                 formData.append("totalChunks", totalChunks);
-                formData.append("metadata", metadata);
-
+                formData.append("fileType", file.type);
+                formData.append("fileSize", file.size);
+                formData.append("duration", metadata.duration);
+                formData.append("resolution", metadata.resolution);
+    
                 const response = await fetch(uploadEndpoint, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
                 });
+                if (response.ok) {
+                // Parse the JSON response from the server
+                const data = await response.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    mediaDtos.push(data[0]);
+                }
+                // Handle the response data (which is a MediaDto)
+              
 
+                // Example: Accessing the fields of MediaDto
+                
+
+                // Do something with the response data (e.g., display it)
+               
+            }
                 if (!response.ok) {
                     throw new Error('Failed to upload chunk ' + chunkIndex);
                 }
@@ -177,13 +199,14 @@
                 start += chunkSize;
                 chunkIndex++;
             }
+            return mediaDtos;
         }
 
         // Handle submit button click
         submitBtn.addEventListener('click', async () => {
             const files = videoInput.files;
             const validVideos = await validateVideos(files);
-            
+            let mediaDtos = [];
             // If validation fails, return
             if (validVideos.length !== 2) {
                 return;
@@ -193,14 +216,20 @@
                 for (const { file, metadata } of validVideos) {
                     // You now have access to the file and its metadata (duration and resolution)
                     console.log('Video Metadata:', metadata);
-
                     // Upload file in chunks
-                    await uploadFileInChunks(file, metadata);
+                    await uploadFileInChunks(file, metadata, mediaDtos);
                 }
 
                 // Upload form data
-                const formData = new FormData(form);
-                const response = await fetch(form.action, {
+              
+                const formData = new FormData();
+
+                formData.append("Title", document.getElementById("title").value);
+                formData.append("CategoryId", document.getElementById("categoryDropdown").value);
+                formData.append("Description", document.getElementById("description").value);
+                formData.append("UserId", document.getElementById("userId").value);
+                formData.append("mediaDtos", JSON.stringify(mediaDtos));
+                const response = await fetch(createContentEndpoint, {
                     method: 'POST',
                     body: formData
                 });
@@ -211,7 +240,7 @@
                     alert('Error creating content.');
                 }
             } catch (error) {
-                alert('File upload failed: ' + error.message);
+                alert('Create content failed: ' + error.message);
             }
         });
     </script>

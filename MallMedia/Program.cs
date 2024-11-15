@@ -19,7 +19,9 @@ try
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowLocalhost", policy =>
-            policy.WithOrigins("http://10.20.54.244:5179")  // Allow frontend origin
+            policy
+            .WithOrigins("https://localhost:7220") 
+            // Allow frontend origin
                   .AllowAnyHeader()  // Allow any headers
                   .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
     });
@@ -30,12 +32,12 @@ try
     //    {
     //        listenOptions.UseHttps(); // No certificate path is needed here
     //    });
+    //});     
+    //builder.WebHost.ConfigureKestrel(options =>
+    //{
+    //    options.Listen(IPAddress.Parse("127.0.0.1"), 5001);   // Listen on localhost
+    //    options.Listen(IPAddress.Parse("10.20.54.244"), 5057);  // Listen on LAN IP
     //});
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.Listen(IPAddress.Parse("127.0.0.1"), 5001);   // Listen on localhost
-        options.Listen(IPAddress.Parse("10.20.54.244"), 5057);  // Listen on LAN IP
-    });
     var app = builder.Build();
     // Enable CORS globally (apply to all controllers)
     app.UseCors("AllowLocalhost");

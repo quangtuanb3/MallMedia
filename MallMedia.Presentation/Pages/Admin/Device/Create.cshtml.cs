@@ -69,7 +69,7 @@ namespace MallMedia.Presentation.Pages.Admin.Device
             if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "Create successfully";
-                return RedirectToPage("/Admin/Schedule/Index");
+                return RedirectToPage("/Admin/Device/Index");
             }
 
             // Handle error if the response is not successful

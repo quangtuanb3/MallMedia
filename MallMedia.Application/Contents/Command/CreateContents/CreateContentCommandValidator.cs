@@ -25,11 +25,6 @@ namespace MallMedia.Application.Contents.Command.CreateContents
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("UserId is required.");
 
-
-            // Files validation: ensure there are files if required, at least one file uploaded
-            RuleFor(x => x.Files)
-                .NotNull().WithMessage("Files are required.")
-                .Must(files => files.Count > 0).WithMessage("At least one file must be uploaded.");
         }
     }
 }
