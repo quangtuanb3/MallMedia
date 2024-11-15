@@ -242,7 +242,8 @@
     <script>
         const connection1 = new signalR.HubConnectionBuilder()
             .withUrl("/real-time-update_hub")
-               .build();
+            .withAutomaticReconnect()
+            .build();
 
             connection1.on("ScheduleCreated", function(scheduleId) {
             console.log("New Schedule Created:", scheduleId);
@@ -258,7 +259,8 @@
             document.addEventListener("DOMContentLoaded", async function () {
                 const connection2 = new signalR.HubConnectionBuilder()
                     .withUrl("/real-time-update_hub")
-                    .build();
+                .withAutomaticReconnect()
+                .build();
 
                 connection2.on("ReceiveContentUpdate", async (deviceId, contentData) => {
                     console.log("Content update received for device:", deviceId);
@@ -280,6 +282,7 @@
             const deviceId = "<current-device-id>";  // ID thiết bị hiện tại
             const connection2 = new signalR.HubConnectionBuilder()
                 .withUrl("/real-time-update_hub")
+                .withAutomaticReconnect()
                 .build(); 
 
             connection2.on("ReceiveContentUpdate", async (receivedDeviceId, contentData) => {
@@ -316,11 +319,12 @@
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", async function () {
-            const connection = new signalR.HubConnectionBuilder()
+            const connection3 = new signalR.HubConnectionBuilder()
                 .withUrl("/real-time-update_hub")
+                .withAutomaticReconnect() // Tự động kết nối lại khi bị ngắt
                 .build();
 
-            connection.on("ReceiveContentUpdate", (deviceId, contentData) => {
+            connection3.on("ReceiveContentUpdate", (deviceId, contentData) => {
                 console.log("Content update received for device:", deviceId);
                 if (deviceId === "<current-device-id>") {
                     const data = JSON.parse(contentData);
@@ -329,6 +333,7 @@
             });
 
             // Kiểm tra trạng thái kết nối và chỉ gọi `start` nếu chưa kết nối
+            /*
             if (connection.state === signalR.HubConnectionState.Disconnected) {
                 try {
                     await connection.start();
@@ -338,7 +343,41 @@
                 }
             } else {
                 console.log("Connection is already in progress or connected.");
+            }*/
+            // Bắt đầu kết nối và kiểm tra khi kết nối thành công
+            connection3.start()
+                .then(() => {
+                    console.log("SignalR connection started.");
+                })
+                .catch(err => {
+                    console.error("Error starting SignalR connection:", err.toString());
+                });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/real-time-update_hub")
+                .withAutomaticReconnect() // Tự động kết nối lại khi bị ngắt
+                .build();
+
+            // Kiểm tra xem kết nối đã thành công hay chưa
+            try {
+                await connection.start();
+                console.log("SignalR connection started.");
+            } catch (err) {
+                console.error("Error starting SignalR connection:", err.toString());
+                return; // Dừng lại nếu kết nối thất bại
             }
+
+            // Đăng ký sự kiện sau khi chắc chắn rằng đã kết nối thành công
+            connection.on("ReceiveContentUpdate", (deviceId, contentData) => {
+                console.log("Content update received for device:", deviceId); // Kiểm tra log khi có sự kiện
+                if (deviceId === "<current-device-id>") {
+                    const data = JSON.parse(contentData);
+                    showContent(data); // Hàm hiển thị nội dung mới
+                }
+            });
         });
     </script>
 
