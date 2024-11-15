@@ -215,7 +215,7 @@
 
         async function initializeRealTimeUpdates() {
             try {
-                const connection0 = new signalR.HubConnectionBuilder().withUrl("/real-time-update").build();
+                const connection0 = new signalR.HubConnectionBuilder().withUrl("/real-time-update_hub").build();
                 connection0.on("ScheduleCreated", id => console.log("Schedule created:", id));
                 connection0.on("ScheduleUpdated", id => console.log("Schedule updated:", id));
                 await connection0.start();
@@ -241,7 +241,7 @@
     </script>
     <script>
         const connection1 = new signalR.HubConnectionBuilder()
-            .withUrl("/real-time-update")
+            .withUrl("/real-time-update_hub")
                .build();
 
             connection1.on("ScheduleCreated", function(scheduleId) {
