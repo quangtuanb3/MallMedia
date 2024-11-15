@@ -7,17 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="wwwroot\NewFolder\**" />
-	  <Compile Remove="wwwroot\uploads\**" />
-	  <Content Remove="wwwroot\NewFolder\**" />
-	  <Content Remove="wwwroot\uploads\**" />
-	  <EmbeddedResource Remove="wwwroot\NewFolder\**" />
-	  <EmbeddedResource Remove="wwwroot\uploads\**" />
-	  <None Remove="wwwroot\NewFolder\**" />
-	  <None Remove="wwwroot\uploads\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10">
 			<PrivateAssets>all</PrivateAssets>
@@ -35,7 +24,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Logs\" />
-	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
 </Project>
