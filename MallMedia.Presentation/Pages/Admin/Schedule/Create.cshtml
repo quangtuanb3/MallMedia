@@ -70,20 +70,108 @@
 <!-- Add this line in the <head> section or before the closing </body> tag -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        const contentSelect = document.getElementById('contentId');
-        const choices = new Choices(contentSelect, {
-            searchEnabled: true, // Enable search
-            itemSelectText: '',  // Text displayed when an item is selected (optional)
-            placeholder: true,
-            placeholderValue: 'Select Content'
-        });
-    });
     $(document).ready(function () {
-        fetchDevices();
-        // Function to call the API and fetch devices
-        function fetchDevices() {
-            // Get the values from the form fields
+        funcuitog
+        
+        // Lắng nghe sự thay đổi checkbox loại thiết bị
+        $('input[type="checkbox"]').on('change', function () {
+            var selectedDeviceTypes = [];
+            $('input[type="checkbox"]:checked').each(function () {
+                selectedDeviceTypes.push($(this).val());
+            });
+
+            // Gửi yêu cầu đến API khi có ít nhất một loại thiết bị được chọn
+            if (selectedDeviceTypes.length > 0) {
+                $.ajax({
+                    url: 'https://localhost:7199/api/floor-department',  // Endpoint API của bạn
+                    type: 'POST',  // Đổi từ GET sang POST
+                    contentType: 'application/json',  // Đảm bảo gửi dưới dạng JSON
+                    data: JSON.stringify({ deviceType: selectedDeviceTypes }),  // Gửi mảng deviceTypes
+                    success: function (response) {
+
+                        $('#labelSelectFloor').css('display', 'block');
+
+                        // Cập nhật checkbox cho Floor
+                        var floorCheckboxes = $('#floorCheckboxes');
+                        floorCheckboxes.empty();  // Clear current checkboxes
+                        response.floors.forEach(function (floor) {
+                            floorCheckboxes.append('<div class="form-check">' +
+                                '<input class="form-check-input" type="checkbox" value="' + floor.floor + '" id="floor-' + floor.floor + '">' +
+                                '<label class="form-check-label" for="floor-' + floor.floor + '">' + floor.deviceType + ' floor : ' + floor.floor + '</label>' +
+                                '</div>');
+                        });
+                        $('#labelSelectDepartment').css('display', 'block');
+                        // Cập nhật checkbox cho Department
+                        var departmentCheckboxes = $('#departmentCheckboxes');
+                        departmentCheckboxes.empty();  // Clear current checkboxes
+                        response.departments.forEach(function (department) {
+                            departmentCheckboxes.append('<div class="form-check">' +
+                                '<input class="form-check-input" type="checkbox" value="' + department.department + '" id="department-' + department.department + '">' +
+                                '<label class="form-check-label" for="department-' + department.department + '">' + department.deviceType + ' department: ' + department.department + '</label>' +
+                                '</div>');
+                        });
+                        console.log(selectedDeviceTypes);
+                        console.log(response);
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error fetching floor and department data.');
+                    }
+                });
+            }
+        });
+
+        $('#floorCheckboxes').on('change', 'input[type="checkbox"]', function () {
+            var selectedFloors = [];
+            $('#floorCheckboxes input[type="checkbox"]:checked').each(function () {
+                selectedFloors.push($(this).val());  // Lấy giá trị của các checkbox đã chọn
+            });
+
+            // Nếu có ít nhất một Floor được chọn thì disable department checkboxes
+            if (selectedFloors.length > 0) {
+                $('#departmentCheckboxes input[type="checkbox"]').prop('disabled', true);
+            } else {
+                // Nếu không có Floor nào được chọn, enable lại department checkboxes
+                $('#departmentCheckboxes input[type="checkbox"]').prop('disabled', false);
+            }
+        });
+
+        // Lắng nghe sự thay đổi của các checkbox Department (khi Floor chưa được chọn)
+        $('#departmentCheckboxes').on('change', 'input[type="checkbox"]', function () {
+            var selectedDepartments = [];
+            $('#departmentCheckboxes input[type="checkbox"]:checked').each(function () {
+                selectedDepartments.push($(this).val());  // Lấy giá trị của các checkbox đã chọn
+            });
+
+            // Nếu có ít nhất một Department được chọn thì disable floor checkboxes
+            if (selectedDepartments.length > 0) {
+                $('#floorCheckboxes input[type="checkbox"]').prop('disabled', true);
+            } else {
+                // Nếu không có Department nào được chọn, enable lại floor checkboxes
+                $('#floorCheckboxes input[type="checkbox"]').prop('disabled', false);
+            }
+        });
+
+        // Xử lý sự kiện submit form
+        $('#filterForm').submit(function (e) {
+            e.preventDefault(); // Ngăn chặn form gửi đi
+
+            // Lấy thông tin các lựa chọn
+            var selectedDeviceTypes = [];
+            $('#deviceTypeCheckBox input[type="checkbox"]:checked').each(function () {
+                selectedDeviceTypes.push($(this).val());
+            });
+
+            var selectedFloors = [];
+            $('#floorCheckboxes input[type="checkbox"]:checked').each(function () {
+                selectedFloors.push($(this).val());
+            });
+
+            var selectedDepartments = [];
+            $('#departmentCheckboxes input[type="checkbox"]:checked').each(function () {
+                selectedDepartments.push($(this).val());
+            });
+
+            // Lấy thông tin ngày bắt đầu, kết thúc và content
             var startDate = $('#startDate').val();
             var endDate = $('#endDate').val();
             var contentId = $('#contentId').val();
