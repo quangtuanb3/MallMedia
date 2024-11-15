@@ -20,8 +20,16 @@ namespace MallMedia.Application.Schedules.Queries.GetAllSchedule
                                                     request.PageNumber,
                                                     request.SortBy,
                                                     request.SortDirection);
-            var scheduleDto = mapper.Map<List<SchedulesDto>>(schedule);
-            return new PagedResult<SchedulesDto>(scheduleDto, totalCount, request.PageSize, request.PageNumber);
+            var listSchedule = new List<SchedulesDto>();
+            foreach(var item in schedule) 
+            {
+                var scheduleDto = mapper.Map<SchedulesDto>(item);
+                scheduleDto.Devicedto = mapper.Map<DeviceDto>(item.Device);
+                listSchedule.Add(scheduleDto);
+            }
+            
+
+            return new PagedResult<SchedulesDto>(listSchedule, totalCount, request.PageSize, request.PageNumber);
         }
     }
 }
