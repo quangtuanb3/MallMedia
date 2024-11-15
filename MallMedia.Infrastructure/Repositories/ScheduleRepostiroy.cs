@@ -108,6 +108,56 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
         return contentListWithMedia;
     }
 
+    public async Task<List<Content>> GetNumberDefaultContent(int number)
+    {
+        // Fetch contents with IsDefault = true
+     
+            var contentListWithMedia = await dbContext.Contents
+          .Where(c => c.isDefault)
+          .Select(c => new
+          {
+              Content = c,
+              Media = dbContext.Medias
+                  .Where(m => m.ContentId == c.Id)
+                  .ToList() // Materialize IQueryable into a List
+          })
+          .ToListAsync();
+
+            // Attach media to each content
+            var processedContentList = contentListWithMedia
+                .Select(x =>
+                {
+                    var content = x.Content;
+                    content.Media = x.Media.ToList();
+                    return content;
+                })
+                .ToList();
+            if (!processedContentList.Any())
+            {
+                return new List<Content>(); // Return an empty list
+            }
+            // Check if duplication is needed
+            var totalCount = processedContentList.Count;
+            if (totalCount < number)
+            {
+                var result = new List<Content>(processedContentList);
+                while (result.Count < number)
+                {
+                    // Add duplicated items to meet the required count
+                    result.AddRange(processedContentList);
+                }
+
+                // Trim excess items to ensure exact count
+                return result.Take(number).ToList();
+            }
+
+            return processedContentList.Take(number).ToList();
+
+        // Return exactly the requested number of records
+      
+    }
+
+
     public async Task<bool> IsExistSchedule(Schedule schedule)
     {
         var sche = await dbContext.Schedules
