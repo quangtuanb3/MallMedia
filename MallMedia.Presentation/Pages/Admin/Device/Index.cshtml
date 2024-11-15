@@ -1,11 +1,12 @@
 ﻿@page
-@model MallMedia.Presentation.Pages.Admin.Device.IndexModel
+@model MallMedia.Presentation.Pages.Admin.Content.IndexModel
+
 @{
     ViewData["Title"] = "List content";
 }
 <head>
     <!-- Thêm type="module" vào script để hỗ trợ import/export -->
-    <script type="module">
+    <script type="module" defer>
         import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
 
         window.onload = async function () {
@@ -21,7 +22,7 @@
 <div class="container mt-5">
     <h2>Devices List</h2>
     <a class="btn btn-info" asp-page="/Admin/Device/Create">Create</a>
-    <table class="table table-striped">
+    <table class="table table-striped" id="devicesTable">
         <thead>
             <tr>
                 <th>No.</th>
@@ -31,79 +32,150 @@
                 <th>Size</th>
                 <th>Resolution</th>
                 <th>CreatedAt</th>
-                <th>Status</th>  
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            @{
-                int index = Model.ItemsFrom;
-            }
-            @foreach (var content in Model.Devices)
-            {
-                <tr>
-                    <td>@index</td>
-                    <td>@content.DeviceName</td>
-                    <td>@content.DeviceType</td>
-                    <td>Tầng: @content.Floor - @content.Department</td>
-                    <td>@content.Size</td>
-                    <td>@content.Resolution</td>
-                    <td>@content.CreatedAt.ToString("yyyy-MM-dd")</td>
-                    <td>@content.Status</td>
-                </tr>
-
-                ++index;
-            }
+            <!-- Data will be dynamically inserted here -->
         </tbody>
     </table>
+
     <!-- Pagination -->
-    <div class="pagination">
-        @if (Model.TotalPages > 1)
-        {
-            <ul class="pagination">
-                <!-- Previous Page Button -->
-                @if (Model.PageNumber > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?PageNumber=1">First</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?PageNumber=@(Model.PageNumber - 1)">Previous</a>
-                    </li>
-                }
-
-                <!-- Page Number Buttons -->
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                        <a class="page-link" href="?PageNumber=@i">@i</a>
-                    </li>
-                }
-
-                <!-- Next Page Button -->
-                @if (Model.PageNumber < Model.TotalPages)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?PageNumber=@(Model.PageNumber + 1)">Next</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?PageNumber=@Model.TotalPages">Last</a>
-                    </li>
-                }
-            </ul>
-        }
+    <div class="pagination" id="pagination">
+        <!-- Pagination links will be dynamically inserted here -->
     </div>
 </div>
-@section Scripts {
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    $(document).ready(function () {
-        // Check if there is a success message in TempData
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <text>
-             toastr.success("@TempData["SuccessMessage"]");
-        </text>
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+        // Load devices on page load
+        loadDevices(1);
+
+    // Handle pagination click events
+        document.getElementById('pagination').addEventListener('click', function (e) {
+                if (e.target && e.target.classList.contains('page-link')) {
+                e.preventDefault();
+               const pageNumber = parseInt(e.target.getAttribute('data-page'));
+                loadDevices(pageNumber);
+            }
+        });
     });
+
+    function loadDevices(pageNumber) {
+        const pageSize = 10; // Define how many items per page you want
+        const sortBy = 'DeviceName'; // Example sorting parameter
+        const sortDirection = 'asc'; // Example sorting direction
+
+        // Retrieve the token (example from localStorage, replace as necessary)
+        const token = localStorage.getItem('authToken');  // Assuming token is stored in localStorage
+
+        if (!token) {
+            console.error('No authentication token found.');
+            return;
+        }
+        const baseUrl = "https://localhost:7199";
+        // Prepare API request parameters
+        const url = baseUrl + `/api/devices?PageNumber=${pageNumber}&PageSize=${pageSize}&SortBy=${sortBy}&SortDirection=0`;
+
+        // Set up request headers, including Authorization
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'  // This can be added if you're expecting JSON data
+        };
+
+        // Make the AJAX call to the API
+        fetch(url, {
+            method: 'GET',  // GET request
+            headers: headers // Include the headers in the request
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+            console.log(response)
+            return response.json();
+        })
+        .then(data => {
+            // Check if data.items exists and is an array
+            if (Array.isArray(data.items)) {
+                // Update the table
+                updateTable(data.items, pageNumber);
+
+                // Update pagination
+                updatePagination(data.totalPages, pageNumber);
+            } else {
+                console.error('Invalid response format. "items" not found.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching devices:', error);
+        });
+    }
+
+
+    // Function to update the table with new device data
+    function updateTable(devices, pageNumber) {
+        const tableBody = document.querySelector('#devicesTable tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        devices.forEach((device, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${(pageNumber - 1) * 10 + (index + 1)}</td>
+                <td>${device.deviceName}</td>
+                <td>${device.deviceType}</td>
+                <td>Tầng: ${device.floor} - ${device.department}</td>
+                <td>${device.size}</td>
+                <td>${device.resolution}</td>
+                <td>${new Date(device.createdAt).toISOString().split('T')[0]}</td>
+                <td>${device.status}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Function to update the pagination controls
+    function updatePagination(totalPages, currentPage) {
+        const paginationDiv = document.getElementById('pagination');
+        paginationDiv.innerHTML = ''; // Clear existing pagination
+
+        // Previous page and first page links
+        if (currentPage > 1) {
+            paginationDiv.innerHTML += `
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+                    </li>
+                </ul>
+            `;
+        }
+
+        // Page number links
+        for (let i = 1; i <= totalPages; i++) {
+            paginationDiv.innerHTML += `
+                <ul class="pagination">
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                </ul>
+            `;
+        }
+
+        // Next page and last page links
+        if (currentPage < totalPages) {
+            paginationDiv.innerHTML += `
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="${totalPages}">Last</a>
+                    </li>
+                </ul>
+            `;
+        }
+    }
 </script>
-}

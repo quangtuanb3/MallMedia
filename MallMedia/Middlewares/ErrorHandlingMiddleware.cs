@@ -1,7 +1,5 @@
 ﻿
 using MallMedia.Domain.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MallMedia.API.Middlewares;
 
@@ -13,7 +11,7 @@ public class ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger) : 
         {
             await next.Invoke(context);
         }
-        catch(BadRequestException badRequest)
+        catch (BadRequestException badRequest)
         {
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync(badRequest.Message);
