@@ -20,14 +20,16 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
                 Email = null
             };
             var result = await userManager.CreateAsync(user, DefaultPassword);
-
             if (result.Succeeded) 
             {
+                //var role = await userManager.IsInRoleAsync(user, "User");
                 var device = mapper.Map<Device>(request);
                 device.Configuration.Size = device.Configuration.Size.ToString()+" inches";
+                device.Configuration.DeviceType = request.DeviceType;
                 device.UserId = user.Id;
                 device.Status = "Active";
-                return await devicesRepository.CreateAsync(device);
+                var id = await devicesRepository.CreateAsync(device);
+                return id;
             }
             else
             {
