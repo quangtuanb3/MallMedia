@@ -4,326 +4,97 @@
     ViewData["Title"] = "Create Schedule";
 }
 <head>
-    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
     <script type="module">
         import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
 
         window.onload = async function () {
             try {
-                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
-               const currentUser = await checkUserAuthentication("Admin");
+                const currentUser = await checkUserAuthentication("Admin");
             } catch (error) {
                 console.error('Lỗi khi xác thực:', error);
             }
         };
     </script>
+    <script type="module"  defer src="/js/create_schedule.js"></script>
 </head>
 <body>
-<div class="container mt-5" style="max-width:880px">
-    <h2 class="text-center">Create Schedule</h2>
-    <form id="filterForm" method="post" enctype="multipart/form-data">
-        <div class="row ">
-            <!-- Start Date -->
-            <div class="form-group pt-3 col-md-12">
-                <label for="startDate">Start Date</label>
-                <input type="date" id="startDate" asp-for="schedule.StartDate" class="form-control" />
-                <span asp-validation-for="schedule.StartDate" class="text-danger"></span>
-            </div>
-           
-        </div>
-        <div class="row ">
-            <!-- End Date -->
-            <div class="form-group pt-3 col-md-12">
-                <label for="endDate">End Date</label>
-                <input type="date" id="endDate" class="form-control" asp-for="schedule.EndDate" />
-                <span asp-validation-for="schedule.EndDate" class="text-danger"></span>
-            </div>
-            
-        </div>
-        <div class="row ">
-            <div class="form-group pt-3  col-md-12">
-                <label for="contentId">Content</label>
-                <select id="contentId" class="form-control" asp-for="schedule.ContentId">
-                    <option value="">Select Content</option>
-                    @foreach (var content in Model.Content)
-                    {
-                        <option value="@content.Id">[@content.Category.Name] - @content.Title</option>
-                    }
-                </select>
-                <span asp-validation-for="schedule.ContentId" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="row">
-            <!-- Device Type Checkbox -->
-            <div class="form-group pt-3 col-md-4" id="deviceTypeCheckBox">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="deviceTypeLED" value="LED">
-                    <label class="form-check-label" for="deviceTypeLED">LED</label>
+    <div class="container mt-5" style="max-width:880px">
+        <h2 class="text-center">Create Schedule</h2>
+        <form id="filterForm" method="post" enctype="multipart/form-data">
+            <div class="row ">
+                <!-- Start Date -->
+                <div class="form-group pt-3 col-md-12">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" asp-for="schedule.StartDate" class="form-control" />
+                    <span id="StartDateError" class="text-danger error-message"></span>
                 </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="deviceTypeVerticalLCD" value="Vertical LCD">
-                    <label class="form-check-label" for="deviceTypeVerticalLCD">Vertical LCD</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="deviceTypeDigitalPoster" value="Digital Poster">
-                    <label class="form-check-label" for="deviceTypeDigitalPoster">Digital Poster</label>
-                </div>
-            </div>
-        </div>
 
-        <!-- Devices Dropdown (Auto-populated) -->
-        <div class="row">
-            <div class="form-group pt-3 col-md-6">
-                <label style="display:none" id="labelSelectFloor">Select Devices by Floor</label><br>
-                <div id="floorCheckboxes">
-                    <!-- Checkboxes for floors will be populated here -->
+            </div>
+            <div class="row ">
+                <!-- End Date -->
+                <div class="form-group pt-3 col-md-12">
+                    <label for="endDate">End Date</label>
+                    <input type="date" id="endDate" class="form-control" asp-for="schedule.EndDate" />
+                    <span id="EndDateError" class="text-danger error-message"></span>
                 </div>
+
+            </div>
+            <div class="row ">
+                <div class="form-group pt-3  col-md-12">
+                    <label for="contentId">Content</label>
+                    <select id="contentId" class="form-control" asp-for="schedule.ContentId">
+                        <option selected>Select Content</option>
+                        @foreach (var content in Model.Content)
+                        {
+                            <option value="@content.Id">[@content.Category.Name] - @content.Title</option>
+                        }
+                    </select>
+                    <span id="ContentIdError" class="text-danger error-message"></span>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Device Type Checkbox -->
+                <div class="form-group pt-3 col-md-4" id="deviceTypeCheckBox">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="deviceTypeLED" value="LED">
+                        <label class="form-check-label" for="deviceTypeLED">LED</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="deviceTypeVerticalLCD" value="Vertical LCD">
+                        <label class="form-check-label" for="deviceTypeVerticalLCD">Vertical LCD</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="deviceTypeDigitalPoster" value="Digital Poster">
+                        <label class="form-check-label" for="deviceTypeDigitalPoster">Digital Poster</label>
+                    </div>
+                </div>
+                <span id="DeviceTypeError" class="text-danger error-message"></span>
             </div>
 
-            <div class="form-group pt-3 col-md-6">
-                <label style="display:none" id="labelSelectDepartment">Select Devices by Department</label><br>
-                <div id="departmentCheckboxes">
-                    <!-- Checkboxes for departments will be populated here -->
+            <!-- Floor Dropdown (Auto-populated) -->
+            <div class="row">
+                <div class="form-group pt-3 col-md-6">
+                    <label style="display:none" id="labelSelectFloor">Select Devices by Floor</label><br>
+                    <div id="floorCheckboxes">
+                        <!-- Checkboxes for floors will be populated here -->
+                    </div>
+                    
                 </div>
+
+                <div class="form-group pt-3 col-md-6">
+                    <label style="display:none" id="labelSelectDepartment">Select Devices by Department</label><br>
+                    <div id="departmentCheckboxes">
+                        <!-- Checkboxes for departments will be populated here -->
+                    </div>
+                   
+                </div>
+                <span id="Floor_DepartmentsError" class="text-danger error-message"></span>
             </div>
-        </div>
-        <div class="d-flex">
-             <button type="submit" class="btn btn-primary mt-2 me-5 p-2 pe-3 ps-3">Create</button>
-              <a asp-page="/Admin/Schedule/Index" class="btn btn-danger mt-2 p-2  pe-3 ps-3" >Back</a>
-               
-        </div>
-    </form>
-</div>
+            <div class="d-flex">
+                <button type="submit" class="btn btn-primary mt-2 me-5 p-2 pe-3 ps-3">Create</button>
+                <a asp-page="/Admin/Schedule/Index" class="btn btn-danger mt-2 p-2  pe-3 ps-3">Back</a>
+
+            </div>
+        </form>
+    </div>
 </body>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        var token = localStorage.getItem('authToken');
-        // Lắng nghe sự thay đổi checkbox loại thiết bị
-        const baseUrl = "https://localhost:7199";
-        const contentMediaEndpoint = baseUrl + "/api/content/{contentId}/medias";
-        const contentIdEle = document.getElementById("contentId");
-        contentIdEle.onchange = async function () {
-        const contentId = contentIdEle.value; // Get the selected contentId
-        const endpoint = contentMediaEndpoint.replace("{contentId}", contentId); 
-
-        try {
-       const response = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-        'Authorization': `Bearer ${token}` // Add the Authorization header with the token
-    }
-});
-        if (response.ok) {
-            const mediaData = await response.json();
-            console.log("Media Data:", mediaData);
-            if(mediaData.length == 1){
-                console.log(mediaData[0].resolution)
-             const [width, height] = mediaData[0].resolution.split('x').map(Number);
-               if (width<height){
-                   document.getElementById("deviceTypeLED").checked = false;
-                   document.getElementById("deviceTypeDigitalPoster").checked = false;
-                   document.getElementById("deviceTypeLED").disabled = true;
-                   document.getElementById("deviceTypeDigitalPoster").disabled = true;
-                   document.getElementById("deviceTypeVerticalLCD").disabled = false;
-               }else{
-                   document.getElementById("deviceTypeLED").disabled = false;
-                   document.getElementById("deviceTypeDigitalPoster").disabled = false;
-                
-                   document.getElementById("deviceTypeVerticalLCD").checked = false;
-                   document.getElementById("deviceTypeVerticalLCD").disabled = true;
-               } 
-            }else {
-                   document.getElementById("deviceTypeLED").disabled = false;
-                   document.getElementById("deviceTypeDigitalPoster").disabled = false;
-                   document.getElementById("deviceTypeVerticalLCD").disabled = false;
-               }
-        } else {
-            console.error("Error fetching media data:", response.statusText);
-        }
-    } catch (error) {
-        console.error("Fetch error:", error);
-    }
-};
-
-
-   function fetchFloorsAndDepartments() {
-    const selectedDeviceTypes = [];
-    $('input[type="checkbox"]:checked').each(function () {
-        selectedDeviceTypes.push($(this).val());
-    });
-
-    // Handle both checked and unchecked scenarios
-    if (selectedDeviceTypes.length === 0) {
-        // No checkboxes are selected; clear floors and departments
-        $('#labelSelectFloor').css('display', 'none');
-        $('#floorCheckboxes').empty();
-        $('#labelSelectDepartment').css('display', 'none');
-        $('#departmentCheckboxes').empty();
-        console.log('No device types selected.');
-        return;
-    }
-
-    // Make the API request when at least one checkbox is checked
-    $.ajax({
-        url: 'https://localhost:7199/api/floor-department', // Endpoint API
-        type: 'POST', // Use POST method
-        contentType: 'application/json', // Ensure JSON content
-        data: JSON.stringify({ deviceType: selectedDeviceTypes }), // Send selected device types
-        headers: {
-            'Authorization': 'Bearer ' + token
-        },
-        success: function (response) {
-            // Show and update floors
-            $('#labelSelectFloor').css('display', 'block');
-            const floorCheckboxes = $('#floorCheckboxes');
-            floorCheckboxes.empty(); // Clear current checkboxes
-            response.floors.forEach(function (floor) {
-                floorCheckboxes.append('<div class="form-check">' +
-                    '<input class="form-check-input" type="checkbox" value="' + floor.floor + '" id="floor-' + floor.floor + '">' +
-                    '<label class="form-check-label" for="floor-' + floor.floor + '">' + floor.deviceType + ' - Floor ' + floor.floor + '</label>' +
-                    '</div>');
-            });
-
-            // Show and update departments
-            $('#labelSelectDepartment').css('display', 'block');
-            const departmentCheckboxes = $('#departmentCheckboxes');
-            departmentCheckboxes.empty(); // Clear current checkboxes
-            response.departments.forEach(function (department) {
-                departmentCheckboxes.append('<div class="form-check">' +
-                    '<input class="form-check-input" type="checkbox" value="' + department.department + '" id="department-' + department.department + '">' +
-                    '<label class="form-check-label" for="department-' + department.department + '">' + department.deviceType + ' - ' + department.department + '</label>' +
-                    '</div>');
-            });
-
-            console.log('Selected Device Types:', selectedDeviceTypes);
-            console.log('API Response:', response);
-        },
-        error: function (xhr, status, error) {
-            alert('Error fetching floor and department data.');
-        }
-        });
-        }
-
-        // Attach event listeners for checkboxes and contentId
-        $('input[type="checkbox"]').on('change', fetchFloorsAndDepartments);
-        $('#contentId').on('change', fetchFloorsAndDepartments);
-
-
-        // Attach event listeners
-        $('input[type="checkbox"]').on('change', fetchFloorsAndDepartments);
-        $('#contentId').on('change', fetchFloorsAndDepartments);
-
-
-        $('#floorCheckboxes').on('change', 'input[type="checkbox"]', function () {
-            var selectedFloors = [];
-            $('#floorCheckboxes input[type="checkbox"]:checked').each(function () {
-                selectedFloors.push($(this).val());  // Lấy giá trị của các checkbox đã chọn
-            });
-
-            // Nếu có ít nhất một Floor được chọn thì disable department checkboxes
-            if (selectedFloors.length > 0) {
-                $('#departmentCheckboxes input[type="checkbox"]').prop('disabled', true);
-            } else {
-                // Nếu không có Floor nào được chọn, enable lại department checkboxes
-                $('#departmentCheckboxes input[type="checkbox"]').prop('disabled', false);
-            }
-        });
-
-        // Lắng nghe sự thay đổi của các checkbox Department (khi Floor chưa được chọn)
-        $('#departmentCheckboxes').on('change', 'input[type="checkbox"]', function () {
-            var selectedDepartments = [];
-            $('#departmentCheckboxes input[type="checkbox"]:checked').each(function () {
-                selectedDepartments.push($(this).val());  // Lấy giá trị của các checkbox đã chọn
-            });
-
-            // Nếu có ít nhất một Department được chọn thì disable floor checkboxes
-            if (selectedDepartments.length > 0) {
-                $('#floorCheckboxes input[type="checkbox"]').prop('disabled', true);
-            } else {
-                // Nếu không có Department nào được chọn, enable lại floor checkboxes
-                $('#floorCheckboxes input[type="checkbox"]').prop('disabled', false);
-            }
-        });
-
-        // Xử lý sự kiện submit form
-        $('#filterForm').submit(function (e) {
-            e.preventDefault(); // Ngăn chặn form gửi đi
-
-            // Lấy thông tin các lựa chọn
-            var selectedDeviceTypes = [];
-            $('#deviceTypeCheckBox input[type="checkbox"]:checked').each(function () {
-                selectedDeviceTypes.push($(this).val());
-            });
-
-            var selectedFloors = [];
-            $('#floorCheckboxes input[type="checkbox"]:checked').each(function () {
-                selectedFloors.push($(this).val());
-            });
-
-            var selectedDepartments = [];
-            $('#departmentCheckboxes input[type="checkbox"]:checked').each(function () {
-                selectedDepartments.push($(this).val());
-            });
-
-            // Lấy thông tin ngày bắt đầu, kết thúc và content
-            var startDate = $('#startDate').val();
-            var endDate = $('#endDate').val();
-            var contentId = $('#contentId').val();
-
-            // Kiểm tra thông tin nhập vào
-            if (!startDate || !endDate || !contentId) {
-                alert("Please fill in all required fields startDate - endDate - Content.");
-                return;
-            }
-            if (startDate > endDate) {
-                alert("Please fill start date < end date.");
-                return;
-            }
-            if (selectedDeviceTypes.length === 0) {
-                alert("Please select at least one device type.");
-                return;
-            }
-
-            if (selectedFloors.length === 0 && selectedDepartments.length === 0) {
-                alert("Please select at least one floor or department.");
-                return;
-            }
-
-            let floors1 = selectedFloors.length > 0 ? selectedFloors : null;
-            let departments1 = selectedDepartments.length > 0 ? selectedDepartments : null;
-
-            // Tạo đối tượng dữ liệu JSON
-            var scheduleData = {
-                StartDate: startDate,
-                EndDate: endDate,
-                ContentId: contentId,
-                DeviceType: selectedDeviceTypes,
-                Floors: floors1,
-                Departments: departments1,
-                Status: "SCHEDULED"
-            };
-
-            // Gửi yêu cầu đến API tạo lịch trình
-            $.ajax({
-                url: 'https://localhost:7199/api/Schedule',  // Endpoint tạo lịch trình
-                type: 'POST',
-                contentType: 'application/json', // Chỉ định rằng gửi dữ liệu dưới dạng JSON
-                data: JSON.stringify(scheduleData), // Chuyển đối tượng thành JSON string
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                },
-                success: function (response) {
-                    // Xử lý kết quả trả về
-                    alert('Schedule created successfully!');
-                    window.location.href = '/Admin/Schedule/Index';  // Điều hướng đến trang danh sách lịch trình
-                },
-                error: function (xhr, status, error) {
-                    alert('Error creating schedule.');
-                }
-            });
-        });
-    });
-</script>
- 
