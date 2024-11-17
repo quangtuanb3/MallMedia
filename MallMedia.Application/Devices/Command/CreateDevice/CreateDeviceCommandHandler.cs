@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
 using MallMedia.Domain.Repositories;
 using MediatR;
@@ -20,15 +21,20 @@ namespace MallMedia.Application.Devices.Command.CreateDevice
                 Email = null
             };
             var result = await userManager.CreateAsync(user, DefaultPassword);
+            var id = -1;
             if (result.Succeeded) 
             {
-                //var role = await userManager.IsInRoleAsync(user, "User");
+                await userManager.AddToRoleAsync(user,UserRoles.User);
                 var device = mapper.Map<Device>(request);
                 device.Configuration.Size = device.Configuration.Size.ToString()+" inches";
                 device.Configuration.DeviceType = request.DeviceType;
                 device.UserId = user.Id;
                 device.Status = "Active";
-                var id = await devicesRepository.CreateAsync(device);
+                id = await devicesRepository.CreateAsync(device);
+                if(id == -1)
+                {
+                    await userManager.DeleteAsync(user);
+                }
                 return id;
             }
             else

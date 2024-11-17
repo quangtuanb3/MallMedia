@@ -8,7 +8,7 @@ public class Device
     public Location Location { get; set; }
     public DeviceConfiguration Configuration { get; set; }
     public string Status { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public string UserId { get; set; }
     public User User { get; set; }

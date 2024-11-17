@@ -26,7 +26,7 @@
                 <div class="form-group pt-3 col-md-12">
                     <label for="startDate">Start Date</label>
                     <input type="date" id="startDate" asp-for="schedule.StartDate" class="form-control" />
-                    <span asp-validation-for="schedule.StartDate" class="text-danger"></span>
+                    <span id="StartDateError" class="text-danger error-message"></span>
                 </div>
 
             </div>
@@ -35,7 +35,7 @@
                 <div class="form-group pt-3 col-md-12">
                     <label for="endDate">End Date</label>
                     <input type="date" id="endDate" class="form-control" asp-for="schedule.EndDate" />
-                    <span asp-validation-for="schedule.EndDate" class="text-danger"></span>
+                    <span id="EndDateError" class="text-danger error-message"></span>
                 </div>
 
             </div>
@@ -43,13 +43,13 @@
                 <div class="form-group pt-3  col-md-12">
                     <label for="contentId">Content</label>
                     <select id="contentId" class="form-control" asp-for="schedule.ContentId">
-                        <option value="">Select Content</option>
+                        <option selected>Select Content</option>
                         @foreach (var content in Model.Content)
                         {
                             <option value="@content.Id">[@content.Category.Name] - @content.Title</option>
                         }
                     </select>
-                    <span asp-validation-for="schedule.ContentId" class="text-danger"></span>
+                    <span id="ContentIdError" class="text-danger error-message"></span>
                 </div>
             </div>
             <div class="row">
@@ -68,15 +68,17 @@
                         <label class="form-check-label" for="deviceTypeDigitalPoster">Digital Poster</label>
                     </div>
                 </div>
+                <span id="DeviceTypeError" class="text-danger error-message"></span>
             </div>
 
-            <!-- Devices Dropdown (Auto-populated) -->
+            <!-- Floor Dropdown (Auto-populated) -->
             <div class="row">
                 <div class="form-group pt-3 col-md-6">
                     <label style="display:none" id="labelSelectFloor">Select Devices by Floor</label><br>
                     <div id="floorCheckboxes">
                         <!-- Checkboxes for floors will be populated here -->
                     </div>
+                    
                 </div>
 
                 <div class="form-group pt-3 col-md-6">
@@ -84,7 +86,9 @@
                     <div id="departmentCheckboxes">
                         <!-- Checkboxes for departments will be populated here -->
                     </div>
+                   
                 </div>
+                <span id="Floor_DepartmentsError" class="text-danger error-message"></span>
             </div>
             <div class="d-flex">
                 <button type="submit" class="btn btn-primary mt-2 me-5 p-2 pe-3 ps-3">Create</button>

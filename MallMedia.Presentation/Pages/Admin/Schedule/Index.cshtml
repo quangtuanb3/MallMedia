@@ -24,10 +24,10 @@
                 <th>Name Device</th>
                 <th>StartDate</th>
                 <th>EndDate</th>
-                <th>Action</th>
+                @* <th>Action</th> *@
             </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
             @{
                 int index = Model.ItemsFrom;
             }
@@ -40,12 +40,12 @@
                     <td>@(content.EndDate.HasValue ? content.EndDate.Value.ToString("dd/MM/yyyy") : "N/A")</td>
 
 
-                    <td>
-                        <!-- Action Buttons (Edit/Delete) -->
-                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                        <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                        <a href="/Admin/Schedule/View/{@content.Id}" class="btn btn-success btn-sm">View Detail</a>
-                    </td>
+                    @* <td> *@
+                    @*     <!-- Action Buttons (Edit/Delete) --> *@
+                    @*     <a href="#" class="btn btn-primary btn-sm">Edit</a> *@
+                    @*     <a href="#" class="btn btn-danger btn-sm">Delete</a> *@
+                    @*     <a href="/Admin/Schedule/View/{@content.Id}" class="btn btn-success btn-sm">View Detail</a> *@
+                    @* </td> *@
                 </tr>
 
                 ++index;
