@@ -139,9 +139,9 @@
                         }
 
                         videoPlayer.src = baseUrl + "\\" + videoPath;
-                        videoPlayer.onloadedmetadata = function () {
-                            scaleContent(videoPlayer, deviceWidth, deviceHeight, videoPlayer.videoWidth, videoPlayer.videoHeight);
-                        };
+                        // videoPlayer.onloadedmetadata = function () {
+                        //     scaleContent(videoPlayer, deviceWidth, deviceHeight, videoPlayer.videoWidth, videoPlayer.videoHeight);
+                        // };
                         videoPlayer.play().then(() => {
                             document.getElementById("video-content").style.display = "block";
                             videoIndex++;

@@ -38,22 +38,22 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery = dbContext.Schedules.Include(s => s.Device).Include(s => s.Content);
+        var baseQuery = dbContext.Schedules.Include(s => s.Device).Include(s => s.Content).OrderByDescending(s=>s.Id);
 
         //total items
         var totalCount = await baseQuery.CountAsync();
         // sort
         if (sortBy != null)
         {
-            var columsSelector = new Dictionary<string, Expression<Func<Schedule, object>>>
-                {
-                    {nameof(Schedule.StartDate),r=>r.StartDate},
-                    {nameof(Schedule.Status),r=>r.Status},
-                };
-            var selectedColum = columsSelector[sortBy];
-            baseQuery = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Schedule, Content>)(sortDirection == SortDirection.Ascending
-                ? baseQuery.OrderBy(selectedColum)
-                : baseQuery.OrderByDescending(selectedColum));
+            //var columsSelector = new Dictionary<string, Expression<Func<Schedule, object>>>
+            //    {
+            //        {nameof(Schedule.StartDate),r=>r.StartDate},
+            //        {nameof(Schedule.Status),r=>r.Status},
+            //    };
+            //var selectedColum = columsSelector[sortBy];
+            //baseQuery = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<Schedule, Content>)(sortDirection == SortDirection.Ascending
+            //    ? baseQuery.OrderBy(selectedColum)
+            //    : baseQuery.OrderByDescending(selectedColum));
         }
         //pagination
         var schedule = await baseQuery.Skip(pageSize * (pageNumber - 1))
