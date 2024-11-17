@@ -22,6 +22,7 @@
             <tr>
                 <th>No.</th>
                 <th>Name Device</th>
+                <th>Content Title</th>
                 <th>StartDate</th>
                 <th>EndDate</th>
                 @* <th>Action</th> *@
@@ -36,6 +37,7 @@
                 <tr>
                     <td>@index</td>
                     <td>@content.Devicedto.DeviceName</td>
+                    <td>@content.Contentdto.Title</td>
                     <td>@(content.StartDate.HasValue ? content.StartDate.Value.ToString("dd/MM/yyyy") : "N/A")</td>
                     <td>@(content.EndDate.HasValue ? content.EndDate.Value.ToString("dd/MM/yyyy") : "N/A")</td>
 
