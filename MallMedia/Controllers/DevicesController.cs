@@ -17,7 +17,7 @@ namespace MallMedia.API.Controllers
     public class DevicesController(IMediator mediator) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> CreateDevice([FromForm] CreateDeviceCommand command)
+        public async Task<IActionResult> CreateDevice([FromBody] CreateDeviceCommand command)
         {
             var id = await mediator.Send(command);
             return Ok(id);

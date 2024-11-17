@@ -36,45 +36,6 @@ namespace MallMedia.Presentation.Pages.Admin.Device
 
         }
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            await InitialPage();
-            if (!ModelState.IsValid)
-            {
-                return Page(); // If model is invalid, just reload the page
-            }
-
-            // Convert the command to HttpContent (JSON)
-            var command = new CreateDeviceCommand
-            {
-                DeviceName = Device.DeviceName,
-                DeviceType = Device.DeviceType,
-                LocationId = Device.LocationId,
-                Resolution = Device.Resolution,
-                Size= Device.Size,
-            };
-            using var CreateDevice = new MultipartFormDataContent();
-            CreateDevice.Add(new StringContent(command.DeviceName.ToString()), "DeviceName");
-            CreateDevice.Add(new StringContent(command.DeviceType.ToString()), "DeviceType");
-            CreateDevice.Add(new StringContent(command.LocationId.ToString()), "LocationId");
-            CreateDevice.Add(new StringContent(command.Resolution.ToString()), "Resolution");
-            CreateDevice.Add(new StringContent(command.Size.ToString()), "Size");
-
-            var httpClient = new HttpClient();
-            authenticationHelper.AddBearerToken(httpClient);
-            // Use HttpClient to send the POST request with content
-            var response = await httpClient.PostAsync($"{Constants.ClientConstant.BaseURl}/api/devices", CreateDevice);
-
-            if (response.IsSuccessStatusCode)
-            {
-                TempData["SuccessMessage"] = "Create successfully";
-                return RedirectToPage("/Admin/Device/Index");
-            }
-
-            // Handle error if the response is not successful
-            ModelState.AddModelError(string.Empty, "Failed to create schedule.");
-            return Page();
-        }
         private async Task InitialPage()
         {
             authenticationHelper.AddBearerToken(httpClient);
