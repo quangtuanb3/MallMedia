@@ -7,6 +7,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="wwwroot\uploads\**" />
+	  <Content Remove="wwwroot\uploads\**" />
+	  <EmbeddedResource Remove="wwwroot\uploads\**" />
 	  <None Remove="wwwroot\uploads\**" />
 	</ItemGroup>
 
@@ -24,11 +27,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\MallMedia.Application\MallMedia.Application.csproj" />
 		<ProjectReference Include="..\MallMedia.Infrastructure\MallMedia.Infrastructure.csproj" />
-	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Logs\" />
-	  <Folder Include="wwwroot\" />
+	  <Folder Include="wwwroot\NewFolder\" />
 	</ItemGroup>
 
 </Project>

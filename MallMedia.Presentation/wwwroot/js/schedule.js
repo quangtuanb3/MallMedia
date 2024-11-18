@@ -84,6 +84,7 @@ function updateTable(devices, pageNumber) {
         row.innerHTML = `
             <td>${(pageNumber - 1) * 10 + (index + 1)}</td>
             <td>${schedule.devicedto.deviceName}</td>
+            <td>${schedule.contentdto.title}</td>
             <td>${new Date(schedule.startDate).toISOString().split('T')[0]}</td>
             <td>${new Date(schedule.endDate).toISOString().split('T')[0]}</td>
         `;
