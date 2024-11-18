@@ -7,7 +7,9 @@ namespace MallMedia.Application.Schedules.Dto
     {
         public SchedulesProfile()
         {
-            CreateMap<Schedule, SchedulesDto>();
+            CreateMap<Schedule, SchedulesDto>()
+     .ForMember(dest => dest.Contentdto, opt => opt.MapFrom(src => src.Content)) 
+     .ForMember(dest => dest.Devicedto, opt => opt.MapFrom(src => src.Device));
 
             CreateMap<CreateScheduleCommand, Schedule>();
 

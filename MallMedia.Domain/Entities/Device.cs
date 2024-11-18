@@ -2,16 +2,14 @@
 namespace MallMedia.Domain.Entities;
 public class Device
 {
-
     public int Id { get; set; }
     public string DeviceName { get; set; }
     public int LocationId { get; set; }
     public Location Location { get; set; }
     public DeviceConfiguration Configuration { get; set; }
     public string Status { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
-
     public string UserId { get; set; }
     public User User { get; set; }
     public virtual ICollection<Schedule> Schedules { get; set; }

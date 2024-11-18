@@ -33,9 +33,14 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
             });
 
         modelBuilder.Entity<Device>()
-            .HasOne(d => d.Location)
-            .WithMany()
-            .HasForeignKey(d => d.LocationId);
+                  .HasOne(d => d.Location)
+                  .WithMany()
+                  .HasForeignKey(d => d.LocationId);
+
+        modelBuilder.Entity<Device>()
+            .HasMany(d => d.Schedules)
+            .WithOne(s => s.Device)
+            .HasForeignKey(s => s.DeviceId);
 
         modelBuilder.Entity<Content>()
             .HasOne(c => c.Category)
@@ -48,8 +53,6 @@ internal class ApplicationDbContext(DbContextOptions<ApplicationDbContext> optio
             .WithOne()
             .HasForeignKey(m => m.ContentId)
             .OnDelete(DeleteBehavior.Restrict); // Changed to Restrict
-
-
     }
 
 }

@@ -24,7 +24,7 @@ namespace MallMedia.Infrastructure.Repositories
             {
                 Console.WriteLine(e.Message);
             }
-            
+
             dbContext.Devices.Add(entity);
             await dbContext.SaveChangesAsync();
             return entity.Id;
@@ -42,8 +42,7 @@ namespace MallMedia.Infrastructure.Repositories
             if (sortBy != null)
             {
                 var columsSelector = new Dictionary<string, Expression<Func<Device, object>>>
-                {
-                    {nameof(Device.Configuration.DeviceType),r=>r.Configuration.DeviceType},
+                { 
                     {nameof(Device.DeviceName),r=>r.DeviceName},
                     {nameof(Device.Configuration.Resolution),r=>r.Configuration.Resolution},
                     {nameof(Device.Configuration.Size),r=>r.Configuration.Size},
@@ -53,16 +52,20 @@ namespace MallMedia.Infrastructure.Repositories
                     ? baseQuery.OrderBy(selectedColum)
                     : baseQuery.OrderByDescending(selectedColum);
             }
+            else
+            {
+                baseQuery = baseQuery.OrderByDescending(r => r.Id);
+            }
             //pagination
             var devies = await baseQuery.Skip(pageSize * (pageNumber - 1))
                  .Take(pageSize).ToListAsync();
             return (devies, totalCount);
         }
 
-        
-        public Task<Device?> GetByIdAsync(int id)
+
+        public async Task<Device?> GetByIdAsync(int id)
         {
-            return dbContext.Devices.Include(d => d.Location).Include(d => d.Schedules).FirstOrDefaultAsync(d => d.Id == id);
+            return await dbContext.Devices.Include(d => d.Location).Include(d => d.Schedules).FirstOrDefaultAsync(d => d.Id == id);
         }
 
         public async Task<Device> GetByUserIdAsync(string userId)
@@ -92,7 +95,7 @@ namespace MallMedia.Infrastructure.Repositories
 
         public async Task<bool> CheckNameDevice(string name)
         {
-            var device = await dbContext.Devices.FirstOrDefaultAsync(d=>d.DeviceName.Equals(name));
+            var device = await dbContext.Devices.FirstOrDefaultAsync(d => d.DeviceName.Equals(name));
             if (device == null) return false;
             return true;
         }

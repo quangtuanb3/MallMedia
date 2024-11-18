@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
 using MallMedia.Application.Devices.Dto;
+using MallMedia.Domain.Entities;
 
 namespace MallMedia.Application.Devices.Queries.GetAllDevices
 {
     public class GetAllDevicesQueryValidator :AbstractValidator<GetAllDevicesQuery>
     {
-        private string[] allowSortByColumnNames = [nameof(Schedule.StartDate), nameof(Schedule.Status)];
+        private string[] allowSortByColumnNames = [nameof(Device.DeviceName), nameof(Device.Configuration.Resolution),nameof(Device.Configuration.Size)];
         public GetAllDevicesQueryValidator() 
         {
             RuleFor(r => r.PageNumber).GreaterThanOrEqualTo(1).WithMessage("Page number >= 1");

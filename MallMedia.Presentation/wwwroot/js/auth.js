@@ -1,28 +1,21 @@
-﻿// auth.js
-export function checkUserAuthentication() {
+﻿import { baseUrl } from '/js/config.js';  // Nhập baseUrl từ tệp config.js
+export function checkUserAuthentication(requiredRole = null) {
     return new Promise((resolve, reject) => {
-        var currentUser = null;
-
-        // Lấy token từ localStorage
-        var token = localStorage.getItem('authToken');
-
+        const token = localStorage.getItem('authToken');
         if (!token) {
-            // Nếu không có token, chuyển hướng đến trang đăng nhập
+            showToast('No authentication token found.', 'error');
             window.location.href = '/Auth/Login';
             reject('No auth token found');
             return;
         }
-
-        // Nếu có token, gọi API để lấy thông tin người dùng
-        fetch('https://localhost:7199/api/identity/currentUser', {
+        var url = baseUrl + '/api/identity/currentUser';
+        fetch(url, {
             method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
+            headers: { 'Authorization': `Bearer ${token}` },
         })
             .then(response => {
                 if (!response.ok) {
-                    // Nếu có lỗi với response (ví dụ: token không hợp lệ), chuyển hướng tới đăng nhập
+                    showToast('Authentication failed.', 'error');
                     window.location.href = '/Auth/Login';
                     reject('Failed to authenticate');
                     return;
@@ -30,20 +23,37 @@ export function checkUserAuthentication() {
                 return response.json();
             })
             .then(data => {
-                currentUser = data;
-
-                if (data.roles && !data.roles.includes('Admin')) {
-                    // Nếu không phải admin, chuyển hướng tới trang AccessDenied
+                if (requiredRole && (!data.roles || !data.roles.includes(requiredRole))) {
+                    showToast('Access denied.', 'error');
                     window.location.href = '/Auth/AccessDenied';
-                    reject('Access denied');
+                    reject(`Access denied for role: ${requiredRole}`);
                     return;
                 }
-                resolve(currentUser);  // Trả về currentUser khi xác thực thành công
+                resolve(data);
             })
             .catch(error => {
-                console.error('Lỗi khi lấy thông tin người dùng:', error);
-                window.location.href = '/Auth/Login';  // Nếu có lỗi, chuyển hướng về trang login
+                console.error('Error fetching user information:', error);
+                showToast('Authentication error.', 'error');
+                window.location.href = '/Auth/Login';
                 reject(error);
             });
     });
+}
+
+export function showToast(message, type = 'success') {
+    const toastColor = type === 'success' ? 'green' : 'red';
+    const toastDiv = document.createElement('div');
+    toastDiv.textContent = message;
+    toastDiv.style.position = 'fixed';
+    toastDiv.style.top = '20px';
+    toastDiv.style.right = '20px';
+    toastDiv.style.backgroundColor = toastColor;
+    toastDiv.style.color = 'white';
+    toastDiv.style.padding = '10px';
+    toastDiv.style.borderRadius = '5px';
+    document.body.appendChild(toastDiv);
+
+    setTimeout(() => {
+        toastDiv.remove();
+    }, 3000);
 }

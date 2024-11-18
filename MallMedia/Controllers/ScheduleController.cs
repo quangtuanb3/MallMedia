@@ -16,6 +16,7 @@ namespace MallMedia.API.Controllers
     {
 
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetScheduleById([FromRoute] int id)
         {
             var schedule = await mediator.Send(new GetScheduleByIdQuery(id));
@@ -23,6 +24,7 @@ namespace MallMedia.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<ActionResult> CreateSchedule([FromBody] CreateScheduleCommand command)
         {
             var result = await mediator.Send(command);
@@ -31,7 +33,7 @@ namespace MallMedia.API.Controllers
         }
 
         [HttpGet]
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
         {
             var schedules = await mediator.Send(query);
@@ -39,6 +41,7 @@ namespace MallMedia.API.Controllers
         }
 
         [HttpGet("device/{deviceId}/current")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.User)]
         public async Task<IActionResult> GetCurrentContentForDevice([FromRoute] int deviceId)
         {
             var schedules = await mediator.Send(new GetCurrentContentForDeviceQuery(deviceId));
