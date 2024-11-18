@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     try {
-        const currentUserEndpoint = UrlBase + "/api/identity/currentUser";
+        const currentUserEndpoint = baseUrl + "/api/identity/currentUser";
         const response = await fetch(currentUserEndpoint, {
             method: 'GET',
             headers: {

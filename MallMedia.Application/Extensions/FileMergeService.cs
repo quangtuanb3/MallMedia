@@ -56,7 +56,8 @@ public class FileMergeService : BackgroundService
         {
             using (var finalFileStream = new FileStream(finalFilePath, FileMode.Create))
             {
-                var chunkedFiles = Directory.EnumerateFiles(mergeJob.ChunkFolder, $"{mergeJob.FileName}.part*").OrderBy(f => f);
+                var chunkedFiles = Directory.EnumerateFiles(mergeJob.ChunkFolder, $"{mergeJob.FileName}.part*")
+    .OrderBy(f => int.Parse(Path.GetExtension(f).Replace(".part", "")));
                 foreach (var chunkFile in chunkedFiles)
                 {
                     using (var chunkStream = new FileStream(chunkFile, FileMode.Open))

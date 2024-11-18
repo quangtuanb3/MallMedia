@@ -40,6 +40,10 @@ internal class ContentRepository(ApplicationDbContext dbContext) : IContentRepos
                 ? baseQuery.OrderBy(selectedColum)
                 : baseQuery.OrderByDescending(selectedColum);
         }
+        else
+        {
+            baseQuery = baseQuery.OrderByDescending(r => r.Id);
+        }
         //pagination
         var contents = await baseQuery.Skip(pageSize * (pageNumber - 1))
              .Take(pageSize).ToListAsync();
