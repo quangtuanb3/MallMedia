@@ -12,20 +12,20 @@ document.addEventListener("DOMContentLoaded", function () {
             "Authorization": `Bearer ${token}`
         }
     })
-        .then(response => response.json())
-        .then(locations => {
-            const locationSelect = document.getElementById("locationId");
-            locations.forEach(location => {
-                const option = document.createElement("option");
-                option.value = location.id;
-                option.textContent = `Tầng: ${location.floor} - ${location.department}`;
-                locationSelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error("Error fetching locations:", error);
-            displayError("general", "Failed to load locations. Please try again.");
+    .then(response => response.json())
+    .then(locations => {
+        const locationSelect = document.getElementById("locationId");
+        locations.forEach(location => {
+            const option = document.createElement("option");
+            option.value = location.id;
+            option.textContent = `Tầng: ${location.floor} - ${location.department}`;
+            locationSelect.appendChild(option);
         });
+    })
+    .catch(error => {
+        console.error("Error fetching locations:", error);
+        displayError("general", "Failed to load locations. Please try again.");
+    });
 
     const createDeviceForm = document.getElementById("createDeviceForm");
 

@@ -1,6 +1,15 @@
 ﻿// devices.js
 import { baseUrl } from '/js/config.js';  // Nhập baseUrl từ tệp config.js
+import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
 
+window.onload = async function () {
+    try {
+        // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
+        const currentUser = await checkUserAuthentication("Admin");
+    } catch (error) {
+        console.error('Lỗi khi xác thực:', error);
+    }
+};
 // Load devices
 document.addEventListener('DOMContentLoaded', function () {
     loadDevices(1);
