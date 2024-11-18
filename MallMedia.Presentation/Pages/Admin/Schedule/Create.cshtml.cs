@@ -18,18 +18,18 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
         public CurrentUser CurrentUser { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
-            
-            Content = new List<ContentDto>();
-            try
-            {
-                authenticationHelper.AddBearerToken(httpClient);
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Redirect("/Auth/Login");
-            }
 
-            await InitialPage();
+            //Content = new List<ContentDto>();
+            //try
+            //{
+            //    authenticationHelper.AddBearerToken(httpClient);
+            //}
+            //catch (UnauthorizedAccessException)
+            //{
+            //    return Redirect("/Auth/Login");
+            //}
+
+            ////await InitialPage();
             return Page();
 
         }
@@ -61,7 +61,7 @@ namespace MallMedia.Presentation.Pages.Admin.Schedule
 
             }
             var responseContents = await httpClient.GetAsync(url_content);
-          
+
             if (responseContents.IsSuccessStatusCode)
             {
                 var contentJson = await responseContents.Content.ReadAsStringAsync();

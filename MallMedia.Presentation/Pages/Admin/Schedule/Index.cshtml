@@ -4,7 +4,8 @@
     <!-- Thêm type="module" vào script để hỗ trợ import/export -->
     <script type="module">
         import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
-
+        import { baseUrl } from '../js/config.js';  // Ensure the correct path
+        window.baseUrl = baseUrl;
         window.onload = async function () {
             try {
                 const currentUser = await checkUserAuthentication("Admin");
@@ -12,7 +13,9 @@
                 console.error('Lỗi khi xác thực:', error);
             }
         };
+
     </script>
+
 </head>
 <div class="container mt-5">
     <h2>Schedule List</h2>

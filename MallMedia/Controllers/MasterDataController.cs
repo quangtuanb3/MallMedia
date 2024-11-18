@@ -11,7 +11,7 @@ namespace MallMedia.API.Controllers;
 
 
 [ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
 public class MasterDataController(IMediator mediator) : ControllerBase
 {
     [HttpGet("api/categories")]
@@ -42,6 +42,6 @@ public class MasterDataController(IMediator mediator) : ControllerBase
 }
 public class TempCl
 {
-    public  List<FloorDeviceResult> Floors { get; set; }
+    public List<FloorDeviceResult> Floors { get; set; }
     public List<DepartmentDeviceResult> Departments { get; set; }
 }

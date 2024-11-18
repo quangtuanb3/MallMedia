@@ -20,8 +20,8 @@ try
     {
         options.AddPolicy("AllowLocalhost", policy =>
             policy
-            .WithOrigins("https://localhost:7220") 
-            // Allow frontend origin
+            .WithOrigins("http://10.20.54.244:5179")
+                  // Allow frontend origin
                   .AllowAnyHeader()  // Allow any headers
                   .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
     });
@@ -32,7 +32,7 @@ try
     //    {
     //        listenOptions.UseHttps(); // No certificate path is needed here
     //    });
-    //});     
+    //});
     //builder.WebHost.ConfigureKestrel(options =>
     //{
     //    options.Listen(IPAddress.Parse("127.0.0.1"), 5001);   // Listen on localhost

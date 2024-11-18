@@ -12,12 +12,12 @@ public class GetCurrentContentForDeviceQueryHandler(IScheduleRepository schedule
     {
         var result = await scheduleRepository.GetCurrentContentForDevice(request.DeviceId);
 
-        var defaultContents = await scheduleRepository.GetNumberDefaultContent(ApplicationContant.TotalContent - result.Count);
+        var defaultContents = await scheduleRepository.GetNumberDefaultContent(ApplicationContant.TotalContent - result.Count, request.DeviceId);
 
         var combinedList = result.Concat(defaultContents).ToList();
 
         var random = new Random();
         var mixedResult = combinedList.OrderBy(_ => random.Next()).ToList();
-        return result;
+        return mixedResult;
     }
 }
