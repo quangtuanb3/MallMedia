@@ -25,7 +25,7 @@
                 <!-- Start Date -->
                 <div class="form-group pt-3 col-md-12">
                     <label for="startDate">Start Date</label>
-                    <input type="date" id="startDate" asp-for="schedule.StartDate" class="form-control" />
+                    <input type="date" id="startDate"  class="form-control" />
                     <span id="StartDateError" class="text-danger error-message"></span>
                 </div>
 
@@ -34,24 +34,22 @@
                 <!-- End Date -->
                 <div class="form-group pt-3 col-md-12">
                     <label for="endDate">End Date</label>
-                    <input type="date" id="endDate" class="form-control" asp-for="schedule.EndDate" />
+                    <input type="date" id="endDate" class="form-control"  />
                     <span id="EndDateError" class="text-danger error-message"></span>
                 </div>
 
             </div>
-            <div class="row ">
-                <div class="form-group pt-3  col-md-12">
+
+            <div class="row">
+                <div class="form-group pt-3 col-md-12">
                     <label for="contentId">Content</label>
-                    <select id="contentId" class="form-control" asp-for="schedule.ContentId">
+                    <select id="contentId" class="form-control">
                         <option selected>Select Content</option>
-                        @foreach (var content in Model.Content)
-                        {
-                            <option value="@content.Id">[@content.Category.Name] - @content.Title</option>
-                        }
                     </select>
                     <span id="ContentIdError" class="text-danger error-message"></span>
                 </div>
             </div>
+
             <div class="row">
                 <!-- Device Type Checkbox -->
                 <div class="form-group pt-3 col-md-4" id="deviceTypeCheckBox">

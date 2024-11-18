@@ -1,11 +1,64 @@
 ﻿import { baseUrl } from '/js/config.js';
 
+const token = localStorage.getItem('authToken');
+const contentMediaEndpoint = baseUrl + "/api/content/{contentId}/medias";
+const contentIdEle = document.getElementById("contentId");
+const urlCreateSchedule = baseUrl + '/api/Schedule';
+const urlFloor_Depaterment = baseUrl + '/api/floor-department';
+const url_content = baseUrl + '/api/Content?PageNumber=1&PageSize=100';
+
 $(document).ready(function () {
-    var token = localStorage.getItem('authToken');
-    const contentMediaEndpoint = baseUrl + "/api/content/{contentId}/medias";
-    const contentIdEle = document.getElementById("contentId");
-    const urlCreateSchedule = baseUrl + '/api/Schedule';
-    const urlFloor_Depaterment = baseUrl + '/api/floor-department';
+    // Fetch content and populate the dropdown
+    async function fetchContent() {
+        try {
+            const response = await fetch(url_content, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}` // Include the authorization token
+                }
+            });
+
+            if (response.ok) {
+                const contentData = await response.json();
+
+                // Check if the 'items' property is an array
+                if (Array.isArray(contentData.items)) {
+                    // Clear the existing content in the dropdown
+                    const contentIdEle = $('#contentId');
+                    contentIdEle.empty();
+
+                    // Add the default "Select Content" option
+                    contentIdEle.append('<option selected>Select Content</option>');
+
+                    // Loop through the content items and add each item as an option
+                    contentData.items.forEach(content => {
+                        const option = `<option value="${content.id}">[${content.category?.name || 'Unknown Category'}] - ${content.title}</option>`;
+                        contentIdEle.append(option);
+                    });
+                } else {
+                    console.error('Expected "items" to be an array, but received:', contentData.items);
+                }
+            } else {
+                console.error('Error fetching content:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
+    }
+
+    // Call the function to fetch content on page load
+    fetchContent();
+
+    // Event listener for contentId change (if needed)
+    $('#contentId').on('change', function () {
+        const contentId = $(this).val();
+        console.log('Selected contentId:', contentId);
+        // You can perform other actions here based on selected content
+    });
+});
+
+$(document).ready(function () {
+    
     contentIdEle.onchange = async function () {
         const contentId = contentIdEle.value; // Get the selected contentId
         const endpoint = contentMediaEndpoint.replace("{contentId}", contentId);
@@ -156,7 +209,7 @@ $(document).ready(function () {
         var isValid = true;
 
         if (!startDate) {
-            document.getElementById("StartDateError").innerText = "StartDateError is required.";
+            document.getElementById("StartDateError").innerText = "StartDate is required.";
             isValid = false;
         }
         if (!endDate) {
