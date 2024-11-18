@@ -1,15 +1,10 @@
 using MallMedia.Application.Contents.Command.CreateContents;
 using MallMedia.Domain.Constants;
 using MallMedia.Domain.Entities;
-using MallMedia.Presentation.Dtos;
 using MallMedia.Presentation.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using System.Net.Http.Headers;
-using Xabe.FFmpeg;
 
 namespace MallMedia.Presentation.Pages.Admin.Content;
 

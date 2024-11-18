@@ -56,6 +56,8 @@ const videoValidationMessage = document.getElementById('videoError');
 
 async function validateVideos(files) {
     const validVideos = [];
+    let hasInvalidVideo = false;
+    const uploadedResolutions = new Set();
     let found1080x1920 = false;
     let found1920x1080 = false;
 
@@ -77,13 +79,27 @@ async function validateVideos(files) {
                         resolution: `${video.videoWidth}x${video.videoHeight}`
                     };
 
-                    if (!found1920x1080 && isIntegerMultiple(video.videoWidth, 1920) && isIntegerMultiple(video.videoHeight, 1080)) {
-                        validVideos.push({ file, metadata });
-                        found1920x1080 = true;
-                    } else if (!found1080x1920 && isIntegerMultiple(video.videoWidth, 1080) && isIntegerMultiple(video.videoHeight, 1920)) {
-                        validVideos.push({ file, metadata });
-                        found1080x1920 = true;
+                    if (isIntegerMultiple(video.videoWidth, 1920) && isIntegerMultiple(video.videoHeight, 1080)) {
+                        if (!uploadedResolutions.has(metadata.resolution)) {
+                            validVideos.push({ file, metadata }); // Add valid video to list
+                            uploadedResolutions.add(metadata.resolution); // Add resolution to the set
+                        } else {
+                            hasInvalidVideo = true;
+                        }
+                    } else if (isIntegerMultiple(video.videoWidth, 1080) && isIntegerMultiple(video.videoHeight, 1920)) {
+                        if (!uploadedResolutions.has(metadata.resolution)) {
+                            validVideos.push({ file, metadata }); // Add valid video to list
+                            uploadedResolutions.add(metadata.resolution); // Add resolution to the set
+                        } else {
+                            hasInvalidVideo = true;
+                        }
                     }
+                    ///
+                    if (!uploadedResolutions.has(metadata.resolution)) {
+                        validVideos.push({ file, metadata }); // Add valid video to list
+                        uploadedResolutions.add(metadata.resolution); // Add resolution to the set
+                    }
+                    ///
                 }
                 resolve();
             };
@@ -92,8 +108,9 @@ async function validateVideos(files) {
 
     if (validVideos.length === 0) {
         document.getElementById("videoError").innerText = "Please upload at least one valid video (1920x1080 or 1080x1920 and less than 30s).";
-    } else if (validVideos.length !== 1 && validVideos.length !== 2) {
+    } else if ((validVideos.length !== 1 && validVideos.length !== 2 && files.length != validVideos.length) || hasInvalidVideo) {
         document.getElementById("videoError").innerText = "Please upload exactly one or two valid videos.";
+        return;
     }
 
     return validVideos;

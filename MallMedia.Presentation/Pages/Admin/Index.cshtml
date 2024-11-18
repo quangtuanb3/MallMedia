@@ -11,9 +11,14 @@
 
         (async function () {
             try {
+                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
                 const currentUser = await checkUserAuthentication("Admin");
+
+                // Sử dụng thông tin currentUser
                 console.log(currentUser);
-                document.getElementById('userName').textContent = `Chào, ${currentUser.roles}`;
+                // Ví dụ: Hiển thị tên người dùng
+                document.getElementById('userName').textContent = `Chào, ${currentUser.username}`;
+
             } catch (error) {
                 console.error('Lỗi khi xác thực:', error);
             }
