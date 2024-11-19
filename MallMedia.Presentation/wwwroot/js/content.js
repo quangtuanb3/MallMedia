@@ -76,7 +76,6 @@ function updateTable(contents, pageNumber) {
             <td>${content.title}</td>
             <td>${content.description}</td>
             <td>${content.category.name}</td>
-            <td>${content.status}</td>
             <td>${new Date(content.createdAt).toISOString().split('T')[0]}</td>
            
         `;

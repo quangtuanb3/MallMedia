@@ -58,7 +58,7 @@ $(document).ready(function () {
 });
 
 $(document).ready(function () {
-    
+
     contentIdEle.onchange = async function () {
         const contentId = contentIdEle.value; // Get the selected contentId
         const endpoint = contentMediaEndpoint.replace("{contentId}", contentId);
@@ -212,6 +212,11 @@ $(document).ready(function () {
             document.getElementById("StartDateError").innerText = "StartDate is required.";
             isValid = false;
         }
+        if (new Date(startDate) < new Date().setHours(0, 0, 0, 0)) {
+            const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+            document.getElementById("StartDateError").innerText = `StartDate has to be equal to or after ${currentDate}`;
+            isValid = false;
+        }
         if (!endDate) {
             document.getElementById("EndDateError").innerText = "EndDate is required.";
             isValid = false;
@@ -225,12 +230,12 @@ $(document).ready(function () {
             document.getElementById("ContentIdError").innerText = "Please select a valid content.";
             isValid = false;
         }
-       
+
         if (selectedDeviceTypes.length === 0) {
             document.getElementById("DeviceTypeError").innerText = "Please select at least one device type.";
             isValid = false;
         }
-        
+
         if (selectedFloors.length === 0 && selectedDepartments.length === 0) {
             if (selectedDeviceTypes.length !== 0) {
                 document.getElementById("Floor_DepartmentsError").innerText = "Please select at least one floor or department.";

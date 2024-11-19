@@ -32,6 +32,10 @@
 </div>
 
 @section Scripts {
+    <script type="module">
+        import { baseUrl } from '../js/config.js';  // Ensure the correct path
+        window.baseUrl = baseUrl;
+    </script>
     <script>
         function scaleContent(element, deviceWidth, deviceHeight, contentWidth, contentHeight) {
             const monitorWidth = deviceWidth;  // Full screen width
@@ -86,10 +90,10 @@
             }
 
             // Define API endpoints
-            const baseUrl = "https://localhost:7199";
-            const currentUserUrl = baseUrl + '/api/identity/currentUser';
-            const currentDeviceUrl = baseUrl + '/api/identity/currentDevice';
-            const currentDeviceScheduleUrl = baseUrl + '/api/Schedule/device/{deviceId}/current';
+
+            const currentUserUrl =   window.baseUrl + '/api/identity/currentUser';
+            const currentDeviceUrl =   window.baseUrl + '/api/identity/currentDevice';
+            const currentDeviceScheduleUrl =   window.baseUrl + '/api/Schedule/device/{deviceId}/current';
 
             // Call the APIs in sequence
             const currentDevice = await callApi(currentDeviceUrl);
@@ -99,7 +103,7 @@
 
             if (!window.currentUser || !currentDevice) {
                 console.log("Error fetching current user or current device");
-                return; // Exit if there's an issue fetching data 
+                return; // Exit if there's an issue fetching data
             }
 
             const deviceId = currentDevice.id; // Assuming currentDevice has deviceId

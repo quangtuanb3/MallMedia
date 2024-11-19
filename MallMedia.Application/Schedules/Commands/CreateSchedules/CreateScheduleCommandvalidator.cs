@@ -11,10 +11,24 @@ namespace MallMedia.Application.Schedules.Commands.CreateSchedules
                .NotNull().WithMessage("Content is required.")
                .GreaterThan(0).WithMessage("ContentId must be greater than 0.");
 
+            //RuleFor(x => x.StartDate)
+            //    .NotNull().WithMessage("StartDate is required.")
+            //    .LessThanOrEqualTo(x => x.EndDate).When(x => x.EndDate.HasValue)
+            //    .WithMessage("StartDate must be before EndDate.");
+
+            //RuleFor(x => x.StartDate)
+            //  .NotNull().WithMessage("StartDate has to be equal or after now.")
+            //  .LessThanOrEqualTo(x => x.EndDate).When(x => x.EndDate.HasValue)
+            //  .WithMessage("StartDate must be before EndDate.");
+
             RuleFor(x => x.StartDate)
-                .NotNull().WithMessage("StartDate is required.")
-                .LessThanOrEqualTo(x => x.EndDate).When(x => x.EndDate.HasValue)
-                .WithMessage("StartDate must be before EndDate.");
+    .NotNull()
+    .WithMessage("StartDate cannot be null.")
+    .Must(startDate => startDate >= DateTime.Now.Date)
+    .WithMessage("StartDate has to be equal to or after the current time.")
+    .LessThanOrEqualTo(x => x.EndDate.GetValueOrDefault(DateTime.MaxValue))
+    .WithMessage("StartDate must be before or equal to EndDate when EndDate is provided.");
+
 
             RuleFor(x => x.EndDate)
                 .NotNull().WithMessage("EndDate is required.");

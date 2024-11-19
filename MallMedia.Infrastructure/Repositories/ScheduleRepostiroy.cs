@@ -38,7 +38,7 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
     public async Task<(List<Schedule>, int)> GetAllMatchingAsync(int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection)
     {
         //query
-        var baseQuery = dbContext.Schedules.Include(s => s.Device).Include(s => s.Content).OrderByDescending(s=>s.Id);
+        var baseQuery = dbContext.Schedules.Include(s => s.Device).Include(s => s.Content).OrderByDescending(s => s.Id);
 
         //total items
         var totalCount = await baseQuery.CountAsync();
@@ -151,60 +151,81 @@ internal class ScheduleRepostiroy(ApplicationDbContext dbContext) : IScheduleRep
 
     }
 
-    public async Task<List<Content>> GetNumberDefaultContent(int number)
+    public async Task<List<Content>> GetNumberDefaultContent(int number, int deviceId)
     {
+        // Fetch the device and its resolution
+        var device = await dbContext.Devices.FindAsync(deviceId);
+        if (device == null || string.IsNullOrEmpty(device.Configuration?.Resolution))
+            throw new ArgumentException("Device not found or resolution is missing.");
+
+        // Parse the resolution string into width and height
+        var resolutionParts = device.Configuration.Resolution.Split('x');
+        if (resolutionParts.Length != 2 || !int.TryParse(resolutionParts[0], out int deviceWidth) || !int.TryParse(resolutionParts[1], out int deviceHeight))
+            throw new FormatException("Invalid device resolution format. Expected format: 'WidthxHeight'.");
+
+        var deviceAspectRatio = (double)deviceWidth / deviceHeight;
+
         // Fetch contents with IsDefault = true
-     
-            var contentListWithMedia = await dbContext.Contents
-          .Where(c => c.isDefault)
-          .Select(c => new
-          {
-              Content = c,
-              Media = dbContext.Medias
-                  .Where(m => m.ContentId == c.Id)
-                  .ToList() // Materialize IQueryable into a List
-          })
-          .ToListAsync();
+        var contentListWithMedia = await dbContext.Contents
+            .Where(c => c.IsDefault)
+            .Include(c => c.Media) // Eagerly load related media
+            .ToListAsync();
 
-            // Attach media to each content
-            var processedContentList = contentListWithMedia
-                .Select(x =>
-                {
-                    var content = x.Content;
-                    content.Media = x.Media.ToList();
-                    return content;
-                })
-                .ToList();
-            if (!processedContentList.Any())
+        // Filter media by aspect ratio in memory
+        var processedContentList = contentListWithMedia
+            .Select(content =>
             {
-                return new List<Content>(); // Return an empty list
-            }
-            // Check if duplication is needed
-            var totalCount = processedContentList.Count;
-            if (totalCount < number)
-            {
-                var result = new List<Content>(processedContentList);
-                while (result.Count < number)
-                {
-                    // Add duplicated items to meet the required count
-                    result.AddRange(processedContentList);
-                }
+                content.Media = content.Media
+                    .Where(media =>
+                        media.Resolution.Contains('x') &&
+                        IsResolutionAspectRatioMatching(media.Resolution, deviceAspectRatio))
+                    .ToList();
+                return content;
+            })
+            .Where(content => content.Media.Any()) // Ensure contents have valid media
+            .ToList();
 
-                // Trim excess items to ensure exact count
-                return result.Take(number).ToList();
+        if (!processedContentList.Any())
+        {
+            return new List<Content>(); // Return an empty list
+        }
+
+        // Check if duplication is needed
+        var totalCount = processedContentList.Count;
+        if (totalCount < number)
+        {
+            var result = new List<Content>(processedContentList);
+            while (result.Count < number)
+            {
+                // Add duplicated items to meet the required count
+                result.AddRange(processedContentList);
             }
 
-            return processedContentList.Take(number).ToList();
+            // Trim excess items to ensure exact count
+            return result.Take(number).ToList();
+        }
 
-        // Return exactly the requested number of records
-      
+        return processedContentList.Take(number).ToList();
     }
+
+    // Helper method to check aspect ratio match
+    private bool IsResolutionAspectRatioMatching(string resolution, double targetAspectRatio)
+    {
+        var parts = resolution.Split('x');
+        if (parts.Length != 2 || !int.TryParse(parts[0], out int width) || !int.TryParse(parts[1], out int height))
+            return false;
+
+        var aspectRatio = (double)width / height;
+        return Math.Abs(aspectRatio - targetAspectRatio) < 0.01; // Allow small tolerance
+    }
+
+
 
 
     public async Task<bool> IsExistSchedule(Schedule schedule)
     {
         var sche = await dbContext.Schedules
-            .FirstOrDefaultAsync(s => s.DeviceId == schedule.DeviceId 
+            .FirstOrDefaultAsync(s => s.DeviceId == schedule.DeviceId
                  && s.ContentId == schedule.ContentId
                  && s.StartDate == schedule.StartDate
                  && s.EndDate == schedule.EndDate);

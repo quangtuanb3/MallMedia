@@ -5,6 +5,11 @@
 }
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module">
+        import { baseUrl } from '../js/config.js';  // Ensure the correct path
+
+        window.baseUrl = baseUrl;
+    </script>
     <script>
         // Kiểm tra trạng thái đăng nhập khi trang được tải
         window.onload = function () {
@@ -15,13 +20,14 @@
                 // Nếu không có token, chuyển hướng đến trang đăng nhập
                 window.location.href = '/Auth/Login';  // Đường dẫn đến trang đăng nhập của bạn
             } else {
+                const endpoint = window.baseUrl + '/api/identity/currentUser';
                 // Nếu có token, gọi API để lấy thông tin người dùng
-                    fetch('https://localhost:7199/api/identity/currentUser', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + token
-                        }
-                    })
+                fetch(endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
                     .then(response => response.json())
                     .then(data => {
                         // Kiểm tra xem người dùng có vai trò Admin không
@@ -42,4 +48,4 @@
         };
     </script>
 
- } 
+} 
