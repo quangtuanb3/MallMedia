@@ -87,7 +87,7 @@
             }
 
             // Define API endpoints
-            const baseUrl = "https://localhost:7199";
+            const baseUrl = "https://localhost:7220";
             const currentUserUrl = baseUrl + '/api/identity/currentUser';
             const currentDeviceUrl = baseUrl + '/api/identity/currentDevice';
             const currentDeviceScheduleUrl = baseUrl + '/api/Schedule/device/{deviceId}/current';
@@ -374,7 +374,7 @@
             await connection.start();
                 console.log("Đã kết nối với Hub SignalR.");
             } catch (err) {
-                console.error("Không thể kết nối với Hub SignalR:", err.toString());
+            console.error("Không thể kết nối với Hub SignalR:", err.toString());
             }
         });
     </script>
