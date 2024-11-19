@@ -331,7 +331,7 @@
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", async function () {
-            const connection = new signalR.HubConnectionBuilder()
+            const connection4 = new signalR.HubConnectionBuilder()
                 .withUrl("/real-time-update_hub")
                 .withAutomaticReconnect() // Tự động kết nối lại khi bị ngắt
                 .build();
@@ -346,13 +346,36 @@
             }
 
             // Đăng ký sự kiện sau khi chắc chắn rằng đã kết nối thành công
-            connection.on("Đã lấy thông tin thành công", (title, contentData) => {
+            connection4.on("Đã lấy thông tin thành công", (title, contentData) => {
                 console.log("Content update received for device:", title); // Kiểm tra log khi có sự kiện
                 if (deviceId === "<current-device-id>") {
                     const data = JSON.parse(contentData);
                     showContent(data); // Hàm hiển thị nội dung mới
                 }
             });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async function ()
+        {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/real-time-update-hub")
+                .withAutomaticReconnect() // Kết nối lại khi ngắt kết nối
+                .build()
+            connection.on("ReceiveContentUpdate",(deviceId, contentData) =>
+            {
+                console.log("Cập nhật mới:", deviceId, contentData);
+                if (deviceId === "<current-device-id>") {
+                // Gọi API hoặc cập nhật UI
+                showContent(contentData);
+            }
+            });
+            try {
+            await connection.start();
+                console.log("Đã kết nối với Hub SignalR.");
+            } catch (err) {
+                console.error("Không thể kết nối với Hub SignalR:", err.toString());
+            }
         });
     </script>
 

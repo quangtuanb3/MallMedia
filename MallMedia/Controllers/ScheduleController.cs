@@ -12,7 +12,9 @@ namespace MallMedia.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-    public class ScheduleController(IMediator mediator, IHubContext<ScheduleHub> _scheduleHub) : ControllerBase
+    public class ScheduleController(IMediator mediator, 
+        IHubContext<ScheduleHub> _scheduleHub, 
+        IHubContext<RealTimeUpdateHub> realtimeContext) : ControllerBase
     {
 
         [HttpGet("{id}")]
@@ -25,10 +27,14 @@ namespace MallMedia.API.Controllers
 
         [HttpPost]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-        public async Task<ActionResult> CreateSchedule([FromBody] CreateScheduleCommand command)
+        public async Task<ActionResult> CreateSchedule([FromBody] CreateScheduleCommand command, Schedule schedule)
         {
             var result = await mediator.Send(command);
-            await _scheduleHub.Clients.All.SendAsync("ReceiveScheduleUpdate"); // Notify clients of schedule creation
+            await _scheduleHub.Clients.All.SendAsync("ReceiveScheduleUpdate");// Notify clients of schedule creation
+            await realtimeContext.Clients.All.SendAsync(
+                "ReceivedScheduleUpdate",
+                schedule.DeviceId,
+                "Lịch đã được tạo");
             return Ok(result);
         }
 
@@ -37,6 +43,7 @@ namespace MallMedia.API.Controllers
         public async Task<IActionResult> GetAllSchedule([FromQuery] GetAllScheduleQuery query)
         {
             var schedules = await mediator.Send(query);
+            await realtimeContext.Clients.All.SendAsync("Lấy tất cả các thông tin lịch trình");
             return Ok(schedules);
         }
 

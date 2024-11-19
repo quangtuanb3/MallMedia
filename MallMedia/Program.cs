@@ -59,6 +59,7 @@ try
 
     app.MapHub<ScheduleHub>("/real-time-update_hub");
     app.MapHub<ContentHub>("/real-time-update");
+    app.MapHub<RealTimeUpdateHub>("/real-time-update-hub");
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
