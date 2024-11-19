@@ -25,9 +25,10 @@ namespace MallMedia.API.Controllers
             return Ok(schedule);
         }
 
+        /*
         [HttpPost]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
-        public async Task<ActionResult> CreateSchedule([FromBody] CreateScheduleCommand command, Schedule schedule)
+        public async Task<ActionResult> CreateSchedule1([FromBody] CreateScheduleCommand command, Schedule schedule)
         {
             var result = await mediator.Send(command);
             await _scheduleHub.Clients.All.SendAsync("ReceiveScheduleUpdate");// Notify clients of schedule creation
@@ -36,7 +37,23 @@ namespace MallMedia.API.Controllers
                 schedule.DeviceId,
                 "Lịch đã được tạo");
             return Ok(result);
+        }*/
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateSchedule(
+                [FromBody] CreateScheduleCommand command,
+                [FromForm] Schedule schedule)
+        {
+            // Xử lý logic với command và schedule
+            await realtimeContext.Clients.All.SendAsync(
+                "ReceiveContentUpdate",
+                schedule.DeviceId,
+                "Lịch biểu đã được tạo."
+            );
+
+            return Ok("Schedule created and notification sent.");
         }
+
+
 
         [HttpGet]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
