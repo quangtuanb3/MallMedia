@@ -10,5 +10,5 @@ public interface IScheduleRepository
     Task<Schedule> GetByIdAsync(int id);
     Task<List<Content>> GetCurrentContentForDevice(int id);
     Task<bool> IsExistSchedule(Schedule schedule);
-    Task<List<Content>> GetNumberDefaultContent(int number);
+    Task<List<Content>> GetNumberDefaultContent(int number, int deviceId);
 }

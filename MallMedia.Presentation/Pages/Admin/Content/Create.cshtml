@@ -1,6 +1,6 @@
 ﻿@page
 @model MallMedia.Presentation.Pages.Admin.Content.CreateModel
-@if (Model == null || Model.CurrentUser == null)
+@if (Model == null)
 {
     <div class="alert alert-danger">
         Error: Model or CurrentUser is null.
@@ -10,19 +10,6 @@
     ViewData["Title"] = "Create Content";
 }
 <head>
-    <!-- Thêm type="module" vào script để hỗ trợ import/export -->
-    <script type="module" defer>
-        import { checkUserAuthentication } from '/js/auth.js';  // Đảm bảo đường dẫn đúng
-
-        window.onload = async function () {
-            try {
-                // Gọi hàm checkUserAuthentication và lấy thông tin currentUser
-                const currentUser = await checkUserAuthentication("Admin");
-            } catch (error) {
-                console.error('Lỗi khi xác thực:', error);
-            }
-        };
-    </script>
     <script type="module" src="~/js/createContent.js" defer></script>
 </head>
 <div class="container mt-5">

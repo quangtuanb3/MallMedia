@@ -1,4 +1,4 @@
-﻿import { baseUrl } from '/js/config.js';  // Nhập baseUrl từ tệp config.js
+﻿import { baseUrl } from '/js/config.js'; 
 export function checkUserAuthentication(requiredRole = null) {
     return new Promise((resolve, reject) => {
         const token = localStorage.getItem('authToken');

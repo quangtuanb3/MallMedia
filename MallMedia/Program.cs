@@ -22,23 +22,18 @@ try
     {
         options.AddPolicy("AllowLocalhost", policy =>
             policy
-            .WithOrigins("https://localhost:7220") 
-            // Allow frontend origin
+            .WithOrigins("http://10.20.54.244:5179")
+                  // Allow frontend origin
                   .AllowAnyHeader()  // Allow any headers
                   .AllowAnyMethod()); // Allow any HTTP method (GET, POST, etc.)
     });
     //builder.WebHost.ConfigureKestrel(options =>
     //{
     //    // This will use the default development certificate if available
-    //    options.Listen(IPAddress.Any, 5001, listenOptions =>
+    //    options.Listen(IPAddress.Any, 5056, listenOptions =>
     //    {
     //        listenOptions.UseHttps(); // No certificate path is needed here
     //    });
-    //});     
-    //builder.WebHost.ConfigureKestrel(options =>
-    //{
-    //    options.Listen(IPAddress.Parse("127.0.0.1"), 5001);   // Listen on localhost
-    //    options.Listen(IPAddress.Parse("10.20.54.244"), 5057);  // Listen on LAN IP
     //});
     var app = builder.Build();
     // Enable CORS globally (apply to all controllers)
