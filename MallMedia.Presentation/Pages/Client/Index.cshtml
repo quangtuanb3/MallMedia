@@ -6,23 +6,27 @@
 }
 
 <head>
-    <script type="module">
-        import { checkUserAuthentication } from '../js/auth.js';  // Ensure the correct path
+<script type="module">
+    import { checkUserAuthentication } from '../js/auth.js';  // Ensure the correct path
+    import { baseUrl } from '../js/config.js';
 
-        // Declare the currentUser globally for use in other scripts
-        window.currentUser = null;
+    // Make baseUrl globally accessible
+    window.baseUrl = baseUrl;
 
-        // Using the correct event name for when the window is loaded
-        window.onload = async function () {
-            try {
-                const user = await checkUserAuthentication('User');
-                window.currentUser = user;
-                console.log('Authenticated:', user);
-            } catch (error) {
-                console.error('Authentication error:', error);
-            }
-        };
-    </script>
+    // Declare the currentUser globally for use in other scripts
+    window.currentUser = null;
+
+    // Add an event listener for when the DOM content is fully loaded
+    document.addEventListener("DOMContentLoaded", async function () {
+        try {
+            const user = await checkUserAuthentication('User');
+            window.currentUser = user;
+            console.log('Authenticated:', user);
+        } catch (error) {
+            console.error('Authentication error:', error);
+        }
+    });
+</script>
 </head>
 
 <div id="monitor">
@@ -32,160 +36,160 @@
 </div>
 
 @section Scripts {
-    <script type="module">
-        import { baseUrl } from '../js/config.js';  // Ensure the correct path
-        window.baseUrl = baseUrl;
-    </script>
-    <script>
-        function scaleContent(element, deviceWidth, deviceHeight, contentWidth, contentHeight) {
-            const monitorWidth = deviceWidth;  // Full screen width
-            const monitorHeight = deviceHeight;  // Full screen height
 
-            // Calculate scale factor based on content and screen dimensions
-            const scaleX = monitorWidth / contentWidth;
-            const scaleY = monitorHeight / contentHeight;
+                        <script  type="module">
+                        function scaleContent(element, deviceWidth, deviceHeight, contentWidth, contentHeight) {
+                            const monitorWidth = deviceWidth;  // Full screen width
+                            const monitorHeight = deviceHeight;  // Full screen height
 
-            // Use the smaller scale factor to ensure content fits proportionally
-            const scale = Math.min(scaleX, scaleY);
+                            // Calculate scale factor based on content and screen dimensions
+                            const scaleX = monitorWidth / contentWidth;
+                            const scaleY = monitorHeight / contentHeight;
 
-            // Apply the scaling to the content
-            element.style.transform = `scale(${scale})`;
-            element.style.transformOrigin = 'center center'; // Ensure scaling starts from the center
-        }
+                            // Use the smaller scale factor to ensure content fits proportionally
+                            const scale = Math.min(scaleX, scaleY);
 
-        document.addEventListener("DOMContentLoaded", async function () {
-            // Get the token from localStorage
-            const token = localStorage.getItem("authToken");
-
-            if (!token) {
-                console.log("No auth token found in localStorage.");
-                return; // Exit if token is not found
-            }
-
-            // Helper function to call APIs with Bearer token
-            async function callApi(url) {
-                try {
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    if (!response.ok) {
-                        if (response.status === 401) { // Check if the status is 401 Unauthorized
-                            window.location.href = '/Auth/Login'; // Redirect to the login page
-                        } else {
-                            throw new Error(`API call failed with status ${response.status}`);
-                        }
-                    }
-
-                    const data = await response.json();
-                    return data;
-                } catch (error) {
-                    console.error('Error fetching data from API:', error);
-                    return null;
-                }
-            }
-
-            // Define API endpoints
-
-            const currentUserUrl =   window.baseUrl + '/api/identity/currentUser';
-            const currentDeviceUrl =   window.baseUrl + '/api/identity/currentDevice';
-            const currentDeviceScheduleUrl =   window.baseUrl + '/api/Schedule/device/{deviceId}/current';
-
-            // Call the APIs in sequence
-            const currentDevice = await callApi(currentDeviceUrl);
-            var resolution = currentDevice.resolution.split("x");
-            var deviceWidth = resolution[0];
-            var deviceHeight = resolution[1];
-
-            if (!window.currentUser || !currentDevice) {
-                console.log("Error fetching current user or current device");
-                return; // Exit if there's an issue fetching data
-            }
-
-            const deviceId = currentDevice.id; // Assuming currentDevice has deviceId
-            const scheduleData = await callApi(currentDeviceScheduleUrl.replace("{deviceId}", deviceId));
-
-            if (!scheduleData) {
-                console.log("Error fetching schedule data");
-                return; // Exit if there's an issue fetching schedule data
-            }
-
-            // Logging the results
-            console.log("Current User:", window.currentUser);
-            console.log("Current Device:", currentDevice);
-            console.log("Schedule Data:", scheduleData);
-
-            // Function to display content
-            let currentIndex = 0;
-
-            function showContent(content) {
-                // Hide all content divs initially
-                document.getElementById("video-content").style.display = "none";
-
-                // Display video content in full-screen and handle multiple videos
-                const videos = content.media?.filter(media => media.type === "video/mp4") || [];
-                let videoIndex = 0;
-                const videoPlayer = document.getElementById("video-player");
-
-                // Function to play the next video, if available
-                function playNextVideo() {
-                    if (videoIndex < videos.length) {
-                        const videoPath = videos[videoIndex]?.path;
-                        if (!videoPath) {
-                            console.warn("Invalid video path. Skipping video.");
-                            videoIndex++;
-                            playNextVideo();
-                            return;
+                            // Apply the scaling to the content
+                            element.style.transform = `scale(${scale})`;
+                            element.style.transformOrigin = 'center center'; // Ensure scaling starts from the center
                         }
 
-                        videoPlayer.src = baseUrl + "\\" + videoPath;
-                        // videoPlayer.onloadedmetadata = function () {
-                        //     scaleContent(videoPlayer, deviceWidth, deviceHeight, videoPlayer.videoWidth, videoPlayer.videoHeight);
-                        // };
-                        videoPlayer.play().then(() => {
-                            document.getElementById("video-content").style.display = "block";
-                            videoIndex++;
-                        }).catch(error => {
-                            console.log("Autoplay was prevented or interrupted:", error);
-                            // Show a play button or an error message if necessary
-                            setTimeout(playNextVideo, 10); // Retry after a delay
+                        document.addEventListener("DOMContentLoaded", async function () {
+                            // Get the token from localStorage
+                            const token = localStorage.getItem("authToken");
+
+                            if (!token) {
+                                console.log("No auth token found in localStorage.");
+                                return; // Exit if token is not found
+                            }
+
+                            // Helper function to call APIs with Bearer token
+                            async function callApi(url) {
+                                try {
+                                    const response = await fetch(url, {
+                                        method: 'GET',
+                                        headers: {
+                                            'Authorization': `Bearer ${token}`,
+                                            'Content-Type': 'application/json'
+                                        }
+                                    });
+
+                                    if (!response.ok) {
+                                        if (response.status === 401) { // Check if the status is 401 Unauthorized
+                                            window.location.href = '/Auth/Login'; // Redirect to the login page
+                                        } else {
+                                            throw new Error(`API call failed with status ${response.status}`);
+                                        }
+                                    }
+
+                                    const data = await response.json();
+                                    return data;
+                                } catch (error) {
+                                    console.error('Error fetching data from API:', error);
+                                    return null;
+                                }
+                            }
+
+                            // Define API endpoints
+
+                            const currentUserUrl =   window.baseUrl + '/api/identity/currentUser';
+                            const currentDeviceUrl =   window.baseUrl + '/api/identity/currentDevice';
+                            const currentDeviceScheduleUrl =   window.baseUrl + '/api/Schedule/device/{deviceId}/current';
+
+                            // Call the APIs in sequence
+                            const currentDevice = await callApi(currentDeviceUrl);
+                            var resolution = currentDevice.resolution.split("x");
+                            var deviceWidth = resolution[0];
+                            var deviceHeight = resolution[1];
+
+                            if (!window.currentUser || !currentDevice) {
+                                   window.currentUser = await callApi(currentUserUrl);
+                                   if(!window.currentUser || !currentDevice){
+                                       console.log("Error fetching current user or current device")
+                                       return;
+                                   }
+                            }
+
+                            const deviceId = currentDevice.id; // Assuming currentDevice has deviceId
+                            const scheduleData = await callApi(currentDeviceScheduleUrl.replace("{deviceId}", deviceId));
+
+                            if (!scheduleData) {
+                                console.log("Error fetching schedule data");
+                                return; // Exit if there's an issue fetching schedule data
+                            }
+
+                            // Logging the results
+                            console.log("Current User:", window.currentUser);
+                            console.log("Current Device:", currentDevice);
+                            console.log("Schedule Data:", scheduleData);
+
+                            // Function to display content
+                            let currentIndex = 0;
+
+                            function showContent(content) {
+                                // Hide all content divs initially
+                                document.getElementById("video-content").style.display = "none";
+
+                                // Display video content in full-screen and handle multiple videos
+                                const videos = content.media?.filter(media => media.type === "video/mp4") || [];
+                                let videoIndex = 0;
+                                const videoPlayer = document.getElementById("video-player");
+
+                                // Function to play the next video, if available
+                                function playNextVideo() {
+                                    if (videoIndex < videos.length) {
+                                        const videoPath = videos[videoIndex]?.path;
+                                        if (!videoPath) {
+                                            console.warn("Invalid video path. Skipping video.");
+                                            videoIndex++;
+                                            playNextVideo();
+                                            return;
+                                        }
+
+                                        videoPlayer.src = baseUrl + "\\" + videoPath;
+                                        // videoPlayer.onloadedmetadata = function () {
+                                        //     scaleContent(videoPlayer, deviceWidth, deviceHeight, videoPlayer.videoWidth, videoPlayer.videoHeight);
+                                        // };
+                                        videoPlayer.play().then(() => {
+                                            document.getElementById("video-content").style.display = "block";
+                                            videoIndex++;
+                                        }).catch(error => {
+                                            console.log("Autoplay was prevented or interrupted:", error);
+                                            // Show a play button or an error message if necessary
+                                            setTimeout(playNextVideo, 10); // Retry after a delay
+                                        });
+                                    } else {
+                                        videoPlayer.removeEventListener("ended", playNextVideo);
+                                        setTimeout(showNextContent, 10); // Show next content after all videos are done
+                                    }
+                                }
+
+                                // Event listener to play the next video when the current one ends
+                                videoPlayer.addEventListener("ended", playNextVideo);
+
+                                // Start playing the first video
+                                playNextVideo();
+                            }
+
+                            // Move to the next content
+                            function showNextContent() {
+                                currentIndex = (currentIndex + 1) % scheduleData.length; // Loop through contents
+                                showContent(scheduleData[currentIndex]);
+                            }
+
+                            // Start the content display if contents exist
+                            if (scheduleData.length > 0) {
+                                showContent(scheduleData[currentIndex]);
+                            }
+
+                            // Set the resolution of the monitor container
+                            resolution = currentDevice.resolution.split("x");
+                            let width = resolution[0];
+                            let height = resolution[1];
+                            // document.getElementById("monitor").style.width = width + "px";
+                            // document.getElementById("monitor").style.height = height + "px";
                         });
-                    } else {
-                        videoPlayer.removeEventListener("ended", playNextVideo);
-                        setTimeout(showNextContent, 10); // Show next content after all videos are done
-                    }
-                }
-
-                // Event listener to play the next video when the current one ends
-                videoPlayer.addEventListener("ended", playNextVideo);
-
-                // Start playing the first video
-                playNextVideo();
-            }
-
-            // Move to the next content
-            function showNextContent() {
-                currentIndex = (currentIndex + 1) % scheduleData.length; // Loop through contents
-                showContent(scheduleData[currentIndex]);
-            }
-
-            // Start the content display if contents exist
-            if (scheduleData.length > 0) {
-                showContent(scheduleData[currentIndex]);
-            }
-
-            // Set the resolution of the monitor container
-            resolution = currentDevice.resolution.split("x");
-            let width = resolution[0];
-            let height = resolution[1];
-            // document.getElementById("monitor").style.width = width + "px";
-            // document.getElementById("monitor").style.height = height + "px";
-        });
-    </script>
+                    </script>
 }
 
 <style>
